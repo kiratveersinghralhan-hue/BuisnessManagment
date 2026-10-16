@@ -76,10 +76,10 @@
           ".write": "auth != null && !data.exists() && newData.val() === auth.uid"
         },
         "state": {
-          ".write": "auth != null && (newData.parent().child('guest').val() === auth.uid)"
+          ".write": "auth != null && (data.parent().child('host').val() === auth.uid || (data.parent().child('mode').val() !== 'party' && newData.parent().child('guest').val() === auth.uid))"
         },
         "startAt": {
-          ".write": "auth != null && (newData.parent().child('guest').val() === auth.uid)"
+          ".write": "auth != null && (data.parent().child('host').val() === auth.uid || (data.parent().child('mode').val() !== 'party' && newData.parent().child('guest').val() === auth.uid))"
         },
         "players": {
           "$uid": {
@@ -89,15 +89,20 @@
             },
             "ans": {
               "$q": {
-                ".validate": "newData.hasChildren(['k','ms']) && newData.child('k').isNumber() && newData.child('k').val() >= 0 && newData.child('k').val() <= 3 && newData.child('ms').isNumber() && newData.child('ms').val() >= 0 && newData.child('ms').val() <= 15000"
+                ".validate": "newData.hasChildren(['k','ms']) && newData.child('k').isNumber() && newData.child('k').val() >= 0 && newData.child('k').val() <= 3 && newData.child('ms').isNumber() && newData.child('ms').val() >= 0 && newData.child('ms').val() <= 20000"
               }
             }
           }
         },
         "seats": {
           "$seat": {
-            ".write": "auth != null && $seat !== '0' && ($seat === '1' || $seat === '2' || $seat === '3') && !data.exists() && newData.val() === auth.uid && root.child('battles').child($code).child('state').val() === 'waiting'",
+            ".write": "auth != null && $seat !== '0' && ($seat === '1' || $seat === '2' || $seat === '3') && !data.exists() && newData.val() === auth.uid && root.child('battles').child($code).child('state').val() === 'waiting' && (root.child('battles').child($code).child('maxPlayers').val() === null || $seat === '1' || ($seat === '2' && root.child('battles').child($code).child('maxPlayers').val() >= 3) || ($seat === '3' && root.child('battles').child($code).child('maxPlayers').val() >= 4))",
             ".validate": "newData.isString() && newData.val() === auth.uid"
+          }
+        },
+        "rematchVotes": {
+          "$uid": {
+            ".write": "auth != null && auth.uid === $uid && root.child('battles').child($code).child('mode').val() === 'party' && root.child('battles').child($code).child('state').val() === 'rematch' && root.child('battles').child($code).child('players').child(auth.uid).exists() && newData.val() === true"
           }
         }
       }

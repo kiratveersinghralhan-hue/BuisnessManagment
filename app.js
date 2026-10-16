@@ -51,6 +51,36 @@ const KEY = "cr_state_v1";
 const blank = () => ({ name: "", createdAt: Date.now(), studySec: 0, notesRead: {}, mcqA: 0, mcqC: 0, topics: {}, correct: {}, wrong: {}, mockBest: 0, mockCount: 0, mockXp: 0, casesDone: {}, days: {}, saved: {}, mynotes: {}, papers: 0, bonusXp: 0, battles: 0, wins: 0, dailies: 0, helped: 0, dailyDone: {}, cards: {} });
 let S = Object.assign(blank(), LS.get(KEY, {}));
 const save = () => LS.set(KEY, S);
+// V6.2 progression: local-first; user-owned Firebase data mirrors it after sign-in.
+function arenaDaily() {
+  S.arena62 ||= {};
+  const key = today();
+  S.arena62[key] ||= { answers: 0, cases: {}, notes: {}, rewards: {} };
+  // Keep history bounded on the device (today + last 44 days)
+  const keys = Object.keys(S.arena62).sort();
+  for (const old of keys.slice(0, Math.max(0, keys.length - 45))) delete S.arena62[old];
+  return S.arena62[key];
+}
+const missions62 = [
+  { id: "warm", icon: "⚡", title: "Daily warm-up", detail: "Answer 10 practice or case MCQs", goal: 10, reward: 20, progress: d => d.answers || 0 },
+  { id: "case", icon: "🧠", title: "Case solver", detail: "Finish one Case Study Arena scenario", goal: 1, reward: 30, progress: d => Object.keys(d.cases || {}).length },
+  { id: "note", icon: "📚", title: "Knowledge boost", detail: "Complete two topic notes", goal: 2, reward: 20, progress: d => Object.keys(d.notes || {}).length }
+];
+function arenaActivity(type, id) {
+  const d = arenaDaily();
+  if (type === "answer") d.answers++;
+  if (type === "case") d.cases[SUBJ.id + ":" + id] = 1;
+  if (type === "note") d.notes[SUBJ.id + ":" + id] = 1;
+  let awarded = 0;
+  for (const m of missions62) if (!d.rewards[m.id] && m.progress(d) >= m.goal) {
+    d.rewards[m.id] = 1; awarded += m.reward;
+  }
+  if (awarded) { S.bonusXp = (S.bonusXp || 0) + awarded; toast(`Mission complete · +${awarded} XP`); }
+  // The per-user mirror is private under existing Firebase user permissions.
+  fbUpdate({ [`users/${uid}/arena62`]: S.arena62, ...(awarded ? { [`users/${uid}/bonusXp`]: S.bonusXp } : {}) });
+  syncLB();
+}
+
 let uid = null, db = null, online = false, lbData = {}, namesData = {}, presenceData = {};
 
 const count = o => Object.keys(o || {}).length;
@@ -116,7 +146,7 @@ async function initFirebase() {
         if (remote) {
           // merge: remote is the source of truth, keep any larger local counters
           const merged = Object.assign(blank(), remote);
-          for (const k of ["notesRead", "topics", "correct", "wrong", "casesDone", "days", "saved", "mynotes", "dailyDone", "cards"]) merged[k] = Object.assign({}, S[k], remote[k] || {});
+          for (const k of ["notesRead", "topics", "correct", "wrong", "casesDone", "days", "saved", "mynotes", "dailyDone", "cards", "arena62", "arena62Completed"]) merged[k] = Object.assign({}, S[k], remote[k] || {});
           for (const k of ["studySec", "mcqA", "mcqC", "mockBest", "mockCount", "mockXp", "papers", "bonusXp", "battles", "wins", "dailies", "helped"]) merged[k] = Math.max(remote[k] || 0, S[k] || 0);
           merged.name = nameSnap.val() || S.name; S = merged;
         } else {
@@ -180,11 +210,11 @@ function recordAnswer(q, ok, { unique = true } = {}) {
     if (ok) { if (!S.correct[q.id]) { S.correct[q.id] = 1; u[`users/${uid}/correct/${q.id}`] = 1; } if (S.wrong[q.id]) { delete S.wrong[q.id]; u[`users/${uid}/wrong/${q.id}`] = null; } }
     else { S.wrong[q.id] = 1; u[`users/${uid}/wrong/${q.id}`] = 1; }
   }
-  fbUpdate(u); syncLB();
+  fbUpdate(u); arenaActivity("answer");
 }
 function markNote(id) {
   if (S.notesRead[id]) return;
-  S.notesRead[id] = Date.now(); fbUpdate({ [`users/${uid}/notesRead/${id}`]: Date.now() }); syncLB(); toast("+15 XP · topic finished");
+  S.notesRead[id] = Date.now(); fbUpdate({ [`users/${uid}/notesRead/${id}`]: Date.now() }); arenaActivity("note", id); toast("+15 XP · topic finished");
 }
 
 /* ================= topbar / router ================= */
@@ -200,10 +230,10 @@ function route(soft) {
   if (soft && r === "home") { const h = $("#rankStat"); if (h) h.textContent = myRank(); return; }
   if (cleanup) { cleanup(); cleanup = null; }
   cur = r || "home";
-  const group = { q: "practice", cases: "practice", case: "practice", written: "practice", battle: "practice", daily: "practice", cards: "practice", tools: "practice", mock: "exam", paper: "exam", note: "notes", guide: "notes", videos: "notes", revise: "notes", doubts: "notes" };
+  const group = { q: "practice", cases: "practice", case: "practice", written: "practice", battle: "practice", daily: "practice", cards: "practice", tools: "practice", arena: "practice", missions: "practice", coach: "practice", mock: "exam", paper: "exam", note: "notes", guide: "notes", videos: "notes", revise: "notes", doubts: "notes" };
   $$("[data-r]").forEach(a => a.classList.toggle("on", a.dataset.r === cur || group[cur] === a.dataset.r));
   const v = $("#view");
-  const views = { home: vHome, notes: vNotes, note: vNote, practice: vPractice, q: vQuiz, mock: vMock, cases: vCases, case: vCase, written: vWritten, ranks: vRanks, me: vMe, guide: vGuide, exam: vExam, paper: vPaper, videos: vVideos, battle: vBattle, daily: vDaily, cards: vCards, revise: vRevise, doubts: vDoubts, tools: vTools };
+  const views = { home: vHome, notes: vNotes, note: vNote, practice: vPractice, q: vQuiz, mock: vMock, cases: vCases, case: vCase, written: vWritten, ranks: vRanks, me: vMe, guide: vGuide, exam: vExam, paper: vPaper, videos: vVideos, battle: vBattle, daily: vDaily, cards: vCards, revise: vRevise, doubts: vDoubts, tools: vTools, arena: vArena62, missions: vMissions62, coach: vCoach62 };
   (views[cur] || vHome)(v, p ? decodeURIComponent(p) : undefined);
   if (!soft) { scrollTo({ top: 0, behavior: "instant" }); v.classList.remove("enter"); void v.offsetWidth; v.classList.add("enter"); showBars(); }
   document.body.classList.toggle("focus", cur === "q" || cur === "paper" || (cur === "battle" && !!p)); moveNavInd(); reveal(v);
@@ -288,6 +318,9 @@ function vHome(v) {
   <div class="actions">
     ${!NOTES.length ? "" : next ? `<a class="action feature" href="#note/${next.id}"><span class="ic">📖</span><div><b>Continue: ${esc(next.title)}</b><br><span>${esc(next.lec)} · ${esc(UNITS.find(u => u.id === next.unit).name)}</span></div></a>`
       : `<a class="action feature" href="#mock"><span class="ic">🏁</span><div><b>All notes done. Time for a full mock.</b><br><span>90 minutes, case-based</span></div></a>`}
+    <a class="action c1" href="#arena"><span class="ic">🏢</span><b>Case Study Arena</b><span>Realistic scenarios · linked MCQs</span></a>
+    <a class="action c5" href="#missions"><span class="ic">🏅</span><b>Daily missions</b><span>Three quests · earn bonus XP</span></a>
+    <a class="action c2" href="#coach"><span class="ic">🎯</span><b>Revision coach</b><span>Your weak topics · focused practice</span></a>
     <a class="action c1" href="#q/quick"><span class="ic">⚡</span><b>Quick 10</b><span>Random scenario MCQs</span></a>
     <a class="action c2" href="#q/weak"><span class="ic">🎯</span><b>Fix mistakes</b><span>${inBank(S.wrong)} to retry</span></a>
     <a class="action c4" href="#written"><span class="ic">✍️</span><b>Written practice</b><span>Answer, then self-mark</span></a>
@@ -359,7 +392,7 @@ function vPractice(v) {
   if (!BANK.length) { v.innerHTML = `<h2>Practice</h2>` + comingSoon("Practice questions"); return; }
   const draw = () => {
     const pool = poolFor();
-    v.innerHTML = `<h2>Practice</h2><p class="muted">Each new question you get right earns 4 XP.</p>
+    v.innerHTML = `<h2>Practice</h2><p class="muted">Each new question you get right earns 4 XP.</p><div class="arena62-links"><a class="btn" href="#arena">🏢 Case Study Arena</a><a class="btn" href="#missions">🏅 Missions</a><a class="btn" href="#coach">🎯 Revision coach</a></div>
     <div class="play-row"><a class="play daily" href="#daily"><span class="pi">📅</span><b>Daily challenge</b><span>5 questions · ranked</span></a><a class="play battle" href="#battle"><span class="pi">⚔️</span><b>Quiz battle</b><span>Live 1v1 · ${S.wins || 0} wins</span></a></div>
     <div class="actions" style="margin-bottom:12px"><a class="action c5" href="#cards"><span class="ic">🃏</span><b>Flashcards</b><span>${(SD.cards || []).length} cards</span></a>${SD.tools ? `<a class="action c4" href="#tools"><span class="ic">🧮</span><b>Calculators</b><span>EOQ, ratios, with working</span></a>` : ""}<a class="action c1" href="#revise"><span class="ic">⚡</span><b>Revision</b><span>One-page sheets</span></a><a class="action c2" href="#doubts"><span class="ic">💬</span><b>Doubts</b><span>Ask the class</span></a></div>
     <div class="actions" style="margin-bottom:18px">
@@ -430,6 +463,66 @@ function vQuiz(v, mode = "quick") {
     $("#again").onclick = e => { if (location.hash === "#q/quick") { e.preventDefault(); route(); } };
   };
   draw();
+}
+
+
+/* ============== V6.2 · The Exam Intelligence Update ============== */
+let arena62Run = null;
+function vArena62(v) {
+  if (!CASESETS.length) {
+    v.innerHTML = `<h2>Case Study Arena</h2><div class="empty"><h3>Case challenges are coming to this subject.</h3><p>Choose Business Management for verified course-material scenario questions.</p><a class="btn primary" href="#practice">Practice MCQs</a></div>`;
+    return;
+  }
+  const completed = S.arena62Completed || {};
+  v.innerHTML = `<div class="arena62-heading"><span class="pill">V6.2 · EXAM INTELLIGENCE</span><h2>🏢 Case Study Arena</h2><p class="muted">Read a real-world situation, apply course concepts and solve linked questions. Explanations appear after each answer.</p></div>
+  <div class="arena62-cards">${CASESETS.map(c => `<article class="panel arena62-card"><div class="arena62-kicker">${c.qs.length} linked questions · ${c.topics.length} topics</div><h3>${esc(c.title)}</h3><p class="muted">${esc(c.text).slice(0,200)}${c.text.length>200?'…':''}</p><div class="row"><button class="btn primary" data-case62="${esc(c.id)}">${completed[SUBJ.id+':'+c.id]?'Practice again':'Enter arena'} →</button><span class="muted">${completed[SUBJ.id+':'+c.id]?'✓ Completed before':'Scenario challenge'}</span></div></article>`).join("")}</div>`;
+  $$('[data-case62]',v).forEach(b => b.onclick = () => {
+    const c = CASESETS.find(x=>x.id === b.dataset.case62); if(!c) return;
+    arena62Run = { subject: SUBJ.id, id: c.id, index: 0, correct: 0, answers: [], questions: c.qs.map(prepOpts) };
+    runArena62(v);
+  });
+}
+function runArena62(v) {
+  const s = arena62Run, c = CASESETS.find(x=>x.id === s?.id);
+  if (!s || !c || s.subject !== SUBJ.id) return vArena62(v);
+  if (s.index >= s.questions.length) {
+    const pct = Math.round(100*s.correct/s.questions.length);
+    S.arena62Completed ||= {};
+    S.arena62Completed[SUBJ.id+':'+c.id] = Math.max(S.arena62Completed[SUBJ.id+':'+c.id] || 0, pct);
+    fbUpdate({ [`users/${uid}/arena62Completed/${SUBJ.id+':'+c.id}`]: S.arena62Completed[SUBJ.id+':'+c.id] });
+    arenaActivity('case',c.id);
+    v.innerHTML = `<div class="panel arena62-finish"><span class="arena62-medal">${pct>=80?'🏆':pct>=50?'🌟':'📖'}</span><h2>Scenario complete</h2><div class="result-big num">${s.correct}<small>/${s.questions.length}</small></div><p>${esc(c.title)} · ${pct}% correct</p><div class="row arena62-actions"><a class="btn primary" href="#arena">Other scenarios</a><a class="btn" href="#coach">Revise weak topics</a></div></div><div class="panel"><h3>Review your decisions</h3>${s.answers.map((a,i)=>`<div class="review-item"><span class="muted">Question ${i+1}</span><div class="q">${qf(s.questions[i].q)}</div><div class="a ${a.ok?'ok':'no'}">${a.ok?'✓ Correct':'✗ Incorrect'} · ${esc(a.selected)}</div><div class="a ok">Answer: ${esc(s.questions[i].c)}</div><p class="muted">${esc(s.questions[i].e)}</p></div>`).join('')}</div>`;
+    arena62Run=null;
+    return;
+  }
+  const q=s.questions[s.index], selected=s.answers[s.index];
+  v.innerHTML=`<div class="arena62-heading"><a class="btn small" href="#arena">← Scenarios</a><span class="pill">${s.index+1} / ${s.questions.length}</span><h2>${esc(c.title)}</h2></div><article class="casebox arena62-scenario"><h3>Business situation</h3><p>${esc(c.text)}</p></article><div class="qwrap"><div class="qhead"><span>Question ${s.index+1}</span><div class="bar"><i style="width:${s.index/s.questions.length*100}%"></i></div><span>✓ ${s.correct}</span></div><div class="qcard"><div class="qtopic">${esc(NOTE[q.t]?.title||'Management decision')}</div><div class="qtext">${qf(q.q)}</div><div class="opts">${q.opts.map((o,i)=>`<button class="opt" data-option62="${i}"><span class="k">${'ABCD'[i]}</span><span>${esc(o)}</span></button>`).join('')}</div><div id="arena62Explain"></div><div class="qnav"><button class="btn primary hidden" id="arena62Next">${s.index+1===s.questions.length?'View case results':'Next decision →'}</button></div></div></div>`;
+  $$('[data-option62]',v).forEach(btn=>btn.onclick=()=>{
+    if(s.answers[s.index])return;
+    const picked=+btn.dataset.option62,ok=picked===q.ans;
+    s.answers[s.index]={ok,selected:q.opts[picked]};if(ok)s.correct++;
+    recordAnswer(q,ok);
+    $$('[data-option62]',v).forEach(b=>{const k=+b.dataset.option62;b.disabled=true;if(k===q.ans)b.classList.add('right');else if(k===picked)b.classList.add('wrong');});
+    $('#arena62Explain').innerHTML=`<div class="explain"><b class="${ok?'ok':'no'}">${ok?'Correct decision.':'Not quite.'}</b> ${esc(q.e)} <a href="#note/${esc(q.t)}">Revise topic</a></div>`;
+    $('#arena62Next').classList.remove('hidden');
+  });
+  $('#arena62Next').onclick=()=>{if(!s.answers[s.index])return;s.index++;runArena62(v);};
+}
+function vMissions62(v) {
+  const d=arenaDaily();
+  const done=missions62.filter(m=>d.rewards[m.id]).length;
+  v.innerHTML=`<div class="arena62-heading"><span class="pill">DAILY QUESTS</span><h2>🏅 Missions & rewards</h2><p class="muted">Complete your three missions each day to earn bonus XP. Progress resets on your device's local calendar day; earned XP stays.</p></div><div class="panel"><h3>Today's progress · ${done}/${missions62.length}</h3><div class="bar"><i style="width:${done/missions62.length*100}%"></i></div></div><div class="arena62-cards">${missions62.map(m=>{const value=Math.min(m.goal,m.progress(d)),earned=!!d.rewards[m.id];return `<article class="panel arena62-card"><div class="arena62-mission-icon">${m.icon}</div><div class="row" style="justify-content:space-between"><h3>${m.title}</h3><span class="pill">${earned?'✓ Earned':`+${m.reward} XP`}</span></div><p class="muted">${m.detail}</p><div class="bar"><i style="width:${value/m.goal*100}%"></i></div><span class="muted">${value}/${m.goal} completed</span></article>`}).join('')}</div><div class="panel"><h3>Achievement collection</h3><div class="arena62-badges">${BADGES.map(b=>`<div class="arena62-badge ${b.t(S)?'earned':'locked'}" title="${esc(b.d)}"><span>${b.t(S)?b.e:'🔒'}</span><b>${esc(b.n)}</b><small>${esc(b.d)}</small></div>`).join('')}</div></div><div class="row"><a class="btn primary" href="#q/quick">Practice questions</a><a class="btn" href="#arena">Case Study Arena</a><a class="btn" href="#notes">Read notes</a></div>`;
+}
+function vCoach62(v) {
+  const ranked=NOTES.map(n=>{
+    const t=S.topics[n.id]||{a:0,c:0};const a=t.a||0,acc=a?t.c/a:0;
+    // Bayesian smoothing avoids labelling single-question mistakes as certain weakness.
+    const smoothed=(t.c+2)/(a+4);
+    const priority=a?Math.max(0,1-smoothed)+(S.wrong&&BANK.some(q=>q.t===n.id&&S.wrong[q.id])?.12:0):0;
+    return {n,a,acc:Math.round(acc*100),priority,wrong:BANK.filter(q=>q.t===n.id&&S.wrong[q.id]).length};
+  }).filter(x=>x.a>0).sort((a,b)=>b.priority-a.priority||b.wrong-a.wrong);
+  const unseen=NOTES.filter(n=>!(S.topics[n.id]?.a));
+  v.innerHTML=`<div class="arena62-heading"><span class="pill">PERSONALIZED REVISION</span><h2>🎯 Weak-topic coach</h2><p class="muted">Based on your actual topic-level answer history, not a paid AI service. Small samples are uncertain, so practise again before drawing conclusions.</p></div>${ranked.length?`<div class="panel"><h3>Recommended next</h3><p class="muted">Start with topics where your recent practice shows mistakes or limited confidence.</p>${ranked.slice(0,12).map((r,i)=>`<div class="arena62-topic"><div class="arena62-topic-name"><b>${i+1}. ${esc(r.n.title)}</b><span class="pill">${r.acc}% · ${r.a} attempts</span></div><div class="bar"><i style="width:${r.acc}%"></i></div><div class="row"><span class="muted">${r.wrong} unresolved question${r.wrong===1?'':'s'} · ${r.a<5?'low sample':'recorded practice'}</span><a class="btn small" href="#q/weakt:${encodeURIComponent(r.n.id)}">Targeted quiz →</a><a class="btn small ghost" href="#note/${encodeURIComponent(r.n.id)}">Notes</a></div></div>`).join('')}</div>`:`<div class="empty"><h3>Your revision picture starts with practice</h3><p>Answer MCQs first to unlock topic recommendations.</p><a class="btn primary" href="#q/quick">Start Quick 10</a></div>`}${unseen.length?`<div class="panel"><h3>Topics not tested yet (${unseen.length})</h3><div class="arena62-unseen">${unseen.slice(0,12).map(n=>`<a href="#q/weakt:${encodeURIComponent(n.id)}">${esc(n.title)} ↗</a>`).join('')}</div></div>`:''}<div class="panel"><h3>How this works</h3><p class="muted">Recommendations use your answered-question count, correct answers and unresolved mistakes. Mock and case questions contribute when recorded by the quiz engine. Results are a study guide—not a prediction of exam marks.</p></div>`;
 }
 
 /* ---------- mock test ---------- */
@@ -1105,17 +1198,19 @@ function runBattle(v, opt) {
 
 /* Private party battles: separate from legacy quick-match and offline bot. */
 const PARTY_ROUND = 10000, PARTY_REVEAL = 3500;
+const partySettings = r => ({ count: Number(r.count)||10, duration: [10000,15000,20000].includes(Number(r.duration))?Number(r.duration):10000, maxPlayers: Math.min(4,Math.max(2,Number(r.maxPlayers)||4)), scoring: r.scoring === 'classic' ? 'classic' : 'speed' });
+const partyPoints = (a,q,d,mode) => !a || a.k!==q.ans ? 0 : mode === 'classic' ? 100 : 100+Math.round(100*Math.max(0,1-Math.min(d,Math.max(0,a.ms))/d));
 const partyName = () => (S.name || "").trim().slice(0, 40);
 async function createParty(v) {
   if (!online || !uid) return toast("Connect to Firebase to host a party");
   if (!partyName()) return partyAskName(v, () => createParty(v));
-  v.innerHTML = `<div class="party-setup panel"><h2>Host a private battle</h2><p class="muted">Invite up to 3 friends. Nobody starts until you press Start.</p><label for="partyCount">Number of questions</label><select class="field" id="partyCount">${[5,10,15,20,30].map(n => `<option value="${n}" ${n===10?'selected':''}>${n} questions</option>`).join('')}</select><p class="muted">Each question: 10 seconds to answer, then 3.5 seconds to reveal everyone's choices and scores.</p><button class="btn primary" id="partyMake">Create room</button><a class="btn ghost" href="#battle">Back</a></div>`;
+  v.innerHTML = `<div class="party-setup panel"><h2>Host a private battle</h2><p class="muted">Set your rules, invite friends and start when everyone is ready.</p><div class="party-settings-grid"><div><label for="partyCount">Questions</label><select class="field" id="partyCount">${[5,10,15,20,30].map(n=>`<option value="${n}" ${n===10?'selected':''}>${n} questions</option>`).join('')}</select></div><div><label for="partyMax">Players</label><select class="field" id="partyMax">${[2,3,4].map(n=>`<option value="${n}" ${n===4?'selected':''}>${n} players</option>`).join('')}</select></div><div><label for="partyDuration">Answer time</label><select class="field" id="partyDuration">${[10,15,20].map(n=>`<option value="${n}">${n} seconds</option>`).join('')}</select></div><div><label for="partyScoring">Scoring</label><select class="field" id="partyScoring"><option value="speed">Speed bonus</option><option value="classic">Classic (100/correct)</option></select></div></div><p class="muted">Answers reveal for 3.5 seconds after each round. The host alone starts the match.</p><button class="btn primary" id="partyMake">Create room</button><a class="btn ghost" href="#battle">Back</a></div>`;
   $("#partyMake",v).onclick = async () => {
     const n = Math.min(BANK.length, Number($("#partyCount",v).value));
     const btn = $("#partyMake",v); btn.disabled=true; btn.textContent="Creating…";
     const code = code5();
     try {
-      await set(fbPath("battles/"+code), {mode:"party",subj:SUBJ.id,v:SUBJ.v||1,seed:Math.floor(Math.random()*1e9),host:uid,state:"waiting",created:serverTimestamp(),count:n,duration:PARTY_ROUND,reveal:PARTY_REVEAL,pub:false,seats:{0:uid},players:{[uid]:{name:partyName(),score:0}}});
+      await set(fbPath("battles/"+code), {mode:"party",subj:SUBJ.id,v:SUBJ.v||1,seed:Math.floor(Math.random()*1e9),host:uid,state:"waiting",created:serverTimestamp(),count:n,duration:Number($("#partyDuration",v).value)*1000,maxPlayers:Number($("#partyMax",v).value),scoring:$("#partyScoring",v).value,round:1,reveal:PARTY_REVEAL,pub:false,seats:{0:uid},players:{[uid]:{name:partyName(),score:0}}});
       location.hash="#battle/"+code;
     } catch(e) { console.error("Party creation failed",e); toast("Could not create room: "+(e.code||e.message)); btn.disabled=false;btn.textContent="Create room"; }
   };
@@ -1136,16 +1231,16 @@ function partyAskName(v, next) {
 async function joinParty(v, code, first) {
   if (!partyName()) return partyAskName(v,()=>joinParty(v,code,first));
   if(first.host!==uid && !Object.values(first.seats||{}).includes(uid)) {
-    if(first.state!=="waiting") return partyError(v,"This room has already started.");
+    if(first.state!=="waiting") return partyError(v,"This room has already started. Ask the host to invite you to the next match.");
     let claimed=false;
-    for(let seat=1;seat<4;seat++) {
+    for(let seat=1;seat<partySettings(first).maxPlayers;seat++) {
       const path=fbPath(`battles/${code}/seats/${seat}`);
       try {
         const res=await runTransaction(path,old=>old===null?uid:undefined,{applyLocally:false});
         if(res.committed && res.snapshot.val()===uid) {claimed=true;break;}
       }catch(e){console.warn("Seat claim failed",e); if(e.code==="PERMISSION_DENIED")return partyError(v,"Firebase rules blocked joining. Publish the included database.rules.json rules and try again.");}
     }
-    if(!claimed)return partyError(v,"This battle is full (4 players maximum).");
+    if(!claimed)return partyError(v,"This battle room is full.");
   }
   try{await set(fbPath(`battles/${code}/players/${uid}/name`),partyName());}
   catch(e){return partyError(v,"Could not save your player name: "+(e.code||e.message));}
@@ -1153,57 +1248,68 @@ async function joinParty(v, code, first) {
 }
 function partyError(v,message){v.innerHTML=`<div class="empty"><h3>Unable to join</h3><p>${esc(message)}</p><a class="btn primary" href="#battle">Back to battles</a></div>`;}
 function partySession(v,code){
-  let room=null, tick=null, lastKey="",closed=false,awarded=false,answers={};
+  let room=null,tick=null,lastKey='',closed=false,answerPending={},awardedRound=null;
   const me=uid;
-  const members=()=>Object.values(room?.seats||{}).filter(id=>room?.players?.[id]);
+  const seats=()=>Object.entries(room?.seats||{}).sort((a,b)=>Number(a[0])-Number(b[0])).map(([,id])=>id);
+  const members=()=>seats().filter(id=>room?.players?.[id]);
   const setView=html=>{v.innerHTML=html;};
   const render=()=>{
     if(!room||closed)return;
-    const ids=members(),P=room.players||{},host=room.host===me;
-    if(room.state==="waiting"){
-      const key="lobby:"+JSON.stringify(ids.map(id=>[id,P[id]?.name]))+room.count;
+    const ids=members(),P=room.players||{},host=room.host===me,settings=partySettings(room),round=Number(room.round)||1;
+    if(room.state==='waiting'){
+      const key='lobby:'+JSON.stringify(ids.map(id=>[id,P[id]?.name]))+JSON.stringify(settings)+round;
       if(key===lastKey)return;lastKey=key;
-      const link=shareLink("#battle/"+code);
-      setView(`<section class="party-lobby"><div class="party-heading"><span>🎮 PRIVATE ARENA</span><h2>Battle room <strong>${esc(code)}</strong></h2><p>${host?"You're the host. Invite your friends, then start whenever you're ready.":"Waiting for the host to start. You can switch apps and return."}</p></div><div class="party-players">${[0,1,2,3].map(i=>{const id=room.seats?.[i],p=id&&P[id];return `<div class="party-seat ${p?'filled':''}"><span class="party-avatar">${p?esc(initials(p.name)):'+'}</span><div><b>${p?esc(p.name):'Waiting for player'}</b><small>${i===0?'👑 Host':p?(id===me?'You':'Ready'):'Invite a friend'}</small></div></div>`}).join('')}</div><p class="party-meta">${ids.length}/4 players · ${room.count} questions · 10 seconds per question</p><div class="party-buttons"><button class="btn primary" id="partyShare">Share invite</button><button class="btn" id="partyCopy">Copy link</button>${host?`<button class="btn primary" id="partyStart" ${ids.length<2?'disabled':''}>Start battle (${ids.length}/4)</button>`:''}<a class="btn ghost" href="#battle">Leave lobby</a></div></section>`);
-      $("#partyShare",v).onclick=()=>shareText(`🎮 Join ${partyName()}'s Boardroom battle! Room ${code} · up to 4 players.`,link);
-      $("#partyCopy",v).onclick=async()=>{try{await navigator.clipboard.writeText(link);toast("Battle link copied");}catch{window.prompt("Copy battle link",link);}};
-      if(host)$("#partyStart",v).onclick=async()=>{
-        if(members().length<2)return toast("At least two players are needed");
-        try{await update(fbPath(`battles/${code}`),{state:"playing",startAt:sNow()+3500});}
-        catch(e){toast("Unable to start: "+(e.code||e.message));}
+      const link=shareLink('#battle/'+code);
+      setView(`<section class="party-lobby"><div class="party-heading"><span>🎮 BOARDROOM ARENA</span><h2>Room <strong>${esc(code)}</strong></h2><p>${host?'You are the host. Share the invite, then start when everyone has joined.':'Waiting for the host to start. You can minimize this screen safely.'}</p></div><div class="party-players">${Array.from({length:settings.maxPlayers},(_,i)=>{const id=room.seats?.[i],p=id&&P[id];return `<div class="party-seat ${p?'filled':''}"><span class="party-avatar">${p?esc(initials(p.name)):'+'}</span><div><b>${p?esc(p.name):'Open seat'}</b><small>${i===0?'👑 Host':p?(id===me?'You':'Joined'):'Invite a friend'}</small></div></div>`}).join('')}</div><p class="party-meta">${ids.length}/${settings.maxPlayers} players · ${settings.count} questions · ${settings.duration/1000}s per question · ${settings.scoring==='classic'?'Classic':'Speed'} scoring</p><div class="party-buttons"><button class="btn primary" id="partyShare">Share invite</button><button class="btn" id="partyCopy">Copy link</button>${host?`<button class="btn primary" id="partyStart" ${ids.length<2?'disabled':''}>Start match (${ids.length}/${settings.maxPlayers})</button>`:''}<a class="btn ghost" href="#battle">Leave lobby</a></div></section>`);
+      $('#partyShare',v).onclick=()=>shareText(`🎮 Join ${partyName()}'s Boardroom battle! Room ${code} · ${settings.maxPlayers} players.`,link);
+      $('#partyCopy',v).onclick=async()=>{try{await navigator.clipboard.writeText(link);toast('Battle link copied');}catch{window.prompt('Copy battle link',link);}};
+      if(host)$('#partyStart',v).onclick=async()=>{
+        if(members().length<2)return toast('At least two players required');
+        const btn=$('#partyStart',v);btn.disabled=true;
+        try{const result=await runTransaction(fbPath(`battles/${code}/state`),state=>state==='waiting'?'playing':undefined,{applyLocally:false});if(!result.committed)throw Error('Room was already started');await set(fbPath(`battles/${code}/startAt`),sNow()+3500);}
+        catch(e){toast('Could not start: '+(e.code||e.message));btn.disabled=false;}
       };
       return;
     }
-    const qs=seededSet("battle:"+room.seed,Math.min(Number(room.count)||10,BANK.length));
-    const step=PARTY_ROUND+PARTY_REVEAL;
-    const elapsed=sNow()-room.startAt;
-    const idx=Math.floor(Math.max(0,elapsed)/step),offset=elapsed-idx*step;
-    const scoreOf=id=>qs.reduce((sum,q,i)=>{const a=P[id]?.ans?.[i];return sum+(a&&a.k===q.ans?bScore(true,Math.max(0,a.ms)):0)},0);
-    const scoreboard=`<div class="party-scoreboard">${ids.map(id=>`<div class="party-score ${id===me?'mine':''}"><span>${esc(P[id]?.name||'Player')}${id===room.host?' 👑':''}</span><b class="num">${scoreOf(id)}</b></div>`).join('')}</div>`;
-    if(elapsed<0){const sec=Math.ceil(-elapsed/1000),key="count:"+sec;if(key===lastKey)return;lastKey=key;return setView(`<div class="party-arena">${scoreboard}<h2>Get ready!</h2><div class="countdown-big num">${sec}</div><p>Same questions · same countdown for everyone</p></div>`);}
-    if(idx>=qs.length){
-      if(lastKey==="complete")return;lastKey="complete";
-      const winners=ids.filter(id=>scoreOf(id)===Math.max(...ids.map(scoreOf)));
-      const win=winners.includes(me),tie=winners.length>1;
-      if(!awarded){awarded=true;const done=LS.get("cr_battles_done",{}),dk=code+room.seed;if(!done[dk]){done[dk]=1;LS.set("cr_battles_done",done);bonus(win?(tie?20:40):10,{battles:1,wins:win&&!tie?1:0});}}
-      setView(`<div class="party-arena"><div class="party-trophy">🏆</div><h2>${tie?'It’s a tie!':win?'You won!':esc(P[winners[0]]?.name||'Player')+' wins!'}</h2><p>Final standings</p><div class="party-standings">${ids.sort((a,b)=>scoreOf(b)-scoreOf(a)).map((id,i)=>`<div><strong>#${i+1} ${esc(P[id]?.name||'Player')}</strong><b>${scoreOf(id)} pts</b></div>`).join('')}</div><p class="muted">The fastest correct answers earn the most points.</p><a class="btn primary" href="#battle">Play another battle</a></div>`);return;
+    if(room.state==='rematch'){
+      const votes=room.rematchVotes||{},allReady=ids.every(id=>!!votes[id]);
+      const key='rematch:'+JSON.stringify(ids.map(id=>[id,P[id]?.name,!!votes[id]]))+':'+round;
+      if(key!==lastKey){lastKey=key;setView(`<section class="party-lobby"><div class="party-heading"><span>🔁 REMATCH LOBBY</span><h2>Same friends, new game</h2><p>Every player must tap Ready. Only the host can start the rematch.</p></div><div class="party-players">${ids.map(id=>`<div class="party-seat filled"><span class="party-avatar">${esc(initials(P[id]?.name||'P'))}</span><div><b>${esc(P[id]?.name||'Player')}</b><small>${votes[id]?'✅ Ready':'⌛ Waiting'}${id===room.host?' · Host':''}</small></div></div>`).join('')}</div><div class="party-buttons"><button class="btn primary" id="partyReady" ${votes[me]?'disabled':''}>${votes[me]?'You are ready':'Ready for rematch'}</button>${host?`<button class="btn primary" id="partyRestart" ${!allReady?'disabled':''}>Start rematch</button>`:''}<a class="btn ghost" href="#battle">Leave room</a></div></section>`);
+        const ready=$('#partyReady',v);ready.onclick=async()=>{ready.disabled=true;try{await set(fbPath(`battles/${code}/rematchVotes/${me}`),true);}catch(e){toast('Could not ready up: '+(e.code||e.message));ready.disabled=false;}};
+        if(host)$('#partyRestart',v).onclick=async()=>{if(!members().every(id=>room.rematchVotes?.[id]))return;const btn=$('#partyRestart',v);btn.disabled=true;try{await update(fbPath(`battles/${code}`),{seed:Math.floor(Math.random()*1e9),round:round+1,state:'playing',startAt:sNow()+4000,rematchVotes:null,players:Object.fromEntries(ids.map(id=>[id,{name:P[id]?.name||'Player',score:0}]))});}catch(e){toast('Rematch failed: '+(e.code||e.message));btn.disabled=false;}};
+      }
+      return;
     }
-    const q=qs[idx],reveal=offset>=PARTY_ROUND,remaining=Math.max(0,(reveal?step:PARTY_ROUND)-offset);
-    const mine=P[me]?.ans?.[idx],key=`q:${idx}:${reveal}:${mine?.k??'_'}:${ids.map(id=>P[id]?.ans?.[idx]?.k??'_').join(',')}`;
-    if(key===lastKey){const el=$("#partySeconds",v);if(el)el.textContent=(remaining/1000).toFixed(1)+"s";const bar=$("#partyClock",v);if(bar)bar.style.width=(remaining/(reveal?PARTY_REVEAL:PARTY_ROUND)*100)+"%";return;}
+    const qs=seededSet('battle:'+room.seed,Math.min(settings.count,BANK.length));
+    const step=settings.duration+PARTY_REVEAL;
+    if(room.startAt == null || !Number.isFinite(Number(room.startAt)))return;
+    const elapsed=sNow()-room.startAt,idx=Math.floor(Math.max(0,elapsed)/step),offset=elapsed-idx*step;
+    const scoreOf=id=>qs.reduce((sum,q,i)=>{const a=P[id]?.ans?.[i];return sum+partyPoints(a,q,settings.duration,settings.scoring)},0);
+    const scoreboard=`<div class="party-scoreboard">${ids.map(id=>`<div class="party-score ${id===me?'mine':''}"><span>${esc(P[id]?.name||'Player')}${id===room.host?' 👑':''}</span><b class="num">${scoreOf(id)}</b></div>`).join('')}</div>`;
+    if(elapsed<0){const sec=Math.ceil(-elapsed/1000),key='count:'+round+':'+sec;if(key===lastKey)return;lastKey=key;setView(`<div class="party-arena">${scoreboard}<h2>Get ready!</h2><div class="countdown-big num">${sec}</div><p>All players get the same questions and timer</p></div>`);return;}
+    if(idx>=qs.length){
+      const ranking=ids.slice().sort((a,b)=>scoreOf(b)-scoreOf(a)),top=scoreOf(ranking[0]);const winners=ranking.filter(id=>scoreOf(id)===top),win=winners.includes(me),tie=winners.length>1;
+      if(awardedRound!==round){awardedRound=round;const done=LS.get('cr_battles_done',{}),dk=code+':'+round+':'+room.seed;if(!done[dk]){done[dk]=1;LS.set('cr_battles_done',done);bonus(win?(tie?20:40):10,{battles:1,wins:win&&!tie?1:0});}}
+      const key='complete:'+round+':'+JSON.stringify(ranking.map(id=>scoreOf(id)));if(key===lastKey)return;lastKey=key;
+      const rankOf=id=>1+ranking.filter(other=>scoreOf(other)>scoreOf(id)).length;
+      setView(`<div class="party-arena party-finish"><div class="party-trophy">🏆</div><h2>${tie?'It’s a tie!':win?'You won!':esc(P[winners[0]]?.name||'Player')+' wins!'}</h2><p>Match ${round} · Final standings</p><div class="party-podium">${ranking.map(id=>`<div class="party-podium-card rank-${Math.min(4,rankOf(id))} ${id===me?'mine':''}"><div class="party-medal">${['🥇','🥈','🥉','🎖️'][Math.min(3,rankOf(id)-1)]}</div><div class="party-avatar">${esc(initials(P[id]?.name||'P'))}</div><strong>${esc(P[id]?.name||'Player')}</strong><b>${scoreOf(id)} pts</b><small>${rankOf(id)===1?'Champion':'Rank #'+rankOf(id)}</small></div>`).join('')}</div><p class="muted">${settings.scoring==='classic'?'Every correct answer earns 100 points.':'Fast correct answers earn more points.'}</p><div class="party-buttons">${host?'<button class="btn primary" id="partyRematch">Offer rematch</button>':'<p class="muted">The host can offer a rematch.</p>'}<a class="btn ghost" href="#battle">Battle home</a></div></div>`);
+      if(host)$('#partyRematch',v).onclick=async()=>{const btn=$('#partyRematch',v);btn.disabled=true;try{await update(fbPath(`battles/${code}`),{state:'rematch',rematchVotes:{}});}catch(e){toast('Cannot offer rematch: '+(e.code||e.message));btn.disabled=false;}};
+      return;
+    }
+    const q=qs[idx],reveal=offset>=settings.duration,remaining=Math.max(0,(reveal?step:settings.duration)-offset),mine=P[me]?.ans?.[idx];
+    const key=`q:${round}:${idx}:${reveal}:${mine?.k??'_'}:${ids.map(id=>P[id]?.ans?.[idx]?.k??'_').join(',')}`;
+    if(key===lastKey){const el=$('#partySeconds',v);if(el)el.textContent=(remaining/1000).toFixed(1)+'s';const bar=$('#partyClock',v);if(bar)bar.style.width=(remaining/(reveal?PARTY_REVEAL:settings.duration)*100)+'%';return;}
     lastKey=key;
-    setView(`<div class="party-arena">${scoreboard}<div class="qhead"><span>Question ${idx+1}/${qs.length}</span><div class="bar timebar"><i id="partyClock" style="width:${remaining/(reveal?PARTY_REVEAL:PARTY_ROUND)*100}%"></i></div><span id="partySeconds">${(remaining/1000).toFixed(1)}s</span></div><p class="party-phase">${reveal?'✅ Answer reveal & scores':'⚡ Choose your answer now'}</p><div class="qcard"><div class="qtext">${qf(q.q)}</div><div class="opts">${q.opts.map((o,k)=>`<button class="opt ${reveal&&k===q.ans?'right':reveal&&mine?.k===k?'wrong':mine?.k===k?'party-picked':''}" data-choice="${k}" ${reveal||mine?'disabled':''}><span class="k">${'ABCD'[k]}</span><span>${esc(o)}</span></button>`).join('')}</div>${reveal?`<p class="party-correct">Correct answer: ${esc(q.c)}</p>`:''}</div><div class="party-choices">${ids.map(id=>{const a=P[id]?.ans?.[idx],p=P[id];return `<div><span>${esc(p.name)}${id===me?' (you)':''}</span><b>${reveal?(a?`${'ABCD'[a.k]} · ${a.k===q.ans?'+ '+bScore(true,a.ms)+' pts':'0 pts'}`:'No answer'):(a?'✓ Locked in':'Thinking…')}</b></div>`}).join('')}</div></div>`);
+    setView(`<div class="party-arena">${scoreboard}<div class="qhead"><span>Question ${idx+1}/${qs.length}</span><div class="bar timebar"><i id="partyClock" style="width:${remaining/(reveal?PARTY_REVEAL:settings.duration)*100}%"></i></div><span id="partySeconds">${(remaining/1000).toFixed(1)}s</span></div><p class="party-phase">${reveal?'✅ Answers revealed':'⚡ Lock in your answer'}</p><div class="qcard"><div class="qtext">${qf(q.q)}</div><div class="opts">${q.opts.map((o,k)=>`<button class="opt ${reveal&&k===q.ans?'right':reveal&&mine?.k===k?'wrong':mine?.k===k?'party-picked':''}" data-choice="${k}" ${reveal||mine?'disabled':''}><span class="k">${'ABCD'[k]}</span><span>${esc(o)}</span></button>`).join('')}</div>${reveal?`<p class="party-correct">Correct answer: ${esc(q.c)}</p>`:''}</div><div class="party-choices">${ids.map(id=>{const a=P[id]?.ans?.[idx],p=P[id];return `<div><span>${esc(p.name)}${id===me?' (you)':''}</span><b>${reveal?(a?`${'ABCD'[a.k]} · +${partyPoints(a,q,settings.duration,settings.scoring)} pts`:'No answer'):(a?'✓ Locked in':'Thinking…')}</b></div>`}).join('')}</div></div>`);
     if(!reveal&&!mine)$$('[data-choice]',v).forEach(el=>el.onclick=async()=>{
-      const k=Number(el.dataset.choice),ms=Math.max(0,sNow()-(room.startAt+idx*step));
-      if(ms>=PARTY_ROUND||answers[idx])return;
-      answers[idx]=true;
-      try{
-        const result=await runTransaction(fbPath(`battles/${code}/players/${me}/ans/${idx}`),old=>old===null?{k,ms}:undefined,{applyLocally:false});
-        if(result.committed)recordAnswer(q,k===q.ans);
-      }catch(e){delete answers[idx];toast('Answer not saved: '+(e.code||e.message));}
+      const k=Number(el.dataset.choice),ms=Math.max(0,sNow()-(room.startAt+idx*step)),answerKey=round+':'+idx;
+      if(ms>=settings.duration||answerPending[answerKey])return;
+      answerPending[answerKey]=true;
+      try{const result=await runTransaction(fbPath(`battles/${code}/players/${me}/ans/${idx}`),old=>old===null?{k,ms}:undefined,{applyLocally:false});if(result.committed)recordAnswer(q,k===q.ans);}
+      catch(e){delete answerPending[answerKey];toast('Answer not saved: '+(e.code||e.message));}
     });
   };
-  battleUnsub=onValue(fbPath("battles/"+code),s=>{if(closed)return;room=s.val();if(!room){partyError(v,"This room was closed or deleted.");return;}render();},e=>partyError(v,"Firebase: "+(e.code||e.message)));
+  battleUnsub=onValue(fbPath('battles/'+code),s=>{if(closed)return;room=s.val();if(!room){partyError(v,'This room was closed or deleted.');return;}render();},e=>partyError(v,'Firebase: '+(e.code||e.message)));
   tick=setInterval(render,120);
   cleanup=()=>{closed=true;clearInterval(tick);if(battleUnsub){battleUnsub();battleUnsub=null;}};
 }
