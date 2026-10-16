@@ -12,7 +12,16 @@ const ago = ts => { if (!ts) return "never"; const s = (Date.now() - ts) / 1000;
 const dayKey = d => d.toLocaleDateString("en-CA");
 const norm = n => (n || "").toLowerCase().replace(/[^\p{L}]/gu, "");
 function toast(m) { const t = $("#toast"); t.textContent = m; t.classList.add("show"); clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove("show"), 2600); }
-const NOTES = window.NOTES; const NOTE = Object.fromEntries(NOTES.map(n => [n.id, n]));
+/* topic names from every subject that has content */
+let NOTES = [], NOTE = {};
+const SUBJ_NAME = Object.fromEntries((window.SUBJECTS || []).map(x => [x.id, x.short || x.name]));
+async function loadAllNotes() {
+  window.SUBJECT_DATA = window.SUBJECT_DATA || {};
+  await Promise.all((window.SUBJECTS || []).filter(x => x.file && !window.SUBJECT_DATA[x.id]).map(x => new Promise(r => { const el = document.createElement("script"); el.src = x.file + (x.v ? "?v=" + x.v : ""); el.onload = el.onerror = r; document.head.appendChild(el); })));
+  NOTES = (window.SUBJECTS || []).flatMap(x => (window.SUBJECT_DATA[x.id]?.notes || []).map(n => ({ ...n, title: n.title + ((window.SUBJECTS || []).filter(y => y.file).length > 1 ? ` (${x.short || x.name})` : "") })));
+  NOTE = Object.fromEntries(NOTES.map(n => [n.id, n]));
+}
+loadAllNotes().then(() => { if (auth.currentUser && auth.currentUser.uid === ADMIN_UID) schedule(); });
 
 // a separate named app so the admin login never replaces a student's anonymous login on this phone
 const app = initializeApp(firebaseConfig, "admin");
@@ -154,7 +163,7 @@ function render() {
     <div class="tbl-wrap"><table class="tbl"><thead><tr>${cols.map(([k, l, r]) => `<th data-k="${k}" class="${r ? "r" : ""}">${l}${sortKey === k ? (sortDir < 0 ? " ↓" : " ↑") : ""}</th>`).join("")}</tr></thead>
     <tbody>${rows.map(s => `<tr class="rowx" data-id="${s.id}"><td><span class="dot ${s.live ? "on" : ""}"></span>${esc(s.name)}${s.dup ? '<span class="dup">possible duplicate</span>' : ""}</td><td>${ago(s.lastSeen)}</td><td class="r">${fmtTime(s.study)}</td><td class="r">${s.notes}/${NOTES.length}</td><td class="r">${s.ans}</td><td class="r">${s.acc}%</td><td class="r">${s.mocks}</td><td class="r">${s.best ? s.best + "%" : "–"}</td><td class="r">${s.cases}</td><td class="r">${s.xp.toLocaleString("en-IN")}</td></tr>`).join("") || `<tr><td colspan="10" class="muted">No students yet. Share the site link with your class.</td></tr>`}</tbody></table></div>
     <p class="muted" style="font-size:13px;margin:10px 0 0">Tap a student to see details, rename, merge duplicates or remove a fake name.</p></div>
-  <div class="panel"><h3>Recent mock tests</h3>${feed.length ? `<div class="feed">${feed.map(a => `<div><b>${esc(D.names[a.id] || "Unknown")}</b><span>${a.score}/${a.total} (${a.pct}%) in ${fmtTime(a.dur)}</span><span class="t">${ago(a.ts)}</span></div>`).join("")}</div>` : `<div class="empty">No mock tests yet.</div>`}</div>`;
+  <div class="panel"><h3>Recent mock tests</h3>${feed.length ? `<div class="feed">${feed.map(a => `<div><b>${esc(D.names[a.id] || "Unknown")}</b><span>${a.type === "exam" ? "📝 Paper" : "⏱️ Mock"}${a.subj ? " · " + esc(SUBJ_NAME[a.subj] || a.subj) : ""} · ${a.score}/${a.total} (${a.pct}%) in ${fmtTime(a.dur)}</span><span class="t">${ago(a.ts)}</span></div>`).join("")}</div>` : `<div class="empty">No mock tests yet.</div>`}</div>`;
   bindTips($("#adm"));
   const sr = $("#srch");
   if (hadFocus) { sr.focus(); sr.setSelectionRange(sr.value.length, sr.value.length); } sr.oninput = () => { q = sr.value.toLowerCase().trim(); const pos = sr.selectionStart; render(); const n = $("#srch"); n.focus(); n.setSelectionRange(pos, pos); };
@@ -177,7 +186,7 @@ function refreshSheet() {
   <div class="kv"><span>Joined</span><span>${s.joined ? new Date(s.joined).toLocaleString("en-IN") : "–"}</span><span>Last active</span><span>${ago(s.lastSeen)}</span><span>Study time</span><span>${fmtTime(s.study)}</span><span>Notes read</span><span>${s.notes}/${NOTES.length}</span><span>Questions</span><span>${s.ans} answered · ${s.acc}% correct · ${count(s.u.correct)} unique right</span><span>Mocks</span><span>${s.mocks} taken · best ${s.best}%</span><span>XP · streak</span><span>${s.xp} XP · ${s.l.streak || 0} days</span><span>Device</span><span style="font-size:12px;word-break:break-word">${esc(s.u.device || "–")}</span><span>ID</span><span style="font-size:12px;word-break:break-all">${s.id}</span></div>
   <div class="label">Study minutes, last 14 days</div><div class="mini">${days.map(v => `<i style="height:${v / dm * 100}%" title="${Math.round(v / 60)} min"></i>`).join("")}</div>
   ${tps.length ? `<div class="label">Topic accuracy (weakest first)</div><div class="hbars">${tps.map(x => `<div class="hb"><span>${esc(NOTE[x.t].title)}</span><span class="tr"><i class="${x.acc < 50 ? "low" : ""}" style="width:${x.acc}%"></i></span><span class="vv">${x.acc}% · ${x.a}</span></div>`).join("")}</div>` : ""}
-  ${at.length ? `<div class="label">Mock attempts</div><div class="feed">${at.map(a => `<div><span>${a.score}/${a.total} (${a.pct}%)</span><span class="muted">${fmtTime(a.dur)}</span><span class="t">${a.ts ? new Date(a.ts).toLocaleString("en-IN", { day: "numeric", month: "short", hour: "numeric", minute: "2-digit" }) : ""}</span></div>`).join("")}</div>` : ""}
+  ${at.length ? `<div class="label">Mock tests &amp; papers</div><div class="feed">${at.map(a => `<div><span>${a.type === "exam" ? "📝" : "⏱️"} ${a.score}/${a.total} (${a.pct}%)${a.type === "exam" ? ` · A ${a.a} · B ${a.b} · C ${a.c}` : ""}</span><span class="muted">${fmtTime(a.dur)}</span><span class="t">${a.ts ? new Date(a.ts).toLocaleString("en-IN", { day: "numeric", month: "short", hour: "numeric", minute: "2-digit" }) : ""}</span></div>`).join("")}</div>` : ""}
   <div class="label">Fix name</div><div class="row"><input class="field" id="rn" style="flex:1;margin:0" value="${esc(D.names[s.id] || "")}" maxlength="40"><button class="btn" id="rnGo">Save name</button></div>
   <div class="label">Merge duplicate into another student</div><p class="muted" style="font-size:13px;margin:0 0 8px">Adds this profile's study time, answers and mocks to the student you pick, then removes this profile.</p>
   <div class="row"><select class="field" id="mg" style="flex:1;margin:0"><option value="">Choose the student to keep…</option>${others.map(o => `<option value="${o.id}">${esc(o.name)} (${o.xp} XP)</option>`).join("")}</select><button class="btn" id="mgGo">Merge</button></div>

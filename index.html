@@ -4,6 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0D0B22">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Boardroom">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="manifest" href="manifest.json">
 <title>Boardroom · Business Management Prep</title>
 <meta name="description" content="Notes, scenario MCQs, case-based mock tests and a class leaderboard for Principles of Business & Management.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,16 +26,18 @@
   <div class="title">
     <svg class="logo" data-logo viewBox="0 0 64 64"></svg>
     <h1 id="introName"></h1>
-    <p>Business Management, case by case</p>
+    <p>BBA · Digital Science &amp; Business Management</p>
+    <p class="sub2">Chitkara Business School · a student-made study space</p>
   </div>
   <button class="skip" id="skipIntro">Skip</button>
 </div>
 
 <header class="top" id="topBar">
-  <a class="brand" href="#home"><svg class="logo" data-logo viewBox="0 0 64 64"></svg>Boardroom</a>
+  <a class="brand" href="#home"><svg class="logo" data-logo viewBox="0 0 64 64"></svg><span class="brand-text">Boardroom</span></a>
+  <button class="subj-chip" id="subjChip" aria-label="Change subject"><span>📘</span><b>Loading…</b><span class="caret">▾</span></button>
   <nav class="top-nav" id="topNav">
     <a href="#home" data-r="home">Home</a><a href="#notes" data-r="notes">Notes</a><a href="#practice" data-r="practice">Practice</a>
-    <a href="#mock" data-r="mock">Mock test</a><a href="#cases" data-r="cases">Cases</a><a href="#ranks" data-r="ranks">Leaderboard</a>
+    <a href="#exam" data-r="exam">Exam</a><a href="#written" data-r="written">Written</a><a href="#videos" data-r="videos">Videos</a><a href="#ranks" data-r="ranks">Leaderboard</a>
   </nav>
   <div class="top-right">
     <span class="sync" id="syncDot" title="Sync status"></span>
@@ -47,15 +54,14 @@
   <a href="#home" data-r="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7v9a1 1 0 01-1 1h-5v-6h-6v6H4a1 1 0 01-1-1z"/></svg>Home</a>
   <a href="#notes" data-r="notes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h11a3 3 0 013 3v13H7a3 3 0 01-3-3z"/><path d="M8 9h6M8 13h6"/></svg>Notes</a>
   <a href="#practice" data-r="practice"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 5-6"/></svg>Practice</a>
-  <a href="#mock" data-r="mock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6"/></svg>Mock</a>
+  <a href="#exam" data-r="exam"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6"/></svg>Exam</a>
   <a href="#ranks" data-r="ranks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21V11H3v10zM15 21V5h-5v16zM21 21v-7h-5v7z"/></svg>Ranks</a>
 </nav>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="data-notes.js"></script>
-<script src="data-questions.js"></script>
+<script src="subjects.js?v=3"></script>
 <script type="module" src="app.js"></script>
 </body>
 </html>
