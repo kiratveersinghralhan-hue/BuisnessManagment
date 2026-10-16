@@ -969,7 +969,18 @@ async function createBattle(v, isPublic) {
   const code = code5();
   try {
     await set(fbPath("battles/" + code), { subj: SUBJ.id, v: SUBJ.v || 1, seed: Math.floor(Math.random() * 1e9), host: uid, state: "waiting", created: serverTimestamp(), pub: !!isPublic, players: { [uid]: { name: S.name, score: 0 } } });
-  } catch (e) { console.error("Could not create invitation", e); toast("Unable to create battle. Check connection and Firebase rules."); return; }
+  } catch (e) {
+    console.error("Could not create invitation", { code: e?.code, message: e?.message, error: e });
+    const codeText = String(e?.code || "unknown");
+    const details = /permission.denied/i.test(codeText) ? "Firebase blocked room creation. Publish the database.rules.json file in Firebase Realtime Database → Rules. GitHub uploads do not update Firebase rules." :
+      /network|unavailable|disconnected/i.test(codeText) ? "Firebase could not be reached. Check your connection and retry." :
+      /auth|credential|token/i.test(codeText) ? "Firebase login failed. Check that Anonymous authentication is enabled." :
+      "Open browser Console for the underlying Firebase error.";
+    v.innerHTML = `<div class="empty"><h3>Couldn't create a friend battle</h3><p>${esc(details)}</p><p class="muted" style="overflow-wrap:anywhere">Error: <code>${esc(codeText)}</code></p><button class="btn primary" id="battleTryAgain">Try again</button><a class="btn" href="#battle">Back to battles</a></div>`;
+    $("#battleTryAgain").onclick = () => createBattle(v, isPublic);
+    toast("Battle creation failed: " + codeText);
+    return;
+  }
   location.hash = "#battle/" + code;
   return code;
 }
