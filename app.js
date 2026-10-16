@@ -930,7 +930,7 @@ function seededSet(seed, n) {
   return sshuffle(BANK, rnd).slice(0, n).map(q => { const opts = sshuffle([q.c, ...q.w], rnd); return { ...q, opts, ans: opts.indexOf(q.c) }; });
 }
 const bonus = (xp, fields = {}) => { S.bonusXp = (S.bonusXp || 0) + xp; const u = { [`users/${uid}/bonusXp`]: increment(xp) }; for (const [k, v] of Object.entries(fields)) { S[k] = (S[k] || 0) + v; u[`users/${uid}/${k}`] = increment(v); } fbUpdate(u); syncLB(); };
-const shareLink = hash => location.origin + location.pathname + hash;
+const shareLink = hash => new URL(location.pathname + hash, location.origin).href;
 async function shareText(text, url) {
   if (navigator.share) { try { await navigator.share({ text, url }); return; } catch { } }
   location.href = "https://wa.me/?text=" + encodeURIComponent(text + " " + url);
@@ -939,7 +939,8 @@ async function shareText(text, url) {
 /* ================= quiz battles ================= */
 const BQ = 10, BQDUR = window.__BQDUR || 15000, BCOUNT = 4000;
 const sNow = () => Date.now() + (window.__tOff || 0);
-const code5 = () => Array.from({ length: 5 }, () => "ABCDEFGHJKMNPQRSTUVWXYZ23456789"[Math.floor(Math.random() * 31)]).join("");
+const BATTLE_ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+const code5 = () => Array.from({ length: 5 }, () => BATTLE_ALPHABET[Math.floor(Math.random() * BATTLE_ALPHABET.length)]).join("");
 const bScore = (ok, ms) => ok ? 100 + Math.round(50 * Math.max(0, BQDUR - ms) / BQDUR) : 0;
 let battleUnsub = null;
 function vBattle(v, p) {
@@ -966,7 +967,9 @@ function vBattle(v, p) {
 async function createBattle(v, isPublic) {
   if (!online || !uid) return toast("You need to be online for live battles");
   const code = code5();
-  await set(fbPath("battles/" + code), { subj: SUBJ.id, v: SUBJ.v || 1, seed: Math.floor(Math.random() * 1e9), host: uid, state: "waiting", created: serverTimestamp(), pub: !!isPublic, players: { [uid]: { name: S.name, score: 0 } } });
+  try {
+    await set(fbPath("battles/" + code), { subj: SUBJ.id, v: SUBJ.v || 1, seed: Math.floor(Math.random() * 1e9), host: uid, state: "waiting", created: serverTimestamp(), pub: !!isPublic, players: { [uid]: { name: S.name, score: 0 } } });
+  } catch (e) { console.error("Could not create invitation", e); toast("Unable to create battle. Check connection and Firebase rules."); return; }
   location.hash = "#battle/" + code;
   return code;
 }
@@ -993,10 +996,27 @@ async function joinBattle(v, code, tries = 0) {
   const snap = await get(fbPath("battles/" + code)); const b = snap.val();
   if (!b) { v.innerHTML = `<div class="empty"><h3>Battle ${esc(code)} not found</h3><p>Check the code, or start a new one.</p><a class="btn primary" href="#battle">Back to battles</a></div>`; return; }
   if (b.subj !== SUBJ.id) { const s2 = SUBJECTS.find(x => x.id === b.subj); if (s2) { toast(`This battle is in ${s2.short}. Switching…`); await loadSubject(b.subj); LS.set("cr_subject_chosen", true); } }
-  if (b.host !== uid && !b.guest && b.state === "waiting") {
-    await update(fbPath("battles/" + code), { guest: uid, state: "playing", startAt: sNow() + BCOUNT, [`players/${uid}`]: { name: S.name, score: 0 } }).catch(e => console.warn(e));
-    if (b.pub) runTransaction(fbPath("match/" + b.subj), cur => (cur && cur.code === code ? null : cur)).catch(() => { });
-  } else if (b.host !== uid && b.guest !== uid) { v.innerHTML = `<div class="empty"><h3>This battle is already full</h3><a class="btn primary" href="#battle">Start your own</a></div>`; return; }
+  if (b.host !== uid && b.guest !== uid) {
+    if (b.guest || b.state !== "waiting") { v.innerHTML = `<div class="empty"><h3>This battle is already full or has started</h3><a class="btn primary" href="#battle">Start your own</a></div>`; return; }
+    // Guest must claim its OWN child path. A multi-location update at battles/CODE
+    // is rejected by Firebase rules because only the host can write that parent.
+    // Transaction also stops two invitees from taking the same seat simultaneously.
+    try {
+      const claim = await runTransaction(fbPath("battles/" + code + "/guest"), current => current === null ? uid : undefined, { applyLocally: false });
+      if (!claim.committed || claim.snapshot.val() !== uid) {
+        v.innerHTML = `<div class="empty"><h3>Someone joined first</h3><p>This room is full. Ask your friend for another invitation.</p><a class="btn primary" href="#battle">Back to battles</a></div>`; return;
+      }
+      await set(fbPath(`battles/${code}/players/${uid}`), { name: S.name || "Player", score: 0 });
+      await set(fbPath(`battles/${code}/startAt`), sNow() + BCOUNT);
+      await set(fbPath(`battles/${code}/state`), "playing");
+      if (b.pub) runTransaction(fbPath("match/" + b.subj), cur => (cur && cur.code === code ? null : cur)).catch(() => {});
+    } catch (e) {
+      console.error("Could not join invitation", e);
+      v.innerHTML = `<div class="empty"><h3>Could not join this battle</h3><p>The connection or Firebase permissions prevented joining. Please try again.</p><button class="btn primary" id="bRetry">Retry joining</button><a class="btn" href="#battle">Back to battles</a></div>`;
+      $("#bRetry").onclick = () => joinBattle(v, code);
+      return;
+    }
+  }
   runBattle(v, { code });
 }
 function runBattle(v, opt) {
@@ -1025,7 +1045,7 @@ function runBattle(v, opt) {
       <div class="row" style="justify-content:center"><button class="btn primary" id="bShare">Share on WhatsApp</button><button class="btn" id="bCopy">Copy link</button></div>
       <div class="row" style="justify-content:center;margin-top:12px"><a class="btn ghost small" href="#battle/bot">Play the bot instead</a><button class="btn ghost small" id="bCancel">Cancel</button></div></div>`;
       $("#bShare").onclick = () => shareText(`⚔️ ${S.name} challenged you to a ${SUBJ.short} quiz battle on Boardroom! Code: ${code}`, link);
-      $("#bCopy").onclick = () => { navigator.clipboard?.writeText(link).then(() => toast("Link copied")).catch(() => toast(link)); };
+      $("#bCopy").onclick = async () => { try { if (!navigator.clipboard?.writeText) throw Error("Clipboard unavailable"); await navigator.clipboard.writeText(link); toast("Invite link copied"); } catch { window.prompt("Copy this invitation link:", link); } };
       $("#bCancel").onclick = () => { if (!isBot && room.host === me) { set(fbPath("battles/" + code), null).catch(() => { }); runTransaction(fbPath("match/" + SUBJ.id), cur => (cur && cur.code === code ? null : cur)).catch(() => { }); } location.hash = "#battle"; };
       return;
     }

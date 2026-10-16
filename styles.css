@@ -74,7 +74,7 @@ main.enter{animation:pageIn .5s var(--ease)}
 .bottom-nav a.on{color:#fff}
 .bottom-nav a.on svg{transform:translateY(-1px) scale(1.08)}
 .bottom-nav a:active svg{transform:scale(.88)}
-@media(min-width:860px){.top-nav{display:flex}.bottom-nav{display:none}main{padding-bottom:60px}}
+@media(min-width:1180px){.top-nav{display:flex}.bottom-nav{display:none}main{padding-bottom:70px}}
 
 /* ---------- scroll reveal ---------- */
 .rv{opacity:0;transform:translateY(26px) scale(.98);transition:opacity .7s var(--ease),transform .7s var(--ease);transition-delay:var(--d,0s)}
@@ -517,3 +517,38 @@ pre.qcode{font-size:14px;font-weight:500}
 @media print{pre.code,pre.qcode{background:#f4f4f4;color:#000;border-color:#ccc;white-space:pre-wrap}}
 .qcard:has(pre.qcode) .opt span:last-child,.pq:has(pre.qcode) .opt span:last-child,.review-item:has(pre.qcode) .a{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:14px}
 .review-item .a{white-space:pre-wrap}
+
+/* Desktop refinement: roomy but bounded layouts, no crushed navigation. */
+@media (min-width:1180px){
+  main{max-width:1280px;padding:34px 42px 86px}
+  .top{padding:15px clamp(24px,3vw,56px);gap:18px}
+  .top-nav{margin-left:auto;gap:2px;flex-wrap:nowrap;min-width:0}
+  .top-nav a{font-size:13px;padding:9px 11px;white-space:nowrap}
+  .top-right{margin-left:8px;flex-shrink:0}
+  .hero{min-height:430px;padding:58px 60px;border-radius:34px}
+  .hero canvas{width:480px;height:480px;right:2%;top:-28px}
+  .hero h1{max-width:12ch}
+  .stats{gap:18px;margin:22px 0 30px}
+  .stat{padding:23px}
+  .battle-actions{gap:18px;max-width:1040px;margin:28px auto}
+  .bcard{padding:26px;min-height:158px;transition:transform .24s var(--ease),border-color .24s,box-shadow .24s}
+  .bcard:hover{transform:translateY(-4px);border-color:rgba(255,255,255,.35);box-shadow:0 18px 45px rgba(0,0,0,.24)}
+  .battle-hero{padding:28px 0 10px}
+  .battle-wait{max-width:750px;margin:auto;padding:65px 30px}
+}
+@media (min-width:1180px) and (max-width:1290px){
+  .top{gap:10px;padding-inline:18px}
+  .top-nav{margin-left:8px}
+  .top-nav a{padding-inline:8px;font-size:12.5px}
+  .brand{font-size:19px}
+}
+@media (min-width:700px) and (max-width:1179px){
+  main{max-width:1000px;padding:25px 28px calc(var(--nav-h) + 58px)}
+  .hero{min-height:390px}
+  .bottom-nav{max-width:580px;margin-inline:auto}
+}
+@media (hover:hover) and (pointer:fine){
+  .btn:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.34)}
+  .unit-card:hover,.action:hover,.stat:hover{border-color:rgba(255,255,255,.24)}
+}
+@media (prefers-reduced-motion:reduce){.bcard,.btn{transition:none!important}}
