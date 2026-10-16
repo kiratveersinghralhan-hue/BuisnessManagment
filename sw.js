@@ -1,5 +1,5 @@
 /* Boardroom offline support: keeps the site and subject content usable without internet. */
-const CACHE = "boardroom-v12-quiz-game-world";
+const CACHE = "boardroom-v13-answer-gates";
 const CORE = ["./", "index.html", "styles.css", "v7-games.css", "app.js", "subjects.js", "firebase-config.js", "subject-pbm.js", "subject-prog.js", "manifest.json", "icon-180.png"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => Promise.all(CORE.map(u => c.add(u).catch(() => { })))).then(() => self.skipWaiting())); });
 self.addEventListener("activate", e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
