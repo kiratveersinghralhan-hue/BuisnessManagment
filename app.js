@@ -162,6 +162,7 @@ function markNote(id) {
 /* ================= topbar / router ================= */
 function renderTopbar() {
   $("#xpTop").textContent = xpOf(S).toLocaleString("en-IN");
+  const hx = $("#homeXp"); if (hx) hx.textContent = xpOf(S).toLocaleString("en-IN");
   $("#avatarTop").textContent = S.name ? initials(S.name) : "?";
 }
 let cur = "home", cleanup = null;
@@ -175,8 +176,37 @@ function route(soft) {
   const v = $("#view");
   const views = { home: vHome, notes: vNotes, note: vNote, practice: vPractice, q: vQuiz, mock: vMock, cases: vCases, case: vCase, ranks: vRanks, me: vMe, guide: vGuide };
   (views[cur] || vHome)(v, p ? decodeURIComponent(p) : undefined);
-  if (!soft) { scrollTo(0, 0); }
+  if (!soft) { scrollTo({ top: 0, behavior: "instant" }); v.classList.remove("enter"); void v.offsetWidth; v.classList.add("enter"); showBars(); }
+  document.body.classList.toggle("focus", cur === "q"); moveNavInd(); reveal(v);
 }
+/* sliding pill under the active bottom-nav tab */
+function moveNavInd() {
+  const ind = $("#navInd"), a = $("#bottomNav a.on"); if (!ind) return;
+  if (!a) { ind.style.width = "0px"; return; }
+  ind.style.width = a.offsetWidth + "px"; ind.style.transform = `translateX(${a.offsetLeft}px)`;
+}
+addEventListener("resize", moveNavInd);
+/* scroll reveal */
+const RV_SEL = ".stat,.action,.unit-card,.topic,.panel,.lb-row,.badge,.pod,.structure > div,.guide-card,.unit-block h3,.note-body > h3,.note-body table,.note-body .tip,.casebox,.review-item,.pager";
+const io = "IntersectionObserver" in window ? new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { rootMargin: "0px 0px -6% 0px" }) : null;
+function reveal(root) {
+  if (!io || reduced) return;
+  const els = $$(RV_SEL, root).filter(el => !el.classList.contains("rv"));
+  let k = 0; els.forEach(el => { const r = el.getBoundingClientRect(); el.classList.add("rv"); if (r.top < innerHeight) el.style.setProperty("--d", Math.min(k++ * 0.05, 0.5) + "s"); io.observe(el); });
+}
+/* header + bottom bar hide while scrolling down, come back when scrolling up; progress line */
+let lastY = 0, ticking = false;
+function showBars() { $("#topBar").classList.remove("hide"); $("#bottomNav").classList.remove("hide"); }
+addEventListener("scroll", () => {
+  if (ticking) return; ticking = true;
+  requestAnimationFrame(() => {
+    const y = scrollY, max = document.documentElement.scrollHeight - innerHeight;
+    $("#scrollProg").style.transform = `scaleX(${max > 0 ? Math.min(1, y / max) : 0})`;
+    const down = y > lastY + 6, up = y < lastY - 6;
+    if (cur !== "mock" && cur !== "q") { if (down && y > 120) { $("#topBar").classList.add("hide"); $("#bottomNav").classList.add("hide"); } else if (up || y < 60) showBars(); }
+    if (Math.abs(y - lastY) > 6) lastY = y; ticking = false;
+  });
+}, { passive: true });
 addEventListener("hashchange", () => route());
 
 /* ================= views ================= */
@@ -203,22 +233,22 @@ function vHome(v) {
     <div class="row"><a class="btn primary" href="#mock">Start a mock test</a><a class="btn ghost" href="#practice">Quick practice</a></div>
   </section>
   <div class="stats">
-    <div class="stat"><div class="v num">${xpOf(S).toLocaleString("en-IN")}</div><div class="l">XP earned</div></div>
+    <div class="stat"><div class="v num" id="homeXp">${xpOf(S).toLocaleString("en-IN")}</div><div class="l">XP earned</div></div>
     <div class="stat"><div class="v num" id="rankStat">${myRank()}</div><div class="l">Class rank</div></div>
     <div class="stat"><div class="v num">${streakOf(S.days)}🔥</div><div class="l">Day streak</div></div>
     <div class="stat"><div class="v num">${S.mockBest ? S.mockBest + "%" : "–"}</div><div class="l">Best mock</div></div>
   </div>
   <div class="actions">
-    ${next ? `<a class="action feature" href="#note/${next.id}"><span class="ic" style="margin:0;font-size:28px">📖</span><div><b>Continue: ${esc(next.title)}</b><br><span>${esc(next.lec)} · ${esc(UNITS.find(u => u.id === next.unit).name)}</span></div></a>`
-      : `<a class="action feature" href="#mock"><span class="ic" style="margin:0;font-size:28px">🏁</span><div><b>All notes done. Time for a full mock.</b><br><span>90 minutes, case-based</span></div></a>`}
-    <a class="action" href="#q/quick"><span class="ic">⚡</span><b>Quick 10</b><span>Random scenario MCQs</span></a>
-    <a class="action" href="#q/weak"><span class="ic">🎯</span><b>Fix mistakes</b><span>${count(S.wrong)} to retry</span></a>
-    <a class="action" href="#cases"><span class="ic">🧠</span><b>Case studies</b><span>Write, then compare</span></a>
-    <a class="action" href="#guide"><span class="ic">🗝️</span><b>Answer method</b><span>How to crack cases</span></a>
+    ${next ? `<a class="action feature" href="#note/${next.id}"><span class="ic">📖</span><div><b>Continue: ${esc(next.title)}</b><br><span>${esc(next.lec)} · ${esc(UNITS.find(u => u.id === next.unit).name)}</span></div></a>`
+      : `<a class="action feature" href="#mock"><span class="ic">🏁</span><div><b>All notes done. Time for a full mock.</b><br><span>90 minutes, case-based</span></div></a>`}
+    <a class="action c1" href="#q/quick"><span class="ic">⚡</span><b>Quick 10</b><span>Random scenario MCQs</span></a>
+    <a class="action c2" href="#q/weak"><span class="ic">🎯</span><b>Fix mistakes</b><span>${count(S.wrong)} to retry</span></a>
+    <a class="action c4" href="#cases"><span class="ic">🧠</span><b>Case studies</b><span>Write, then compare</span></a>
+    <a class="action c3" href="#guide"><span class="ic">🗝️</span><b>Answer method</b><span>How to crack cases</span></a>
   </div>
   <div class="section-head"><h2>Your syllabus</h2><span class="live"><i></i><span id="liveCount">${liveCount()}</span></span></div>
-  <div class="units">${UNITS.map(u => { const p = unitProgress(u); return `<a class="unit-card" href="#notes" style="text-decoration:none;color:inherit"><div class="dim" style="font-size:13px">${u.name} · ${u.lectures}</div><div class="t">${u.title}</div><div class="bar"><i style="width:${p.read / p.total * 100}%"></i></div><div class="row" style="margin-top:8px;font-size:13px"><span class="muted">${p.read}/${p.total} topics read</span><span class="spacer"></span><span class="muted">${p.acc === null ? "No quiz yet" : p.acc + "% accuracy"}</span></div></a>`; }).join("")}</div>
-  <p class="foot">Made for the CBS Principles of Business &amp; Management batch, 2026-27</p>`;
+  <div class="units">${UNITS.map(u => { const p = unitProgress(u); return `<a class="unit-card ${u.id}" href="#notes" style="text-decoration:none;color:inherit"><div class="dim" style="font-size:13px">${u.name} · ${u.lectures}</div><div class="t">${u.title}</div><div class="bar"><i style="width:${p.read / p.total * 100}%"></i></div><div class="row" style="margin-top:8px;font-size:13px"><span class="muted">${p.read}/${p.total} topics read</span><span class="spacer"></span><span class="muted">${p.acc === null ? "No quiz yet" : p.acc + "% accuracy"}</span></div></a>`; }).join("")}</div>
+  <p class="foot">Boardroom · made for the CBS Principles of Business &amp; Management batch, 2026-27</p>`;
   cleanup = heroScene($("#heroCanvas"));
 }
 
@@ -230,7 +260,7 @@ function vGuide(v) {
 function vNotes(v) {
   v.innerHTML = `<h2>Notes</h2><p class="muted">Every topic from Lectures 1–23. Finish a topic to earn 15 XP.</p>
   <a class="guide-card" href="#guide"><span style="font-size:30px">🗝️</span><div><b>Read first: how to crack case questions</b><span class="muted">Read → identify → analyse → recommend</span></div></a>
-  ${UNITS.map(u => `<section class="unit-block"><h3>${u.name}: ${u.title} <small>${u.lectures}</small></h3><div class="topic-list">
+  ${UNITS.map(u => `<section class="unit-block ${u.id}"><h3><span class="pill">${u.name}</span>${u.title} <small>${u.lectures}</small></h3><div class="topic-list">
     ${NOTES.filter(n => n.unit === u.id).map(n => `<a class="topic ${S.notesRead[n.id] ? "done" : ""}" href="#note/${n.id}"><span class="lec">${n.lec}</span><span><span class="tt">${esc(n.title)}</span><span class="ts">${esc(n.sum)}</span></span><span class="chk">${S.notesRead[n.id] ? "✓" : ""}</span></a>`).join("")}
   </div></section>`).join("")}`;
 }
@@ -239,7 +269,7 @@ function vNote(v, id) {
   const n = NOTE[id]; if (!n) return vNotes(v);
   const i = NOTES.indexOf(n), prev = NOTES[i - 1], next = NOTES[i + 1];
   const qn = BANK.filter(q => q.t === id).length;
-  v.innerHTML = `<article class="note"><div class="crumb"><a href="#notes">Notes</a> / ${UNITS.find(u => u.id === n.unit).name} / ${n.lec}</div>
+  v.innerHTML = `<article class="note ${n.unit}"><div class="crumb"><a href="#notes">Notes</a> / ${UNITS.find(u => u.id === n.unit).name} / ${n.lec}</div>
   <h2>${esc(n.title)}</h2><p class="muted">${esc(n.sum)}</p>
   <div class="note-body">${n.html}</div>
   <div class="note-foot">
@@ -257,10 +287,10 @@ function vPractice(v) {
     const pool = poolFor();
     v.innerHTML = `<h2>Practice</h2><p class="muted">Scenario MCQs with instant explanations. Each new question you get right earns 4 XP.</p>
     <div class="actions" style="margin-bottom:18px">
-      <a class="action" href="#q/quick"><span class="ic">⚡</span><b>Quick 10</b><span>Random mix</span></a>
-      <a class="action" href="#q/weak"><span class="ic">🎯</span><b>Fix mistakes</b><span>${count(S.wrong)} waiting</span></a>
-      <a class="action" href="#q/unseen"><span class="ic">✨</span><b>Unseen only</b><span>${BANK.length - count(S.correct) - count(S.wrong)} left</span></a>
-      <a class="action" href="#mock"><span class="ic">⏱️</span><b>Full mock</b><span>90 minutes</span></a>
+      <a class="action c1" href="#q/quick"><span class="ic">⚡</span><b>Quick 10</b><span>Random mix</span></a>
+      <a class="action c2" href="#q/weak"><span class="ic">🎯</span><b>Fix mistakes</b><span>${count(S.wrong)} waiting</span></a>
+      <a class="action c4" href="#q/unseen"><span class="ic">✨</span><b>Unseen only</b><span>${BANK.length - count(S.correct) - count(S.wrong)} left</span></a>
+      <a class="action c3" href="#mock"><span class="ic">⏱️</span><b>Full mock</b><span>90 minutes</span></a>
     </div>
     <div class="panel"><h3>Build your own set</h3>
       <div class="label">Topics (leave empty for all)</div>
@@ -305,7 +335,7 @@ function vQuiz(v, mode = "quick") {
       if (picked !== null) return; picked = +b.dataset.k; const ok = picked === q.ans; if (ok) score++;
       $$(".opt", v).forEach((x, k) => { x.disabled = true; if (k === q.ans) x.classList.add("right"); else if (k === picked) x.classList.add("wrong"); });
       $("#exp").innerHTML = `<div class="explain"><b class="${ok ? "ok" : "no"}">${ok ? "Correct." : "Not quite."}</b> ${esc(q.e)} <a href="#note/${q.t}">Revise topic</a></div>`;
-      $("#nextQ").classList.remove("hidden"); $("#nextQ").focus();
+      $("#nextQ").classList.remove("hidden"); $("#nextQ").focus({ preventScroll: true }); setTimeout(() => $(".qnav", v)?.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "end" }), 120);
       log.push({ q, ok }); recordAnswer(q, ok);
     });
     $("#nextQ").onclick = () => { i++; picked = null; i < list.length ? draw() : done(); };
@@ -485,7 +515,7 @@ function vMe(v) {
   <div class="badge-grid">${BADGES.map(b => `<div class="badge ${b.t(S) ? "got" : ""}"><div class="e">${b.e}</div><b>${b.n}</b><span>${b.d}</span></div>`).join("")}</div>
   <div class="section-head"><h2>Weakest topics first</h2></div>
   ${topics.length ? `<div class="panel"><div class="breakdown">${topics.map(x => `<div class="bd-row"><a href="#q/weakt:${x.n.id}" style="color:inherit">${esc(x.n.title)}</a><span class="num" style="text-align:right">${x.acc}%</span><div class="bar ${x.acc >= 80 ? "good" : ""}"><i style="width:${x.acc}%"></i></div></div>`).join("")}</div><p class="muted" style="font-size:13.5px;margin:12px 0 0">Tap a topic to practise it.</p></div>` : `<div class="empty">Answer some questions to see your strongest and weakest topics.</div>`}
-  <p class="foot">Your name is permanent. If it's wrong, ask the site admin to fix it.</p>`;
+  <p class="foot">Your name is permanent. If it's wrong, ask the site admin to fix it.<br><a href="admin.html" style="color:var(--dim)">Admin sign-in</a></p>`;
 }
 
 /* ================= name popup ================= */
@@ -513,6 +543,24 @@ function askName() {
 
 /* ================= 3D: intro + hero ================= */
 const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const PAL = [0x8B5CF6, 0xEC4899, 0xFB923C, 0xFBBF24, 0x2DD4BF, 0x38BDF8];
+function coinMats(T) {
+  const c = document.createElement("canvas"); c.width = c.height = 128; const g = c.getContext("2d");
+  const gr = g.createRadialGradient(54, 50, 6, 64, 64, 64); gr.addColorStop(0, "#FFF3B0"); gr.addColorStop(.6, "#FBBF24"); gr.addColorStop(1, "#B45309");
+  g.fillStyle = gr; g.fillRect(0, 0, 128, 128);
+  g.strokeStyle = "rgba(120,53,15,.55)"; g.lineWidth = 6; g.beginPath(); g.arc(64, 64, 52, 0, Math.PI * 2); g.stroke();
+  g.fillStyle = "#92400E"; g.font = "bold 64px Arial"; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText("₹", 64, 68);
+  const face = new T.MeshStandardMaterial({ map: new T.CanvasTexture(c), metalness: .6, roughness: .3 });
+  const side = new T.MeshStandardMaterial({ color: 0xD97706, metalness: .85, roughness: .25 });
+  return [side, face, face];
+}
+function windowTex(T) {
+  const c = document.createElement("canvas"); c.width = 64; c.height = 128; const g = c.getContext("2d");
+  g.fillStyle = "#000"; g.fillRect(0, 0, 64, 128);
+  const lit = ["#FDE68A", "#FBCFE8", "#A5F3FC", "#DDD6FE"];
+  for (let y = 6; y < 124; y += 10) for (let x = 6; x < 60; x += 12) if (Math.random() < .55) { g.fillStyle = lit[Math.random() * 4 | 0]; g.globalAlpha = .5 + Math.random() * .5; g.fillRect(x, y, 7, 5); }
+  const t = new T.CanvasTexture(c); t.wrapS = t.wrapT = T.RepeatWrapping; return t;
+}
 function playIntro() {
   return new Promise(resolve => {
     let seen = false; try { seen = sessionStorage.getItem("cr_intro"); } catch { }
@@ -520,46 +568,71 @@ function playIntro() {
     try { sessionStorage.setItem("cr_intro", "1"); } catch { }
     const wrap = $("#intro"); wrap.classList.remove("hidden");
     try {
-    const T = THREE, canvas = $("#introCanvas");
-    const r = new T.WebGLRenderer({ canvas, antialias: true, alpha: false });
-    r.setPixelRatio(Math.min(devicePixelRatio, 2)); r.setSize(innerWidth, innerHeight); r.setClearColor(0x061513);
-    const scene = new T.Scene(); scene.fog = new T.Fog(0x061513, 14, 34);
-    const cam = new T.PerspectiveCamera(45, innerWidth / innerHeight, .1, 100);
-    scene.add(new T.AmbientLight(0x88aaa0, .55));
-    const key = new T.DirectionalLight(0xffe3a6, 1.25); key.position.set(6, 12, 8); scene.add(key);
-    const rim = new T.PointLight(0x5adba6, 1.2, 40); rim.position.set(-8, 5, -6); scene.add(rim);
-    // growth city: a grid of bars that rise like a chart
-    const N = 9, gap = 1.25, bars = [], geo = new T.BoxGeometry(1, 1, 1);
-    for (let x = 0; x < N; x++) for (let z = 0; z < N; z++) {
-      const d = Math.hypot(x - (N - 1) / 2, z - (N - 1) / 2), h = Math.max(.3, (5.2 - d) * (0.6 + Math.random() * .8) + (x + z) * .12);
-      const brass = d < 1.6;
-      const mat = new T.MeshStandardMaterial({ color: brass ? 0xe7b758 : new T.Color().setHSL(.46, .35, .16 + Math.random() * .12), metalness: brass ? .7 : .2, roughness: brass ? .3 : .6 });
-      const m = new T.Mesh(geo, mat); m.position.set((x - (N - 1) / 2) * gap, 0, (z - (N - 1) / 2) * gap); m.scale.set(.9, .01, .9);
-      m.userData = { h, delay: d * .09 + Math.random() * .15 }; scene.add(m); bars.push(m);
-    }
-    const grid = new T.GridHelper(30, 30, 0x24514b, 0x16332f); grid.position.y = -.01; scene.add(grid);
-    // particles
-    const pg = new T.BufferGeometry(), P = 400, pos = new Float32Array(P * 3);
-    for (let i = 0; i < P; i++) { pos[i * 3] = (Math.random() - .5) * 30; pos[i * 3 + 1] = Math.random() * 14; pos[i * 3 + 2] = (Math.random() - .5) * 30; }
-    pg.setAttribute("position", new T.BufferAttribute(pos, 3));
-    const pts = new T.Points(pg, new T.PointsMaterial({ color: 0xf5d896, size: .06, transparent: true, opacity: .7 })); scene.add(pts);
-    const t0 = performance.now(), DUR = 4200; let raf, ended = false;
-    const ease = t => 1 - Math.pow(1 - Math.min(1, Math.max(0, t)), 3);
-    const end = () => { if (ended) return; ended = true; wrap.classList.add("out"); setTimeout(() => { cancelAnimationFrame(raf); r.dispose(); wrap.remove(); }, 750); resolve(); };
-    const loop = now => {
-      const t = (now - t0) / 1000;
-      bars.forEach(b => { const k = ease((t - b.userData.delay) / 1.3); b.scale.y = .01 + b.userData.h * k; b.position.y = b.scale.y / 2; });
-      const a = .6 + t * .32, rad = 15 - ease(t / 3) * 3;
-      cam.position.set(Math.cos(a) * rad, 9 - ease(t / 3) * 2.5, Math.sin(a) * rad); cam.lookAt(0, 1.6, 0);
-      pts.rotation.y = t * .05;
-      r.render(scene, cam);
-      if (t > 1.5) wrap.classList.add("show-title");
-      if (now - t0 > DUR) return end();
+      const T = THREE, canvas = $("#introCanvas");
+      const r = new T.WebGLRenderer({ canvas, antialias: true });
+      r.setPixelRatio(Math.min(devicePixelRatio, 2)); r.setSize(innerWidth, innerHeight); r.setClearColor(0x0D0B22);
+      const scene = new T.Scene(); scene.fog = new T.Fog(0x0D0B22, 16, 42);
+      const cam = new T.PerspectiveCamera(innerWidth < 600 ? 62 : 48, innerWidth / innerHeight, .1, 100);
+      scene.add(new T.AmbientLight(0x8b85c9, .7));
+      const sun = new T.DirectionalLight(0xffffff, .7); sun.position.set(5, 12, 10); scene.add(sun);
+      [[0x8B5CF6, -10, 6, -4], [0xEC4899, 10, 5, -2], [0x2DD4BF, 0, 4, 6]].forEach(([c, x, y, z]) => { const l = new T.PointLight(c, 2.2, 30); l.position.set(x, y, z); scene.add(l); });
+      // skyline: buildings rise like a bar chart
+      const tex = windowTex(T), box = new T.BoxGeometry(1, 1, 1), bars = [];
+      const tints = [0x2E1065, 0x3B0764, 0x1E3A8A, 0x134E4A, 0x4C0519, 0x1E1B4B];
+      for (let row = 0; row < 3; row++) for (let i = 0; i < 15; i++) {
+        const x = (i - 7) * 1.55 + (row % 2) * .7, z = -3 - row * 2.6 + Math.random() * .6;
+        const h = (1.4 + Math.random() * 3.2) * (1 + row * .45) * (1.15 - Math.abs(i - 7) / 14);
+        const w = .9 + Math.random() * .5, t = tex.clone(); t.needsUpdate = true; t.repeat.set(1, Math.max(1, h / 2.5));
+        const m = new T.Mesh(box, new T.MeshStandardMaterial({ color: tints[(i + row) % tints.length], map: t, emissive: 0xffffff, emissiveMap: t, emissiveIntensity: .85, metalness: .4, roughness: .45 }));
+        m.position.set(x, 0, z); m.scale.set(w, .01, w); m.userData = { h, delay: .15 + Math.abs(i - 7) * .05 + row * .12 + Math.random() * .1 }; scene.add(m); bars.push(m);
+      }
+      const grid = new T.GridHelper(60, 60, 0x6D28D9, 0x2A1F5C); scene.add(grid);
+      const floor = new T.Mesh(new T.PlaneGeometry(60, 60), new T.MeshStandardMaterial({ color: 0x0D0B22, metalness: .8, roughness: .35, transparent: true, opacity: .85 }));
+      floor.rotation.x = -Math.PI / 2; floor.position.y = -.01; scene.add(floor);
+      // growth line chart with arrow head
+      const pts = []; for (let i = 0; i <= 9; i++) { const x = -9 + i * 2; pts.push(new T.Vector3(x, .8 + i * .62 + (i % 2 ? -.55 : .35) * (i < 9 ? 1 : 0), 1.2)); }
+      const curve = new T.CatmullRomCurve3(pts), SEG = 220, RAD = 10;
+      const tube = new T.TubeGeometry(curve, SEG, .1, RAD, false);
+      const cols = [], stops = [new T.Color(0x8B5CF6), new T.Color(0xEC4899), new T.Color(0xFB923C), new T.Color(0xFBBF24)];
+      const pos = tube.attributes.position;
+      for (let k = 0; k < pos.count; k++) { const u = Math.floor(k / (RAD + 1)) / SEG, f = u * 3, a = Math.min(2, Math.floor(f)); const c = stops[a].clone().lerp(stops[a + 1], f - a); cols.push(c.r, c.g, c.b); }
+      tube.setAttribute("color", new T.Float32BufferAttribute(cols, 3));
+      const line = new T.Mesh(tube, new T.MeshBasicMaterial({ vertexColors: true })); scene.add(line);
+      const total = tube.index.count; tube.setDrawRange(0, 0);
+      const head = new T.Mesh(new T.ConeGeometry(.32, .8, 20), new T.MeshBasicMaterial({ color: 0xFDE68A })); scene.add(head);
+      const glow = new T.PointLight(0xFDE68A, 3, 8); scene.add(glow);
+      // gold ₹ coins raining down
+      const cm = coinMats(T), cg = new T.CylinderGeometry(.42, .42, .08, 40), coins = [];
+      for (let i = 0; i < 18; i++) { const c = new T.Mesh(cg, cm); c.position.set((Math.random() - .5) * 18, 14 + Math.random() * 8, -1 + Math.random() * 5); c.userData = { v: 0, d: 1.4 + Math.random() * 1.6, s: 2 + Math.random() * 4, land: .05 + Math.random() * .1 }; c.rotation.set(Math.random() * 3, 0, Math.random() * 3); scene.add(c); coins.push(c); }
+      // sparkles
+      const sg = new T.BufferGeometry(), S = 300, sp = new Float32Array(S * 3);
+      for (let i = 0; i < S; i++) { sp[i * 3] = (Math.random() - .5) * 40; sp[i * 3 + 1] = Math.random() * 20; sp[i * 3 + 2] = (Math.random() - .5) * 30; }
+      sg.setAttribute("position", new T.BufferAttribute(sp, 3));
+      const stars = new T.Points(sg, new T.PointsMaterial({ color: 0xF9A8D4, size: .07, transparent: true, opacity: .8 })); scene.add(stars);
+
+      const t0 = performance.now(), DUR = 5600; let raf, ended = false, prev = t0;
+      const ease = t => 1 - Math.pow(1 - Math.min(1, Math.max(0, t)), 3);
+      const up = new T.Vector3(0, 1, 0);
+      const end = () => { if (ended) return; ended = true; wrap.classList.add("out"); setTimeout(() => { cancelAnimationFrame(raf); r.dispose(); wrap.remove(); }, 850); resolve(); };
+      const loop = now => {
+        const t = (now - t0) / 1000, dt = Math.min(.05, (now - prev) / 1000); prev = now;
+        bars.forEach(b => { const k = ease((t - b.userData.delay) / 1.2); b.scale.y = .01 + b.userData.h * k; b.position.y = b.scale.y / 2; });
+        const lp = ease((t - .9) / 1.8);
+        tube.setDrawRange(0, Math.floor(total * lp / 3) * 3);
+        const tip = curve.getPointAt(Math.max(.001, lp)), tan = curve.getTangentAt(Math.max(.001, lp));
+        head.position.copy(tip); head.quaternion.setFromUnitVectors(up, tan); head.visible = lp > .01; glow.position.copy(tip);
+        coins.forEach(c => { const u = c.userData; if (t < u.d) return; if (c.position.y > u.land) { u.v += 18 * dt; c.position.y = Math.max(u.land, c.position.y - u.v * dt); c.rotation.x += u.s * dt; c.rotation.z += u.s * .6 * dt; } else { c.rotation.x += (Math.PI * Math.round(c.rotation.x / Math.PI) - c.rotation.x) * .2; c.rotation.z += (Math.PI * Math.round(c.rotation.z / Math.PI) - c.rotation.z) * .2; } });
+        const k = ease(t / 3.6), a = Math.sin(t * .35) * .35;
+        cam.position.set(Math.sin(a) * (17 - k * 3), 1.4 + k * 6.2, Math.cos(a) * (17 - k * 3)); cam.lookAt(0, 2.6 + k * .8, -2);
+        stars.rotation.y = t * .03;
+        r.render(scene, cam);
+        if (t > 3.0) wrap.classList.add("show-title");
+        if (now - t0 > DUR) return end();
+        raf = requestAnimationFrame(loop);
+      };
       raf = requestAnimationFrame(loop);
-    };
-    raf = requestAnimationFrame(loop);
-    $("#skipIntro").onclick = end; wrap.onclick = e => { if (e.target.id !== "skipIntro" && performance.now() - t0 > 1200) end(); };
-    addEventListener("resize", () => { if (ended) return; r.setSize(innerWidth, innerHeight); cam.aspect = innerWidth / innerHeight; cam.updateProjectionMatrix(); });
+      $("#skipIntro").onclick = end; wrap.onclick = e => { if (e.target.id !== "skipIntro" && performance.now() - t0 > 1500) end(); };
+      addEventListener("resize", () => { if (ended) return; r.setSize(innerWidth, innerHeight); cam.aspect = innerWidth / innerHeight; cam.updateProjectionMatrix(); });
     } catch (e) { console.warn("intro skipped", e); wrap.remove(); resolve(); }
   });
 }
@@ -567,31 +640,39 @@ function heroScene(canvas) {
   if (!canvas || !window.THREE) return null;
   try { return heroSceneInner(canvas); } catch (e) { console.warn("hero 3D skipped", e); return null; }
 }
+/* hero: a 3D donut chart with orbiting ₹ coins */
 function heroSceneInner(canvas) {
   const T = THREE, w = canvas.clientWidth || 300, h = canvas.clientHeight || 300;
   const r = new T.WebGLRenderer({ canvas, antialias: true, alpha: true });
   r.setPixelRatio(Math.min(devicePixelRatio, 2)); r.setSize(w, h, false);
-  const scene = new T.Scene(), cam = new T.PerspectiveCamera(40, w / h, .1, 50); cam.position.set(0, 0, 7.5);
-  scene.add(new T.AmbientLight(0x9fc0b8, .5));
-  const l1 = new T.DirectionalLight(0xffe0a0, 1.3); l1.position.set(3, 4, 5); scene.add(l1);
-  const l2 = new T.PointLight(0x5adba6, 1.4, 20); l2.position.set(-4, -2, 3); scene.add(l2);
+  const scene = new T.Scene(), cam = new T.PerspectiveCamera(38, w / h, .1, 50); cam.position.set(0, 0, 9);
+  scene.add(new T.AmbientLight(0xc4b5fd, .6));
+  const l1 = new T.DirectionalLight(0xffffff, 1.1); l1.position.set(3, 5, 6); scene.add(l1);
+  const l2 = new T.PointLight(0xEC4899, 2, 20); l2.position.set(-4, -2, 4); scene.add(l2);
+  const l3 = new T.PointLight(0x38BDF8, 1.6, 20); l3.position.set(4, 3, 2); scene.add(l3);
   const group = new T.Group(); scene.add(group);
-  // a faceted "case" gem: solid core + brass wire cage + orbiting rings of data points
-  const core = new T.Mesh(new T.IcosahedronGeometry(1.35, 0), new T.MeshStandardMaterial({ color: 0x1b4a43, metalness: .55, roughness: .28, flatShading: true }));
-  const cage = new T.LineSegments(new T.EdgesGeometry(new T.IcosahedronGeometry(1.9, 1)), new T.LineBasicMaterial({ color: 0xe7b758, transparent: true, opacity: .85 }));
-  group.add(core, cage);
-  const ring = new T.Group(); const dotG = new T.SphereGeometry(.06, 10, 10), dotM = new T.MeshBasicMaterial({ color: 0xf5d896 });
-  for (let i = 0; i < 36; i++) { const d = new T.Mesh(dotG, dotM); const a = i / 36 * Math.PI * 2; d.position.set(Math.cos(a) * 2.6, Math.sin(a * 3) * .18, Math.sin(a) * 2.6); ring.add(d); }
-  ring.rotation.x = .45; group.add(ring);
+  const donut = new T.Group(); group.add(donut);
+  const shares = [.3, .22, .18, .17, .13], segs = []; let start = 0;
+  shares.forEach((s, i) => {
+    const arc = s * Math.PI * 2 - .06;
+    const m = new T.Mesh(new T.TorusGeometry(1.55, .5, 24, 80, arc), new T.MeshStandardMaterial({ color: PAL[i], metalness: .35, roughness: .3 }));
+    m.rotation.z = start; const mid = start + arc / 2; m.userData = { dx: Math.cos(mid), dy: Math.sin(mid), ph: i * 1.1 };
+    donut.add(m); segs.push(m); start += s * Math.PI * 2;
+  });
+  donut.rotation.x = -1.0;
+  const cm = coinMats(T), coins = [];
+  for (let i = 0; i < 3; i++) { const c = new T.Mesh(new T.CylinderGeometry(.34, .34, .07, 40), cm); c.userData = { a: i * 2.1 }; group.add(c); coins.push(c); }
   let mx = 0, my = 0, raf;
-  const mv = e => { const p = e.touches ? e.touches[0] : e; mx = (p.clientX / innerWidth - .5); my = (p.clientY / innerHeight - .5); };
+  const mv = e => { mx = e.clientX / innerWidth - .5; my = e.clientY / innerHeight - .5; };
   addEventListener("pointermove", mv, { passive: true });
   const t0 = performance.now();
   const loop = now => {
     const t = (now - t0) / 1000;
-    core.rotation.set(t * .25, t * .35, 0); cage.rotation.set(-t * .12, t * .18, t * .05); ring.rotation.y = t * .4;
-    group.rotation.x += ((my * .5) - group.rotation.x) * .05; group.rotation.y += ((mx * .8) - group.rotation.y) * .05;
-    group.position.y = Math.sin(t * 1.1) * .12;
+    donut.rotation.z = t * .3;
+    segs.forEach(s => { const k = Math.max(0, Math.sin(t * 1.2 - s.userData.ph)) * .22; s.position.set(s.userData.dx * k, s.userData.dy * k, 0); });
+    coins.forEach(c => { const a = t * .7 + c.userData.a; c.position.set(Math.cos(a) * 2.7, Math.sin(a * 1.3) * .6 + .3, Math.sin(a) * 1.4); c.rotation.set(Math.PI / 2 + Math.sin(t + c.userData.a) * .4, 0, t * 2); });
+    group.rotation.x += (my * .4 - group.rotation.x) * .05; group.rotation.y += (mx * .7 - group.rotation.y) * .05;
+    group.position.y = Math.sin(t * 1.1) * .1;
     r.render(scene, cam); if (!reduced) raf = requestAnimationFrame(loop);
   };
   raf = requestAnimationFrame(loop);
@@ -599,7 +680,10 @@ function heroSceneInner(canvas) {
 }
 
 /* ================= boot ================= */
+const LOGO = id => `<defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8B5CF6"/><stop offset=".55" stop-color="#EC4899"/><stop offset="1" stop-color="#FB923C"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="url(#${id})"/><rect x="13" y="36" width="9" height="15" rx="3" fill="#fff" opacity=".65"/><rect x="27.5" y="27" width="9" height="24" rx="3" fill="#fff" opacity=".82"/><rect x="42" y="18" width="9" height="33" rx="3" fill="#fff"/><path d="M12 30 L26 20 L34 25 L50 11" fill="none" stroke="#FDE68A" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M43 10 L51 10 L51 18" fill="none" stroke="#FDE68A" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>`;
 (async function boot() {
+  $$("[data-logo]").forEach((el, i) => el.innerHTML = LOGO("lg" + i));
+  $("#introName").innerHTML = [..."Boardroom"].map((c, i) => `<span style="--i:${i}">${c}</span>`).join("");
   renderTopbar(); setSync("");
   route();
   await playIntro().catch(() => { });

@@ -202,5 +202,5 @@ function exportCSV() {
   const rows = [["Name", "Joined", "Last active", "Study minutes", "Notes read", "Questions answered", "Accuracy %", "Mocks", "Best mock %", "Cases", "XP"]];
   students().forEach(s => rows.push([s.name, s.joined ? new Date(s.joined).toISOString().slice(0, 10) : "", s.lastSeen ? new Date(s.lastSeen).toISOString() : "", Math.round(s.study / 60), s.notes, s.ans, s.acc, s.mocks, s.best, s.cases, s.xp]));
   const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
-  const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" })); a.download = `caseroom-students-${dayKey(new Date())}.csv`; a.click();
+  const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" })); a.download = `boardroom-students-${dayKey(new Date())}.csv`; a.click();
 }
