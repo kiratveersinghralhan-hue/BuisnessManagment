@@ -83,7 +83,21 @@
         },
         "players": {
           "$uid": {
-            ".write": "auth != null && auth.uid === $uid"
+            ".write": "auth != null && auth.uid === $uid",
+            "name": {
+              ".validate": "newData.isString() && newData.val().length >= 3 && newData.val().length <= 40"
+            },
+            "ans": {
+              "$q": {
+                ".validate": "newData.hasChildren(['k','ms']) && newData.child('k').isNumber() && newData.child('k').val() >= 0 && newData.child('k').val() <= 3 && newData.child('ms').isNumber() && newData.child('ms').val() >= 0 && newData.child('ms').val() <= 15000"
+              }
+            }
+          }
+        },
+        "seats": {
+          "$seat": {
+            ".write": "auth != null && $seat !== '0' && ($seat === '1' || $seat === '2' || $seat === '3') && !data.exists() && newData.val() === auth.uid && root.child('battles').child($code).child('state').val() === 'waiting'",
+            ".validate": "newData.isString() && newData.val() === auth.uid"
           }
         }
       }
