@@ -10,7 +10,7 @@ const count = o => Object.keys(o || {}).length;
 const fmtTime = sec => { sec = Math.max(0, Math.round(sec || 0)); const h = Math.floor(sec / 3600), m = Math.floor(sec % 3600 / 60); return h ? `${h}h ${m}m` : `${m}m`; };
 const ago = ts => { if (!ts) return "never"; const s = (Date.now() - ts) / 1000; if (s < 60) return "just now"; if (s < 3600) return Math.floor(s / 60) + "m ago"; if (s < 86400) return Math.floor(s / 3600) + "h ago"; return Math.floor(s / 86400) + "d ago"; };
 const dayKey = d => d.toLocaleDateString("en-CA");
-const norm = n => (n || "").toLowerCase().replace(/[^a-z]/g, "");
+const norm = n => (n || "").toLowerCase().replace(/[^\p{L}]/gu, "");
 function toast(m) { const t = $("#toast"); t.textContent = m; t.classList.add("show"); clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove("show"), 2600); }
 const NOTES = window.NOTES; const NOTE = Object.fromEntries(NOTES.map(n => [n.id, n]));
 
@@ -45,7 +45,21 @@ onAuthStateChanged(auth, user => {
   $("#adm").innerHTML = `<p class="muted">Loading class data…</p>`;
   for (const k of Object.keys(D)) subs.push(onValue(R(k), s => { D[k] = s.val() || {}; schedule(); }, e => { $("#adm").innerHTML = `<div class="empty">Couldn't read <b>${k}</b>: ${esc(e.message)}.<br>Check that the database rules from database.rules.json are published.</div>`; }));
 });
-let rt; const schedule = () => { clearTimeout(rt); rt = setTimeout(render, 150); };
+let rt; const schedule = () => { clearTimeout(rt); rt = setTimeout(() => { render(); autoMerge(); }, 150); };
+/* students who registered the same name on two phones are combined automatically into their oldest profile */
+let merging = false;
+async function autoMerge() {
+  if (merging) return;
+  const groups = {}; Object.entries(D.names).forEach(([id, n]) => (groups[norm(n)] = groups[norm(n)] || []).push(id));
+  const dup = Object.values(groups).find(g => g.length > 1); if (!dup) return;
+  merging = true;
+  try {
+    const keep = dup.slice().sort((a, b) => (D.users[a]?.createdAt || Infinity) - (D.users[b]?.createdAt || Infinity))[0];
+    for (const id of dup) if (id !== keep) await merge(id, keep);
+    toast(`Combined duplicate profiles of ${D.names[keep] || "a student"}`);
+  } catch (e) { console.warn("auto-merge failed", e); }
+  finally { merging = false; }
+}
 
 /* ---------- data shaping ---------- */
 const live = id => { const p = D.presence[id]; return p && p.on && Date.now() - (p.ts || 0) < 6 * 60000; };

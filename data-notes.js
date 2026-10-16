@@ -2,7 +2,7 @@
 window.UNITS = [
   { id: 'u1', name: 'Unit 1', title: 'Nature of business & management', lectures: 'Lectures 1–6' },
   { id: 'u2', name: 'Unit 2', title: 'Business environment & strategy', lectures: 'Lectures 7–10' },
-  { id: 'u3', name: 'Unit 3', title: 'Operations, finance & HR', lectures: 'Lectures 11–23' }
+  { id: 'u3', name: 'Unit 3', title: 'Operations, finance, HR & marketing', lectures: 'Lectures 11–24' }
 ];
 
 window.NOTES = [
@@ -818,6 +818,68 @@ html: `
 <h3>HRM in India</h3>
 <p>Cultural diversity, family-owned businesses, emphasis on relationships, skill development initiatives, labour-intensive industries.</p>
 <p><b>Balancing act:</b> technology vs human touch, flexibility vs security, global practices vs local realities.</p>`
+},
+{
+id: 'marketing', unit: 'u3', lec: 'L24', title: 'Marketing: concepts, philosophies & the marketing mix',
+sum: 'Marketing myths, Kotler\'s definitions, six marketing philosophies, marketing myopia, 4Ps, 7Ps and the 11Ps of digital marketing.',
+html: `
+<div class="tip"><b>"Marketing is not selling, it is identifying the needs."</b> Marketing is about people, not products.</div>
+<h3>Common misconceptions</h3>
+<p>Marketing is <b>not</b> just advertising, sales, fooling people, door-to-door selling or show business. Not "anyone can do it", and every business needs it.</p>
+<h3>What marketing is</h3>
+<ul>
+<li><b>AMA view:</b> an organisational function and a set of processes for <b>creating, communicating and delivering value</b> to customers and <b>managing customer relationships</b> in ways that benefit the organisation and its stakeholders.</li>
+<li><b>Marketing concept:</b> the company's main task is to find what a target set of customers <b>needs, wants and values</b>, and dedicate the organisation to delivering that solution.</li>
+<li><b>Philip Kotler:</b> "satisfying needs and wants through an exchange process".</li>
+<li>"All the activities involved in the transfer of goods and services to the ultimate consumer."</li>
+<li><b>Managing profitable customer relationships</b>, with a twofold goal: <b>attract new customers</b> by promising superior value, and <b>keep and grow current customers</b> by delivering satisfaction.</li>
+</ul>
+<div class="def"><b>Marketing management</b> is the art and science of choosing target markets and getting, keeping and growing customers through creating, delivering and communicating superior customer value.</div>
+<p>In full: the <b>analysis, planning, implementation and control</b> of programmes designed to bring about desired exchanges with target audiences for personal and mutual gain, relying on coordination of <b>product, price, place and promotion</b>.</p>
+<h3>What can be marketed, and to whom</h3>
+<p><b>10 things:</b> goods, services, places, ideas, events, persons, properties, organisations, information, experiences.</p>
+<p><b>Markets:</b> consumer, business, global, nonprofit/government; also urban and rural markets.</p>
+<h3>Six marketing philosophies (in order of evolution)</h3>
+<table><tr><th>Philosophy</th><th>Belief</th><th>Focus</th><th>Example / problem</th></tr>
+<tr><td><b>Production concept</b></td><td>Demand &gt; supply. Customers want products that are <b>widely available and cheap</b></td><td>Production and distribution efficiency</td><td>Basic low-cost feature phones</td></tr>
+<tr><td><b>Product concept</b></td><td>Customers want the best <b>quality, performance and innovative features</b></td><td>R&amp;D, new product development</td><td>Xiaomi. Risk: <b>marketing myopia</b></td></tr>
+<tr><td><b>Selling concept</b></td><td>Customers won't buy enough unless <b>pushed</b></td><td>Aggressive hard-sell, sales targets/quotas</td><td><b>Unsought goods</b>: HomeShop18, Sona belt, cemetery plots, election candidates</td></tr>
+<tr><td><b>Marketing concept</b></td><td>Find the <b>needs and wants</b> of the target market and deliver them better than competitors</td><td>Customer needs</td><td>Apple, Tata Magic, Scooty</td></tr>
+<tr><td><b>Societal marketing concept</b></td><td>Balance <b>company profits, consumer wants and society's welfare</b></td><td>Long-term human welfare</td><td>Honda, recycled bags, no child labour (vs "the ugly face of beauty")</td></tr>
+<tr><td><b>Holistic marketing concept</b></td><td>Everything matters: integrate value exploration, creation and delivery for long-term mutual relationships</td><td>The business as one entity with a shared purpose</td><td>Combines internal, integrated, relationship and performance marketing</td></tr></table>
+<h4>Marketing myopia</h4>
+<p>Sellers pay more attention to the <b>specific products</b> they offer than to the <b>benefits and experiences</b> those products produce. They focus on "wants" and lose sight of the underlying "needs". Examples on the slide: <b>Nokia</b> and <b>BlackBerry</b> (loved their phones, missed the smartphone shift) and <b>Harley-Davidson</b> exiting India in 2020 (fewer than 2,500 units sold that year).</p>
+<h4>Selling concept vs marketing concept</h4>
+<table><tr><th></th><th>Starting point</th><th>Focus</th><th>Means</th><th>Ends</th></tr>
+<tr><td><b>Selling concept</b></td><td>Factory</td><td>Existing products</td><td>Selling and promoting</td><td>Profits through <b>sales volume</b></td></tr>
+<tr><td><b>Marketing concept</b></td><td>Market</td><td>Customer needs</td><td>Integrated marketing</td><td>Profits through <b>customer satisfaction</b></td></tr></table>
+<p>Selling is <b>inside-out</b>; marketing is <b>outside-in</b>.</p>
+<h4>Holistic marketing: 4 components</h4>
+<ul><li><b>Internal marketing:</b> marketing department, senior management, other departments</li>
+<li><b>Integrated marketing:</b> communications, products &amp; services, channels</li>
+<li><b>Relationship marketing:</b> customers, channel, partners</li>
+<li><b>Performance marketing:</b> sales revenue, brand and customer equity, ethics, environment, legal, community</li></ul>
+<h3>Marketing mix</h3>
+<p>The set of tools or tactics a firm uses to pursue its marketing objectives in the target market: the <b>right product, right place, right time, right price</b>.</p>
+<table><tr><th>Product mix</th><th>Price mix</th><th>Place mix</th><th>Promotion mix</th></tr>
+<tr><td>Variety, quality, design, features, brand name, packaging, sizes, services, warranties, returns</td>
+<td>List price, discounts, allowances, payment period, credit terms; strategies like <b>skimming</b> (high launch price) and <b>penetration</b> (low price to win share)</td>
+<td>Channels, coverage, location, inventory, transport (assortments)</td>
+<td>Advertising, sales promotion, sales force (personal selling), public relations, direct marketing, publicity</td></tr></table>
+<h3>7Ps of services marketing</h3>
+<p>Services are intangible, so add three Ps to the 4Ps:</p>
+<ul><li><b>People:</b> staff and customers involved in delivery (waiters, doctors, bank staff)</li>
+<li><b>Process:</b> how the service is delivered (ordering, waiting, payment, delivery steps)</li>
+<li><b>Physical evidence:</b> the tangible cues of an intangible service (ambience, interiors, uniforms, website, receipts)</li></ul>
+<h3>ICT and marketing: 11Ps</h3>
+<p>The virtual world adds four more to the 7Ps: <b>Privacy, Personal interests, Personal networks</b> (social networks) and <b>Public commentary</b> (ratings and reviews).</p>
+<h3>Also on ma'am's topic list for this lecture</h3>
+<p>The slides list these topics but don't explain them yet. Here are the standard textbook basics (Kotler &amp; Keller) in case they come up:</p>
+<ul><li><b>STP:</b> <b>Segmentation</b> (divide the market by demographic, geographic, psychographic, behavioural factors) → <b>Targeting</b> (choose which segments to serve) → <b>Positioning</b> (the distinct place the brand occupies in customers' minds).</li>
+<li><b>Customer value proposition:</b> the promise of benefits that makes a target customer choose you over rivals: "for [target], we offer [benefit], unlike [alternative]".</li>
+<li><b>Brand basics:</b> a brand is a name, term, sign, symbol or design that identifies a seller's offering. Strong brands create loyalty and let firms charge a premium (brand equity).</li>
+<li><b>Digital marketing:</b> using digital channels (search, social media, email, apps, influencers) to reach customers; measurable and personalised.</li></ul>
+<div class="tip"><b>Case answer tip:</b> Name the philosophy the firm follows (e.g. "selling concept: pushing stock through discounts"), point out myopia if it's in love with its product, then recommend a marketing-concept fix using the 4Ps (or 7Ps for a service).</div>`
 }
 ];
 

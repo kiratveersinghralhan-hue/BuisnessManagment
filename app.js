@@ -48,7 +48,7 @@ function streakOf(days) {
 const BADGES = [
   { id: "f", e: "🎯", n: "First hit", d: "Answer your first question correctly", t: s => count(s.correct) >= 1 },
   { id: "n", e: "📘", n: "Note taker", d: "Finish 10 topic notes", t: s => count(s.notesRead) >= 10 },
-  { id: "N", e: "📚", n: "Full syllabus", d: "Finish all 25 topic notes", t: s => count(s.notesRead) >= NOTES.length },
+  { id: "N", e: "📚", n: "Full syllabus", d: `Finish all ${NOTES.length} topic notes`, t: s => count(s.notesRead) >= NOTES.length },
   { id: "s", e: "⚡", n: "Sharpshooter", d: "100 different questions right", t: s => count(s.correct) >= 100 },
   { id: "m", e: "⏱️", n: "Exam ready", d: "Complete a full mock test", t: s => s.mockCount >= 1 },
   { id: "M", e: "🏆", n: "Topper", d: "Score 80%+ in a mock", t: s => s.mockBest >= 80 },
@@ -86,7 +86,11 @@ async function initFirebase() {
       try {
         const [nameSnap, userSnap, removedSnap] = await Promise.all([get(fbPath("names/" + uid)), get(fbPath("users/" + uid)), get(fbPath("removed/" + uid)).catch(() => null)]);
         // the admin removed this profile (fake name or merged duplicate): start fresh and ask for a real name
-        if (removedSnap && removedSnap.exists() && !nameSnap.exists()) { S = blank(); save(); }
+        if (removedSnap && removedSnap.exists() && !nameSnap.exists()) {
+          // merged into the same person's other profile: keep the name, start a fresh local copy (it groups with the other one)
+          const why = (removedSnap.val() || {}).why || "", keep = why.startsWith("merged") ? S.name : "";
+          S = blank(); S.name = keep; save();
+        }
         const remote = userSnap.val();
         if (remote) {
           // merge: remote is the source of truth, keep any larger local counters
@@ -210,10 +214,23 @@ addEventListener("scroll", () => {
 addEventListener("hashchange", () => route());
 
 /* ================= views ================= */
+/* the same name on two phones counts as one person on the board */
+const normName = n => (n || "").toLowerCase().replace(/[^\p{L}]/gu, "");
+function boardRows() {
+  const g = {};
+  for (const [id, r] of Object.entries(lbData)) {
+    const n = namesData[id]; if (!n) continue;
+    const x = g[normName(n)] || (g[normName(n)] = { ids: [], name: n, a: { xp: 0, best: 0, mocks: 0, solved: 0, sec: 0, notes: 0, streak: 0, badges: "", w: 0, aw: 0 } });
+    x.ids.push(id); const a = x.a, w = (r.solved || 0) + 1;
+    a.xp += r.xp || 0; a.best = Math.max(a.best, r.best || 0); a.mocks += r.mocks || 0; a.solved += r.solved || 0; a.sec += r.sec || 0;
+    a.notes = Math.max(a.notes, r.notes || 0); a.streak = Math.max(a.streak, r.streak || 0); a.badges = [...new Set(a.badges + (r.badges || ""))].join(""); a.aw += (r.acc || 0) * w; a.w += w;
+  }
+  return Object.values(g).map(x => ({ ids: x.ids, id: x.ids[0], name: x.name, me: x.ids.includes(uid), live: x.ids.some(i => isLive(presenceData[i])), r: { ...x.a, acc: Math.round(x.a.aw / x.a.w) } }));
+}
 function myRank() {
   if (!uid || !lbData[uid]) return "–";
-  const arr = Object.entries(lbData).sort((a, b) => (b[1].xp || 0) - (a[1].xp || 0));
-  return "#" + (arr.findIndex(e => e[0] === uid) + 1);
+  const arr = boardRows().sort((a, b) => b.r.xp - a.r.xp);
+  return "#" + (arr.findIndex(e => e.me) + 1);
 }
 function unitProgress(u) {
   const ts = NOTES.filter(n => n.unit === u.id);
@@ -229,7 +246,7 @@ function vHome(v) {
     <canvas id="heroCanvas" aria-hidden="true"></canvas>
     <div class="greet">Hi ${esc(first)} 👋</div>
     <h1>Crack the case, not just the syllabus.</h1>
-    <p>Notes from all 23 lectures, ${BANK.length} scenario MCQs and 90-minute case-based mock tests, built for ma'am's exam style.</p>
+    <p>Notes from all 24 lectures, ${BANK.length} scenario MCQs and 90-minute case-based mock tests, built for ma'am's exam style.</p>
     <div class="row"><a class="btn primary" href="#mock">Start a mock test</a><a class="btn ghost" href="#practice">Quick practice</a></div>
   </section>
   <div class="stats">
@@ -258,7 +275,7 @@ function vGuide(v) {
 }
 
 function vNotes(v) {
-  v.innerHTML = `<h2>Notes</h2><p class="muted">Every topic from Lectures 1–23. Finish a topic to earn 15 XP.</p>
+  v.innerHTML = `<h2>Notes</h2><p class="muted">Every topic from Lectures 1–24. Finish a topic to earn 15 XP.</p>
   <a class="guide-card" href="#guide"><span style="font-size:30px">🗝️</span><div><b>Read first: how to crack case questions</b><span class="muted">Read → identify → analyse → recommend</span></div></a>
   ${UNITS.map(u => `<section class="unit-block ${u.id}"><h3><span class="pill">${u.name}</span>${u.title} <small>${u.lectures}</small></h3><div class="topic-list">
     ${NOTES.filter(n => n.unit === u.id).map(n => `<a class="topic ${S.notesRead[n.id] ? "done" : ""}" href="#note/${n.id}"><span class="lec">${n.lec}</span><span><span class="tt">${esc(n.title)}</span><span class="ts">${esc(n.sum)}</span></span><span class="chk">${S.notesRead[n.id] ? "✓" : ""}</span></a>`).join("")}
@@ -494,15 +511,15 @@ let lbTab = "xp";
 function vRanks(v) {
   const tabs = { xp: ["XP", r => r.xp || 0, x => x.toLocaleString("en-IN"), "XP"], best: ["Best mock", r => r.best || 0, x => x + "%", "best mock"], sec: ["Study time", r => r.sec || 0, fmtTime, "studied"], solved: ["Solved", r => r.solved || 0, x => x, "solved"] };
   const [, key, fmt, unit] = tabs[lbTab];
-  const rows = Object.entries(lbData).filter(([id]) => namesData[id]).map(([id, r]) => ({ id, name: namesData[id], r, v: key(r) })).sort((a, b) => b.v - a.v || (b.r.xp || 0) - (a.r.xp || 0));
+  const rows = boardRows().map(x => ({ ...x, v: key(x.r) })).sort((a, b) => b.v - a.v || b.r.xp - a.r.xp);
   const badgeStr = s => [...(s || "")].map(c => BADGES.find(b => b.id === c)?.e || "").join("");
   const top = rows.slice(0, 3), order = [top[1], top[0], top[2]];
   v.innerHTML = `<h2>Leaderboard</h2><p class="muted">Everyone in the class, ranked live. Earn XP by studying, reading notes, solving questions and taking mocks.</p>
   <div class="chips">${Object.entries(tabs).map(([k, t]) => `<button class="chip ${k === lbTab ? "on" : ""}" data-tab="${k}">${t[0]}</button>`).join("")}</div>
   ${!online ? `<div class="empty" style="margin-top:16px">The leaderboard needs an internet connection. Your progress is saved on this phone and will sync when you're back online.</div>` :
       !rows.length ? `<div class="empty" style="margin-top:16px">No one on the board yet. Answer a few questions to claim the top spot.</div>` : `
-  <div class="podium">${order.map((x, k) => x ? `<div class="pod p${[2, 1, 3][k]}"><div class="face">${esc(initials(x.name))}</div><div class="nm">${esc(x.name.split(" ")[0])}${x.id === uid ? " (you)" : ""}</div><div class="sc num">${fmt(x.v)}</div><div class="block">${[2, 1, 3][k]}</div></div>` : "<div></div>").join("")}</div>
-  <div class="lb-list">${rows.map((x, k) => `<div class="lb-row ${x.id === uid ? "me" : ""}"><span class="rk">${k + 1}</span><span><span class="nm">${esc(x.name)}${x.id === uid ? " (you)" : ""}</span>${isLive(presenceData[x.id]) ? '<span class="on-dot" title="Studying now"></span>' : ""} <span class="badges">${badgeStr(x.r.badges)}</span><br><span class="sub">${x.r.streak ? x.r.streak + "-day streak · " : ""}${x.r.acc || 0}% accuracy · ${x.r.mocks || 0} mocks</span></span><span class="val num">${fmt(x.v)}<small>${unit}</small></span></div>`).join("")}</div>`}`;
+  <div class="podium">${order.map((x, k) => x ? `<div class="pod p${[2, 1, 3][k]}"><div class="face">${esc(initials(x.name))}</div><div class="nm">${esc(x.name.split(" ")[0])}${x.me ? " (you)" : ""}</div><div class="sc num">${fmt(x.v)}</div><div class="block">${[2, 1, 3][k]}</div></div>` : "<div></div>").join("")}</div>
+  <div class="lb-list">${rows.map((x, k) => `<div class="lb-row ${x.me ? "me" : ""}"><span class="rk">${k + 1}</span><span><span class="nm">${esc(x.name)}${x.me ? " (you)" : ""}</span>${x.live ? '<span class="on-dot" title="Studying now"></span>' : ""} <span class="badges">${badgeStr(x.r.badges)}</span><br><span class="sub">${x.r.streak ? x.r.streak + "-day streak · " : ""}${x.r.acc || 0}% accuracy · ${x.r.mocks || 0} mocks</span></span><span class="val num">${fmt(x.v)}<small>${unit}</small></span></div>`).join("")}</div>`}`;
   $$("[data-tab]", v).forEach(b => b.onclick = () => { lbTab = b.dataset.tab; vRanks(v); });
 }
 
@@ -529,14 +546,30 @@ function askName() {
   <div class="err" id="nmErr"></div><button class="btn primary block" id="nmGo">Continue</button></div>`;
   document.body.appendChild(el);
   const inp = $("#nmIn"), err = $("#nmErr"), go = $("#nmGo"); setTimeout(() => inp.focus(), 50);
-  let confirmStep = false;
+  let confirmStep = false, sameAs = null;
   const submit = async () => {
-    const name = inp.value.trim().replace(/\s+/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+    let name = inp.value.trim().replace(/\s+/g, " ").replace(/\b\w/g, c => c.toUpperCase());
     if (name.length < 3 || !/^[\p{L} .'-]+$/u.test(name)) { err.textContent = "Enter your real name using letters only (at least 3 characters)."; return; }
-    if (!confirmStep) { confirmStep = true; inp.value = name; inp.readOnly = true; err.textContent = ""; go.textContent = `Yes, save "${name}" permanently`; $("#nmT").textContent = "Is this correct?"; const back = document.createElement("button"); back.className = "btn ghost block"; back.style.marginTop = "8px"; back.textContent = "Edit name"; back.onclick = () => { confirmStep = false; inp.readOnly = false; go.textContent = "Continue"; $("#nmT").textContent = "What's your name?"; back.remove(); inp.focus(); }; go.after(back); return; }
+    if (sameAs) name = sameAs;
+    else if (!confirmStep) {
+      let all = namesData; if (online) { try { all = (await get(fbPath("names"))).val() || {}; } catch { } }
+      const hit = Object.entries(all).find(([id, n]) => id !== uid && normName(n) === normName(name));
+      if (hit) return askSame(hit[1]);
+    }
+    if (!confirmStep) { confirmStep = true; inp.value = name; inp.readOnly = true; err.textContent = ""; go.textContent = `Yes, save "${name}" permanently`; $("#nmT").textContent = "Is this correct?"; const back = document.createElement("button"); back.className = "btn ghost block"; back.style.marginTop = "8px"; back.textContent = "Edit name"; back.onclick = () => { confirmStep = false; sameAs = null; inp.readOnly = false; go.textContent = "Continue"; $("#nmT").textContent = "What's your name?"; back.remove(); inp.focus(); }; go.after(back); return; }
+    if (!confirmStep && !sameAs) return;
     go.disabled = true; S.name = name; save();
     if (online && uid) { try { await set(fbPath("names/" + uid), name); } catch (e) { console.warn(e); } syncLB(true); }
     el.remove(); renderTopbar(); toast(`Welcome, ${name.split(" ")[0]}!`); route();
+  };
+  // someone with this name already exists: same person on another phone, or a different person?
+  const askSame = existing => {
+    const box = document.createElement("div"); box.id = "sameBox";
+    box.innerHTML = `<div class="warnbox" style="background:rgba(56,189,248,.1);border-color:rgba(56,189,248,.45)"><span>👥</span><span><b>${esc(existing)}</b> is already on the leaderboard. Is that you on another phone or browser?</span></div>
+    <button class="btn primary block" id="sameYes">Yes, that's me. Combine my progress</button><button class="btn ghost block" style="margin-top:8px" id="sameNo">No, I'm a different person</button>`;
+    go.classList.add("hidden"); go.after(box); inp.readOnly = true; err.textContent = "";
+    $("#sameYes").onclick = () => { sameAs = existing; inp.value = existing; box.remove(); go.classList.remove("hidden"); submit(); };
+    $("#sameNo").onclick = () => { box.remove(); go.classList.remove("hidden"); inp.readOnly = false; inp.focus(); err.textContent = "Add your surname or an initial (e.g. \"Rohit Verma K\") so you're not mixed up with them."; };
   };
   go.onclick = submit; inp.onkeydown = e => { if (e.key === "Enter") submit(); };
 }
