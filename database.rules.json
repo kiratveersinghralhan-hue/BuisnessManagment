@@ -1,0 +1,58 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+
+    "names": {
+      ".read": true,
+      "$uid": {
+        ".write": "auth != null && ((auth.uid === $uid && !data.exists()) || auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2')",
+        ".validate": "newData.isString() && newData.val().length >= 3 && newData.val().length <= 40"
+      }
+    },
+
+    "lb": {
+      ".read": true,
+      "$uid": {
+        ".write": "auth != null && (auth.uid === $uid || auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2')",
+        "xp": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() < 200000" },
+        "best": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100" },
+        "acc": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100" }
+      }
+    },
+
+    "users": {
+      ".read": "auth != null && auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2'",
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": "auth != null && (auth.uid === $uid || auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2')"
+      }
+    },
+
+    "attempts": {
+      ".read": "auth != null && auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2'",
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": "auth != null && auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2'",
+        "$aid": {
+          ".write": "auth != null && auth.uid === $uid && !data.exists()"
+        }
+      }
+    },
+
+    "presence": {
+      ".read": true,
+      "$uid": {
+        ".write": "auth != null && (auth.uid === $uid || auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2')"
+      }
+    },
+
+    "removed": {
+      ".read": "auth != null && auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2'",
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": "auth != null && auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2'"
+      }
+    }
+  }
+}
