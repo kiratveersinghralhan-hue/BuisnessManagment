@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getDatabase, ref, get, set, update, onValue, increment, serverTimestamp, onDisconnect } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getDatabase, ref, get, set, update, onValue, increment, serverTimestamp, onDisconnect, runTransaction, query, limitToLast } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 import { firebaseConfig } from "./firebase-config.js";
 
 /* ================= helpers ================= */
@@ -48,13 +48,13 @@ const prepOpts = q => { const opts = shuffle([q.c, ...q.w]); return { ...q, opts
 
 /* ================= state ================= */
 const KEY = "cr_state_v1";
-const blank = () => ({ name: "", createdAt: Date.now(), studySec: 0, notesRead: {}, mcqA: 0, mcqC: 0, topics: {}, correct: {}, wrong: {}, mockBest: 0, mockCount: 0, mockXp: 0, casesDone: {}, days: {}, saved: {}, mynotes: {}, papers: 0 });
+const blank = () => ({ name: "", createdAt: Date.now(), studySec: 0, notesRead: {}, mcqA: 0, mcqC: 0, topics: {}, correct: {}, wrong: {}, mockBest: 0, mockCount: 0, mockXp: 0, casesDone: {}, days: {}, saved: {}, mynotes: {}, papers: 0, bonusXp: 0, battles: 0, wins: 0, dailies: 0, helped: 0, dailyDone: {}, cards: {} });
 let S = Object.assign(blank(), LS.get(KEY, {}));
 const save = () => LS.set(KEY, S);
 let uid = null, db = null, online = false, lbData = {}, namesData = {}, presenceData = {};
 
 const count = o => Object.keys(o || {}).length;
-const xpOf = s => Math.floor((s.studySec || 0) / 60) + 15 * count(s.notesRead) + 4 * count(s.correct) + (s.mockXp || 0) + 20 * count(s.casesDone);
+const xpOf = s => Math.floor((s.studySec || 0) / 60) + 15 * count(s.notesRead) + 4 * count(s.correct) + (s.mockXp || 0) + 20 * count(s.casesDone) + (s.bonusXp || 0);
 function streakOf(days) {
   let n = 0; const d = new Date();
   if (!((days || {})[d.toLocaleDateString("en-CA")] >= 60)) d.setDate(d.getDate() - 1);
@@ -72,7 +72,11 @@ const BADGES = [
   { id: "c", e: "🧠", n: "Case cracker", d: "Write answers for 3 cases", t: s => count(s.casesDone) >= 3 },
   { id: "h", e: "🔥", n: "Marathon", d: "Study 5 hours in total", t: s => s.studySec >= 18000 },
   { id: "k", e: "📅", n: "3-day streak", d: "Study 3 days in a row", t: s => streakOf(s.days) >= 3 },
-  { id: "K", e: "💎", n: "7-day streak", d: "Study 7 days in a row", t: s => streakOf(s.days) >= 7 }
+  { id: "K", e: "💎", n: "7-day streak", d: "Study 7 days in a row", t: s => streakOf(s.days) >= 7 },
+  { id: "b", e: "⚔️", n: "Gladiator", d: "Win your first quiz battle", t: s => (s.wins || 0) >= 1 },
+  { id: "B", e: "👑", n: "Champion", d: "Win 10 quiz battles", t: s => (s.wins || 0) >= 10 },
+  { id: "d", e: "📆", n: "Daily grinder", d: "Finish 5 daily challenges", t: s => (s.dailies || 0) >= 5 },
+  { id: "q", e: "🤝", n: "Helper", d: "Answer 5 classmates' doubts", t: s => (s.helped || 0) >= 5 }
 ];
 const badgesOf = s => BADGES.filter(b => b.t(s)).map(b => b.id).join("");
 
@@ -86,7 +90,7 @@ function syncLB(now) {
   clearTimeout(lbTimer);
   lbTimer = setTimeout(() => {
     const acc = S.mcqA ? Math.round(S.mcqC / S.mcqA * 100) : 0;
-    set(fbPath("lb/" + uid), { xp: xpOf(S), best: S.mockBest || 0, mocks: S.mockCount || 0, solved: count(S.correct), acc, sec: S.studySec || 0, notes: count(S.notesRead), streak: streakOf(S.days), badges: badgesOf(S), ts: serverTimestamp() }).catch(e => console.warn(e));
+    set(fbPath("lb/" + uid), { xp: xpOf(S), best: S.mockBest || 0, mocks: S.mockCount || 0, solved: count(S.correct), acc, sec: S.studySec || 0, notes: count(S.notesRead), streak: streakOf(S.days), badges: badgesOf(S), wins: S.wins || 0, ts: serverTimestamp() }).catch(e => console.warn(e));
   }, now ? 0 : 1200);
 }
 
@@ -112,8 +116,8 @@ async function initFirebase() {
         if (remote) {
           // merge: remote is the source of truth, keep any larger local counters
           const merged = Object.assign(blank(), remote);
-          for (const k of ["notesRead", "topics", "correct", "wrong", "casesDone", "days", "saved", "mynotes"]) merged[k] = Object.assign({}, S[k], remote[k] || {});
-          for (const k of ["studySec", "mcqA", "mcqC", "mockBest", "mockCount", "mockXp", "papers"]) merged[k] = Math.max(remote[k] || 0, S[k] || 0);
+          for (const k of ["notesRead", "topics", "correct", "wrong", "casesDone", "days", "saved", "mynotes", "dailyDone", "cards"]) merged[k] = Object.assign({}, S[k], remote[k] || {});
+          for (const k of ["studySec", "mcqA", "mcqC", "mockBest", "mockCount", "mockXp", "papers", "bonusXp", "battles", "wins", "dailies", "helped"]) merged[k] = Math.max(remote[k] || 0, S[k] || 0);
           merged.name = nameSnap.val() || S.name; S = merged;
         } else {
           S.name = nameSnap.val() || S.name;
@@ -146,6 +150,8 @@ function startPresence() {
   document.addEventListener("visibilitychange", () => update(p, { on: !document.hidden, ts: serverTimestamp() }).catch(() => { }));
 }
 function subscribePublic() {
+  onValue(fbPath(".info/serverTimeOffset"), s => { window.__tOff = s.val() || 0; });
+  onValue(fbPath("announce"), s => { announceData = s.val() || {}; const el = $("#annBox"); if (el) { el.innerHTML = announceHTML(); bindAnnounce(el); } });
   onValue(fbPath("lb"), s => { lbData = s.val() || {}; if (["ranks", "home"].includes(cur)) route(true); });
   onValue(fbPath("names"), s => { namesData = s.val() || {}; if (["ranks"].includes(cur)) route(true); });
   onValue(fbPath("presence"), s => { presenceData = s.val() || {}; const el = $("#liveCount"); if (el) el.textContent = liveCount(); });
@@ -194,13 +200,13 @@ function route(soft) {
   if (soft && r === "home") { const h = $("#rankStat"); if (h) h.textContent = myRank(); return; }
   if (cleanup) { cleanup(); cleanup = null; }
   cur = r || "home";
-  const group = { q: "practice", cases: "practice", case: "practice", written: "practice", mock: "exam", paper: "exam", note: "notes", guide: "notes", videos: "notes" };
+  const group = { q: "practice", cases: "practice", case: "practice", written: "practice", battle: "practice", daily: "practice", cards: "practice", tools: "practice", mock: "exam", paper: "exam", note: "notes", guide: "notes", videos: "notes", revise: "notes", doubts: "notes" };
   $$("[data-r]").forEach(a => a.classList.toggle("on", a.dataset.r === cur || group[cur] === a.dataset.r));
   const v = $("#view");
-  const views = { home: vHome, notes: vNotes, note: vNote, practice: vPractice, q: vQuiz, mock: vMock, cases: vCases, case: vCase, written: vWritten, ranks: vRanks, me: vMe, guide: vGuide, exam: vExam, paper: vPaper, videos: vVideos };
+  const views = { home: vHome, notes: vNotes, note: vNote, practice: vPractice, q: vQuiz, mock: vMock, cases: vCases, case: vCase, written: vWritten, ranks: vRanks, me: vMe, guide: vGuide, exam: vExam, paper: vPaper, videos: vVideos, battle: vBattle, daily: vDaily, cards: vCards, revise: vRevise, doubts: vDoubts, tools: vTools };
   (views[cur] || vHome)(v, p ? decodeURIComponent(p) : undefined);
   if (!soft) { scrollTo({ top: 0, behavior: "instant" }); v.classList.remove("enter"); void v.offsetWidth; v.classList.add("enter"); showBars(); }
-  document.body.classList.toggle("focus", cur === "q" || cur === "paper"); moveNavInd(); reveal(v);
+  document.body.classList.toggle("focus", cur === "q" || cur === "paper" || (cur === "battle" && !!p)); moveNavInd(); reveal(v);
 }
 /* sliding pill under the active bottom-nav tab */
 function moveNavInd() {
@@ -226,7 +232,7 @@ addEventListener("scroll", () => {
     const y = scrollY, max = document.documentElement.scrollHeight - innerHeight;
     $("#scrollProg").style.transform = `scaleX(${max > 0 ? Math.min(1, y / max) : 0})`;
     const down = y > lastY + 6, up = y < lastY - 6;
-    if (!["mock", "q", "paper"].includes(cur)) { if (down && y > 120) { $("#topBar").classList.add("hide"); $("#bottomNav").classList.add("hide"); } else if (up || y < 60) showBars(); }
+    if (!["mock", "q", "paper", "battle", "cards"].includes(cur)) { if (down && y > 120) { $("#topBar").classList.add("hide"); $("#bottomNav").classList.add("hide"); } else if (up || y < 60) showBars(); }
     if (Math.abs(y - lastY) > 6) lastY = y; ticking = false;
   });
 }, { passive: true });
@@ -241,7 +247,7 @@ function boardRows() {
     const n = namesData[id]; if (!n) continue;
     const x = g[normName(n)] || (g[normName(n)] = { ids: [], name: n, a: { xp: 0, best: 0, mocks: 0, solved: 0, sec: 0, notes: 0, streak: 0, badges: "", w: 0, aw: 0 } });
     x.ids.push(id); const a = x.a, w = (r.solved || 0) + 1;
-    a.xp += r.xp || 0; a.best = Math.max(a.best, r.best || 0); a.mocks += r.mocks || 0; a.solved += r.solved || 0; a.sec += r.sec || 0;
+    a.wins = (a.wins || 0) + (r.wins || 0); a.xp += r.xp || 0; a.best = Math.max(a.best, r.best || 0); a.mocks += r.mocks || 0; a.solved += r.solved || 0; a.sec += r.sec || 0;
     a.notes = Math.max(a.notes, r.notes || 0); a.streak = Math.max(a.streak, r.streak || 0); a.badges = [...new Set(a.badges + (r.badges || ""))].join(""); a.aw += (r.acc || 0) * w; a.w += w;
   }
   return Object.values(g).map(x => ({ ids: x.ids, id: x.ids[0], name: x.name, me: x.ids.includes(uid), live: x.ids.some(i => isLive(presenceData[i])), r: { ...x.a, acc: Math.round(x.a.aw / x.a.w) } }));
@@ -269,6 +275,7 @@ function vHome(v) {
     <p>${NOTES.length ? `${NOTES.length} topic notes, ${BANK.length} MCQs${SHORT.length + LONG.length ? `, ${SHORT.length + LONG.length} exam-style written questions and full ${EXAM.total}-mark papers` : ""}.` : "Notes, MCQs and exam papers for this subject are being added. Check back soon."}</p>
     <div class="row">${!BANK.length ? `<button class="btn primary" onclick="window.__pick()">Switch subject</button>` : isMcqExam() ? `<a class="btn primary" href="#mock">Take the ${EXAM.questions}-MCQ test</a><a class="btn ghost" href="#practice">Quick practice</a>` : `<a class="btn primary" href="#exam">Write an exam paper</a><a class="btn ghost" href="#practice">Quick practice</a>`}</div>
   </section>
+  <div id="annBox">${announceHTML()}</div>
   ${examBanner()}
   ${SUBJECTS.filter(x => x.id !== SUBJ.id && x.exam?.date && daysTo(x.exam.date) >= 0).map(x => `<button class="other-exam" data-sw="${x.id}">${x.icon} ${esc(x.short)} exam in ${daysTo(x.exam.date)} days <span>Switch ›</span></button>`).join("")}
   <div class="stats">
@@ -277,18 +284,22 @@ function vHome(v) {
     <div class="stat"><div class="v num">${streakOf(S.days)}🔥</div><div class="l">Day streak</div></div>
     <div class="stat"><div class="v num">${S.mockBest ? S.mockBest + "%" : "–"}</div><div class="l">Best mock</div></div>
   </div>
+  ${BANK.length ? `<div class="play-row"><a class="play daily" href="#daily"><span class="pi">📅</span><b>Daily challenge</b><span>${(S.dailyDone || {})[SUBJ.id + "_" + today()] ? "Done today ✓ · see ranking" : "5 questions · same for everyone"}</span></a><a class="play battle" href="#battle"><span class="pi">⚔️</span><b>Quiz battle</b><span>${S.wins || 0} wins · challenge a friend</span></a></div>` : ""}
   <div class="actions">
     ${!NOTES.length ? "" : next ? `<a class="action feature" href="#note/${next.id}"><span class="ic">📖</span><div><b>Continue: ${esc(next.title)}</b><br><span>${esc(next.lec)} · ${esc(UNITS.find(u => u.id === next.unit).name)}</span></div></a>`
       : `<a class="action feature" href="#mock"><span class="ic">🏁</span><div><b>All notes done. Time for a full mock.</b><br><span>90 minutes, case-based</span></div></a>`}
     <a class="action c1" href="#q/quick"><span class="ic">⚡</span><b>Quick 10</b><span>Random scenario MCQs</span></a>
     <a class="action c2" href="#q/weak"><span class="ic">🎯</span><b>Fix mistakes</b><span>${inBank(S.wrong)} to retry</span></a>
     <a class="action c4" href="#written"><span class="ic">✍️</span><b>Written practice</b><span>Answer, then self-mark</span></a>
-    <a class="action c5" href="#videos"><span class="ic">▶️</span><b>Videos</b><span>${VIDEOS.length} picked by your teacher</span></a>
+    <a class="action c5" href="#cards"><span class="ic">🃏</span><b>Flashcards</b><span>${(SD.cards || []).length} cards · spaced repetition</span></a>
+    <a class="action c1" href="#revise"><span class="ic">⚡</span><b>Revision sheets</b><span>One page per unit</span></a>
+    ${VIDEOS.length ? `<a class="action c3" href="#videos"><span class="ic">▶️</span><b>Videos</b><span>${VIDEOS.length} picked by your teacher</span></a>` : ""}
+    <a class="action c2" href="#doubts"><span class="ic">💬</span><b>Doubts</b><span>Ask the class</span></a>
   </div>
   <div class="section-head"><h2>Your syllabus</h2><span class="live"><i></i><span id="liveCount">${liveCount()}</span></span></div>
   <div class="units ${UNITS.length > 3 ? "many" : ""}">${UNITS.map(u => { const p = unitProgress(u); return `<a class="unit-card ${u.id}" href="#notes" style="text-decoration:none;color:inherit"><div class="dim" style="font-size:13px">${u.name} · ${u.lectures}</div><div class="t">${u.title}</div><div class="bar"><i style="width:${p.read / p.total * 100}%"></i></div><div class="row" style="margin-top:8px;font-size:13px"><span class="muted">${p.read}/${p.total} topics read</span><span class="spacer"></span><span class="muted">${p.acc === null ? "No quiz yet" : p.acc + "% accuracy"}</span></div></a>`; }).join("")}</div>
   <p class="foot">Boardroom · a student-made study space for ${esc(PROGRAM.short || "BBA")} students, ${esc(PROGRAM.school || "")}</p>`;
-  $("#heroSubj").onclick = () => pickSubject();
+  $("#heroSubj").onclick = () => pickSubject(); bindAnnounce(v);
   $$("[data-sw]", v).forEach(b => b.onclick = () => switchSubject(b.dataset.sw));
   if (!NOTES.length) { const u = $(".units", v); if (u) u.outerHTML = comingSoon("Notes, MCQs and papers"); }
   cleanup = heroScene($("#heroCanvas"));
@@ -310,8 +321,9 @@ function examBanner(sub = SUBJ) {
 }
 function vNotes(v) {
   if (!NOTES.length) { v.innerHTML = `<h2>Notes</h2>` + comingSoon("Notes"); return; }
+  setTimeout(() => { if (SD.starter) { const el = document.createElement("div"); el.className = "tip"; el.innerHTML = "<b>Starter set.</b> These notes and questions cover standard Programming Fundamentals topics. They'll be matched to your teacher's slides soon."; v.querySelector("h2").after(el); } });
   v.innerHTML = `<h2>Notes</h2><p class="muted">${esc(SUBJ.name)} · every topic from the lectures so far. Finish a topic to earn 15 XP.</p>
-  <div class="row" style="margin-bottom:14px"><a class="btn small" href="#videos">▶️ Videos</a><button class="btn small" id="printAll">🖨️ Save all notes as PDF</button></div>
+  <div class="row" style="margin-bottom:14px"><a class="btn small" href="#revise">⚡ Revision sheets</a><a class="btn small" href="#cards">🃏 Flashcards</a>${VIDEOS.length ? `<a class="btn small" href="#videos">▶️ Videos</a>` : ""}<a class="btn small" href="#doubts">💬 Doubts</a><button class="btn small" id="printAll">🖨️ Save all notes as PDF</button></div>
   <a class="guide-card" href="#guide"><span style="font-size:30px">🗝️</span><div><b>Read first: how to crack case questions</b><span class="muted">Read → identify → analyse → recommend</span></div></a>
   ${UNITS.map(u => `<section class="unit-block ${u.id}"><h3><span class="pill">${u.name}</span>${u.title} <small>${u.lectures}</small></h3><div class="topic-list">
     ${NOTES.filter(n => n.unit === u.id).map(n => `<a class="topic ${S.notesRead[n.id] ? "done" : ""}" href="#note/${n.id}"><span class="lec">${n.lec}</span><span><span class="tt">${esc(n.title)}</span><span class="ts">${esc(n.sum)}</span></span><span class="chk">${S.notesRead[n.id] ? "✓" : ""}</span></a>`).join("")}
@@ -347,7 +359,9 @@ function vPractice(v) {
   if (!BANK.length) { v.innerHTML = `<h2>Practice</h2>` + comingSoon("Practice questions"); return; }
   const draw = () => {
     const pool = poolFor();
-    v.innerHTML = `<h2>Practice</h2><p class="muted">Scenario MCQs with instant explanations. Each new question you get right earns 4 XP.</p>
+    v.innerHTML = `<h2>Practice</h2><p class="muted">Each new question you get right earns 4 XP.</p>
+    <div class="play-row"><a class="play daily" href="#daily"><span class="pi">📅</span><b>Daily challenge</b><span>5 questions · ranked</span></a><a class="play battle" href="#battle"><span class="pi">⚔️</span><b>Quiz battle</b><span>Live 1v1 · ${S.wins || 0} wins</span></a></div>
+    <div class="actions" style="margin-bottom:12px"><a class="action c5" href="#cards"><span class="ic">🃏</span><b>Flashcards</b><span>${(SD.cards || []).length} cards</span></a>${SD.tools ? `<a class="action c4" href="#tools"><span class="ic">🧮</span><b>Calculators</b><span>EOQ, ratios, with working</span></a>` : ""}<a class="action c1" href="#revise"><span class="ic">⚡</span><b>Revision</b><span>One-page sheets</span></a><a class="action c2" href="#doubts"><span class="ic">💬</span><b>Doubts</b><span>Ask the class</span></a></div>
     <div class="actions" style="margin-bottom:18px">
       <a class="action c1" href="#q/quick"><span class="ic">⚡</span><b>Quick 10</b><span>Random mix</span></a>
       <a class="action c2" href="#q/weak"><span class="ic">🎯</span><b>Fix mistakes</b><span>${inBank(S.wrong)} waiting</span></a>
@@ -392,7 +406,7 @@ function vQuiz(v, mode = "quick") {
   const draw = () => {
     const q = list[i];
     v.innerHTML = `<div class="qwrap"><div class="qhead"><span class="num">${i + 1}/${list.length}</span><div class="bar"><i style="width:${i / list.length * 100}%"></i></div><span class="num">✓ ${score}</span></div>
-    <div class="qcard"><div class="row" style="align-items:flex-start"><div class="qtopic" style="flex:1">${esc(NOTE[q.t].title)}</div><button class="star ${S.saved[q.id] ? "on" : ""}" id="starQ" aria-label="Save question">${S.saved[q.id] ? "★" : "☆"}</button></div><div class="qtext">${esc(q.q)}</div>
+    <div class="qcard"><div class="row" style="align-items:flex-start"><div class="qtopic" style="flex:1">${esc(NOTE[q.t].title)}</div><button class="star ${S.saved[q.id] ? "on" : ""}" id="starQ" aria-label="Save question">${S.saved[q.id] ? "★" : "☆"}</button></div><div class="qtext">${qf(q.q)}</div>
     <div class="opts">${q.opts.map((o, k) => `<button class="opt" data-k="${k}"><span class="k">${"ABCD"[k]}</span><span>${esc(o)}</span></button>`).join("")}</div>
     <div id="exp"></div></div>
     <div class="qnav"><a class="btn ghost" href="#practice">Quit</a><button class="btn primary hidden" id="nextQ">${i + 1 < list.length ? "Next question" : "See results"}</button></div></div>`;
@@ -412,7 +426,7 @@ function vQuiz(v, mode = "quick") {
     v.innerHTML = `<div class="qwrap"><div class="qcard" style="text-align:center"><div class="muted">You scored</div><div class="result-big num">${score}<small>/${list.length}</small></div><p class="muted" style="margin-top:8px">${pct >= 80 ? "Excellent. You're exam-ready on these." : pct >= 50 ? "Good base. Review the misses below." : "Revise the notes for these topics, then retry."}</p>
     <div class="row" style="justify-content:center"><a class="btn primary" href="#q/quick" id="again">Another Quick 10</a><a class="btn" href="#q/weak">Retry mistakes</a></div></div>
     <div class="panel" style="margin-top:14px"><h3>By topic</h3><div class="breakdown">${Object.entries(byT).map(([t, x]) => `<div class="bd-row"><span>${esc(NOTE[t].title)}</span><span class="num" style="text-align:right">${x.c}/${x.a}</span><div class="bar ${x.c === x.a ? "good" : ""}"><i style="width:${x.c / x.a * 100}%"></i></div></div>`).join("")}</div></div>
-    <div class="panel"><h3>Review</h3>${log.map(({ q, ok }) => `<div class="review-item"><div class="q">${esc(q.q)}</div><div class="a ${ok ? "ok" : "no"}">${ok ? "✓" : "✗"} ${esc(q.c)}</div><div class="a muted">${esc(q.e)}</div></div>`).join("")}</div></div>`;
+    <div class="panel"><h3>Review</h3>${log.map(({ q, ok }) => `<div class="review-item"><div class="q">${qf(q.q)}</div><div class="a ${ok ? "ok" : "no"}">${ok ? "✓" : "✗"} ${esc(q.c)}</div><div class="a muted">${esc(q.e)}</div></div>`).join("")}</div></div>`;
     $("#again").onclick = e => { if (location.hash === "#q/quick") { e.preventDefault(); route(); } };
   };
   draw();
@@ -422,7 +436,7 @@ function vQuiz(v, mode = "quick") {
 const MOCK_SEC = 90 * 60; let MOCK_KEY = "cr_mock_v1";
 /* split n questions across units in proportion to how many topics each unit has */
 function perUnit(n) {
-  const w = UNITS.map(u => NOTES.filter(x => x.unit === u.id && BANK.some(q => q.t === x.id)).length), tot = w.reduce((a, b) => a + b, 0) || 1;
+  const w = UNITS.map(u => { const k = NOTES.filter(x => x.unit === u.id && BANK.some(q => q.t === x.id)).length; return k && u.w ? u.w : k; }), tot = w.reduce((a, b) => a + b, 0) || 1;
   const out = {}; let left = n;
   UNITS.forEach((u, i) => { out[u.id] = Math.floor(n * w[i] / tot); left -= out[u.id]; });
   UNITS.map((u, i) => [u.id, n * w[i] / tot - Math.floor(n * w[i] / tot)]).sort((a, b) => b[1] - a[1]).forEach(([id]) => { if (left > 0) { out[id]++; left--; } });
@@ -437,6 +451,7 @@ function pickMCQs(n) {
   }
   return shuffle(A);
 }
+function qf(t) { t = String(t ?? ""); const i = t.indexOf("\n"); return i < 0 ? esc(t) : `${esc(t.slice(0, i))}<pre class="qcode">${esc(t.slice(i + 1))}</pre>`; }
 const isMcqExam = () => EXAM.type === "mcq";
 const mockSize = () => isMcqExam() ? Math.min(EXAM.questions || 100, BANK.length) : Math.min(30, BANK.length);
 const mockMin = () => isMcqExam() ? (EXAM.minutes || 120) : 90;
@@ -487,7 +502,7 @@ function runMock(v, m) {
       ${s ? (m.items[m.i - 1]?.set === it.set
         ? `<div class="casebox"><details><summary>Case: ${esc(s.title)} (tap to reread)</summary><div style="margin-top:8px">${esc(s.text)}</div></details></div>`
         : `<div class="casebox"><h4>Case: ${esc(s.title)}</h4>${esc(s.text)}</div>`) : ""}
-      <div class="qcard"><div class="qtext">${esc(it.q)}</div><div class="opts">${it.opts.map((o, k) => `<button class="opt ${m.ans[m.i] === k ? "sel" : ""}" data-k="${k}"><span class="k">${"ABCD"[k]}</span><span>${esc(o)}</span></button>`).join("")}</div></div>`;
+      <div class="qcard"><div class="qtext">${qf(it.q)}</div><div class="opts">${it.opts.map((o, k) => `<button class="opt ${m.ans[m.i] === k ? "sel" : ""}" data-k="${k}"><span class="k">${"ABCD"[k]}</span><span>${esc(o)}</span></button>`).join("")}</div></div>`;
     }
     v.innerHTML = `<div class="qwrap"><div class="mock-bar"><span class="timer num" id="timer">--:--</span><span class="muted num" style="font-size:14px">${answered}/${n} answered</span><span class="spacer"></span><button class="btn small" id="palBtn">All questions</button></div>
     ${body}
@@ -548,7 +563,7 @@ function showMockResult(v, r) {
   <div class="panel" style="margin-top:14px"><h3>By unit</h3><div class="breakdown">${UNITS.map(u => { const x = r.units[u.id]; return x ? `<div class="bd-row"><span>${u.name}: ${u.title}</span><span class="num" style="text-align:right">${x.c}/${x.a}</span><div class="bar"><i style="width:${x.c / x.a * 100}%"></i></div></div>` : ""; }).join("")}</div>
   ${weak.length ? `<div class="label">Revise these topics</div><div class="chips">${weak.map(t => `<a class="chip" href="#note/${t}" style="text-decoration:none">${esc(shortTitle(NOTE[t]))}</a>`).join("")}</div>` : ""}</div>
   ${c ? `<div class="panel"><h3>Section C: ${esc(c.title)}</h3>${c.qs.map((q, k) => `<div class="review-item"><div class="q">${esc(q[0])}</div><div class="label">Your answer</div><div class="a" style="white-space:pre-wrap">${esc(r.text?.[k] || "(not written)")}</div><div class="model"><b>Model answer</b>${q[1]}</div></div>`).join("")}</div>` : ""}
-  <div class="panel"><h3>Review all answers</h3>${r.review.map((x, k) => `<div class="review-item"><div class="dim" style="font-size:12.5px">Q${k + 1} · Section ${x.sec} · ${esc(NOTE[x.t]?.title || "")}</div><div class="q">${esc(x.q)}</div>${x.ok ? `<div class="a ok">✓ ${esc(x.c)}</div>` : `<div class="a no">✗ ${x.yours ? esc(x.yours) : "Not answered"}</div><div class="a ok">Correct: ${esc(x.c)}</div>`}<div class="a muted">${esc(x.e)}</div></div>`).join("")}</div></div>`;
+  <div class="panel"><h3>Review all answers</h3>${r.review.map((x, k) => `<div class="review-item"><div class="dim" style="font-size:12.5px">Q${k + 1} · Section ${x.sec} · ${esc(NOTE[x.t]?.title || "")}</div><div class="q">${qf(x.q)}</div>${x.ok ? `<div class="a ok">✓ ${esc(x.c)}</div>` : `<div class="a no">✗ ${x.yours ? esc(x.yours) : "Not answered"}</div><div class="a ok">Correct: ${esc(x.c)}</div>`}<div class="a muted">${esc(x.e)}</div></div>`).join("")}</div></div>`;
   $("#newMock").onclick = () => { const p = buildPaper(); LS.set(MOCK_KEY, p); runMock(v, p); scrollTo(0, 0); };
 }
 
@@ -576,7 +591,7 @@ function vCase(v, id) {
 /* ---------- leaderboard ---------- */
 let lbTab = "xp";
 function vRanks(v) {
-  const tabs = { xp: ["XP", r => r.xp || 0, x => x.toLocaleString("en-IN"), "XP"], best: ["Best mock", r => r.best || 0, x => x + "%", "best mock"], sec: ["Study time", r => r.sec || 0, fmtTime, "studied"], solved: ["Solved", r => r.solved || 0, x => x, "solved"] };
+  const tabs = { xp: ["XP", r => r.xp || 0, x => x.toLocaleString("en-IN"), "XP"], best: ["Best mock", r => r.best || 0, x => x + "%", "best mock"], sec: ["Study time", r => r.sec || 0, fmtTime, "studied"], solved: ["Solved", r => r.solved || 0, x => x, "solved"], wins: ["Battle wins", r => r.wins || 0, x => x, "wins"] };
   const [, key, fmt, unit] = tabs[lbTab];
   const rows = boardRows().map(x => ({ ...x, v: key(x.r) })).sort((a, b) => b.v - a.v || b.r.xp - a.r.xp);
   const badgeStr = s => [...(s || "")].map(c => BADGES.find(b => b.id === c)?.e || "").join("");
@@ -816,7 +831,7 @@ function vExam(v) {
 }
 function paperPrint(m, key) {
   const T = examTotals(), sets = {}; let n = 0;
-  const A = m.mcq.map(it => { let pre = ""; if (it.set && !sets[it.set]) { sets[it.set] = 1; const cs = CASESETS.find(c => c.id === it.set); pre = `<div class="p-case"><b>Read the case and answer the questions that follow:</b> ${esc(cs.title)}<br>${esc(cs.text)}</div>`; } n++; return `${pre}<div class="p-q"><b>${n}.</b> ${esc(it.q)}<ol type="a">${it.opts.map(o => `<li>${esc(o)}</li>`).join("")}</ol>${key ? `<div class="p-key">Answer: (${"abcd"[it.ans]}) ${esc(it.c)}</div>` : ""}</div>`; }).join("");
+  const A = m.mcq.map(it => { let pre = ""; if (it.set && !sets[it.set]) { sets[it.set] = 1; const cs = CASESETS.find(c => c.id === it.set); pre = `<div class="p-case"><b>Read the case and answer the questions that follow:</b> ${esc(cs.title)}<br>${esc(cs.text)}</div>`; } n++; return `${pre}<div class="p-q"><b>${n}.</b> ${qf(it.q)}<ol type="a">${it.opts.map(o => `<li>${esc(o)}</li>`).join("")}</ol>${key ? `<div class="p-key">Answer: (${"abcd"[it.ans]}) ${esc(it.c)}</div>` : ""}</div>`; }).join("");
   const B = m.B.map((id, i) => { const x = SHORT.find(s => s.id === id); return `<div class="p-q"><b>${i + 1}.</b> ${esc(x.q)}${key ? `<div class="p-key"><b>Marking scheme:</b><ul>${x.pts.map(p => `<li>${esc(p[0])} (${p[1]})</li>`).join("")}</ul></div>` : ""}</div>`; }).join("");
   const c = LONG.find(l => l.id === m.C);
   const C = c ? `<div class="p-case"><b>${esc(c.title)}</b><br>${esc(c.text)}</div>${c.parts.map((p, i) => `<div class="p-q"><b>(${String.fromCharCode(97 + i)})</b> ${esc(p[0])} <i>[${p[1]} marks]</i>${key ? `<div class="p-key"><b>Marking scheme:</b><ul>${p[2].map(x => `<li>${esc(x[0])} (${x[1]})</li>`).join("")}</ul></div>` : ""}</div>`).join("")}` : "";
@@ -845,7 +860,7 @@ function vPaper(v) {
     <p class="p-ins">Attempt all of Section A. Attempt any <b>${EXAM.shortAttempt}</b> of Section B. Section C is compulsory. Use concepts, frameworks and examples from the case.</p></header>
     <section id="secA" class="psec"><h3>Section A <small>${T.A} marks · 1 mark each</small></h3>
     ${m.mcq.map((it, i) => { let pre = ""; if (it.set && !sets[it.set]) { sets[it.set] = 1; const cs = CASESETS.find(c => c.id === it.set); pre = `<div class="casebox"><h4>Case: ${esc(cs.title)}</h4>${esc(cs.text)}<p class="dim" style="margin:8px 0 0;font-size:13px">Answer the next ${cs.qs.length} questions based on this case.</p></div>`; } n++;
-      return `${pre}<div class="pq"><div class="pq-t"><b>${n}.</b> ${esc(it.q)}</div><div class="opts">${it.opts.map((o, k) => `<button class="opt ${m.ans[i] === k ? "sel" : ""}" data-i="${i}" data-k="${k}"><span class="k">${"abcd"[k]}</span><span>${esc(o)}</span></button>`).join("")}</div></div>`; }).join("")}</section>
+      return `${pre}<div class="pq"><div class="pq-t"><b>${n}.</b> ${qf(it.q)}</div><div class="opts">${it.opts.map((o, k) => `<button class="opt ${m.ans[i] === k ? "sel" : ""}" data-i="${i}" data-k="${k}"><span class="k">${"abcd"[k]}</span><span>${esc(o)}</span></button>`).join("")}</div></div>`; }).join("")}</section>
     <section id="secB" class="psec"><h3>Section B <small>Answer any ${EXAM.shortAttempt} of ${shortQs.length} · ${EXAM.shortMarks} marks each</small></h3><p class="dim" id="bCount" style="font-size:13.5px">${answeredB} answered${answeredB > EXAM.shortAttempt ? `. Your best ${EXAM.shortAttempt} will count` : ""}</p>
     ${shortQs.map((x, i) => `<div class="pq"><div class="row" style="align-items:flex-start"><div class="pq-t" style="flex:1"><b>Q${i + 1}.</b> ${esc(x.q.replace(/\s*\(\d+ marks\)\s*$/, ""))}</div><span class="mk">${x.marks} marks</span></div><textarea data-w="${kB(i)}" placeholder="Your answer (aim for 120–200 words, in points)…">${esc(wGet(kB(i)))}</textarea><div class="wc dim" data-wc="${kB(i)}">${words(wGet(kB(i)))} words</div></div>`).join("")}</section>
     <section id="secC" class="psec"><h3>Section C <small>Compulsory · ${T.C} marks</small></h3>
@@ -870,7 +885,7 @@ function vPaper(v) {
     v.innerHTML = `<div class="paper">
     <div class="mock-bar"><span class="score-pill">Score <b class="num" id="liveTotal">${total()}</b>/${EXAM.total}</span><span class="spacer"></span><button class="btn small primary" id="finishMark">Finish marking</button></div>
     <h2>Mark your paper</h2><p class="muted">Section A is marked. For B and C, tick each point your answer actually covers. Points found in your answer are pre-ticked; untick anything you didn't really explain. Be honest: this is how the examiner reads it.</p>
-    <section class="psec"><h3>Section A <small>${a}/${T.A}</small></h3><details><summary class="btn small">Review MCQs</summary>${m.mcq.map((it, i) => `<div class="review-item"><div class="q">${i + 1}. ${esc(it.q)}</div>${m.ans[i] === it.ans ? `<div class="a ok">✓ ${esc(it.c)}</div>` : `<div class="a no">✗ ${m.ans[i] === undefined ? "Not answered" : esc(it.opts[m.ans[i]])}</div><div class="a ok">Correct: ${esc(it.c)}</div>`}<div class="a muted">${esc(it.e)}</div></div>`).join("")}</details></section>
+    <section class="psec"><h3>Section A <small>${a}/${T.A}</small></h3><details><summary class="btn small">Review MCQs</summary>${m.mcq.map((it, i) => `<div class="review-item"><div class="q">${i + 1}. ${qf(it.q)}</div>${m.ans[i] === it.ans ? `<div class="a ok">✓ ${esc(it.c)}</div>` : `<div class="a no">✗ ${m.ans[i] === undefined ? "Not answered" : esc(it.opts[m.ans[i]])}</div><div class="a ok">Correct: ${esc(it.c)}</div>`}<div class="a muted">${esc(it.e)}</div></div>`).join("")}</details></section>
     <section class="psec"><h3>Section B <small id="bScore">${scoreB()}/${T.B} · best ${EXAM.shortAttempt} count</small></h3>
     ${shortQs.map((x, i) => { const txt = wGet(kB(i)); return `<div class="pq"><div class="pq-t"><b>Q${i + 1}.</b> ${esc(x.q)}</div>${txt.trim() ? `<div class="your">${esc(txt)}</div>${rubricHTML("B" + i, x.pts, m.ticks["B" + i] || [], suggest(x.pts, txt))}` : `<p class="dim">Not attempted</p>`}${modelHTML(x.pts)}</div>`; }).join("")}</section>
     ${long ? `<section class="psec"><h3>Section C <small id="cScore">${scoreC()}/${T.C}</small></h3><div class="casebox"><details><summary>Case: ${esc(long.title)} (tap to reread)</summary><div style="margin-top:8px">${esc(long.text)}</div></details></div>
@@ -905,6 +920,334 @@ function vPaper(v) {
   };
   cleanup = () => clearInterval(tick);
   if (m.phase === "write") { if (Date.now() >= m.endsAt) toMark(); else writeView(); } else if (m.phase === "mark") markView(); else doneView();
+}
+
+/* ================= seeded randomness (same questions for everyone) ================= */
+function rngFrom(seed) { let a = typeof seed === "number" ? seed : [...String(seed)].reduce((h, c) => (Math.imul(h ^ c.charCodeAt(0), 2654435761) >>> 0), 2166136261); return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const sshuffle = (arr, rnd) => { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+function seededSet(seed, n) {
+  const rnd = rngFrom(seed);
+  return sshuffle(BANK, rnd).slice(0, n).map(q => { const opts = sshuffle([q.c, ...q.w], rnd); return { ...q, opts, ans: opts.indexOf(q.c) }; });
+}
+const bonus = (xp, fields = {}) => { S.bonusXp = (S.bonusXp || 0) + xp; const u = { [`users/${uid}/bonusXp`]: increment(xp) }; for (const [k, v] of Object.entries(fields)) { S[k] = (S[k] || 0) + v; u[`users/${uid}/${k}`] = increment(v); } fbUpdate(u); syncLB(); };
+const shareLink = hash => location.origin + location.pathname + hash;
+async function shareText(text, url) {
+  if (navigator.share) { try { await navigator.share({ text, url }); return; } catch { } }
+  location.href = "https://wa.me/?text=" + encodeURIComponent(text + " " + url);
+}
+
+/* ================= quiz battles ================= */
+const BQ = 10, BQDUR = window.__BQDUR || 15000, BCOUNT = 4000;
+const sNow = () => Date.now() + (window.__tOff || 0);
+const code5 = () => Array.from({ length: 5 }, () => "ABCDEFGHJKMNPQRSTUVWXYZ23456789"[Math.floor(Math.random() * 31)]).join("");
+const bScore = (ok, ms) => ok ? 100 + Math.round(50 * Math.max(0, BQDUR - ms) / BQDUR) : 0;
+let battleUnsub = null;
+function vBattle(v, p) {
+  if (battleUnsub) { battleUnsub(); battleUnsub = null; }
+  if (!BANK.length) { v.innerHTML = `<h2>Quiz battle</h2>` + comingSoon("Battles"); return; }
+  if (p === "bot") return runBattle(v, { code: "BOT", bot: true, seed: Date.now(), subj: SUBJ.id });
+  if (p) return joinBattle(v, p.toUpperCase());
+  const W = S.wins || 0, P = S.battles || 0;
+  v.innerHTML = `<div class="battle-hero"><div class="vs-art"><span>⚔️</span></div><h2>Quiz battle</h2><p class="muted">Two players, the same ${BQ} questions from ${esc(SUBJ.short || SUBJ.name)}, ${BQDUR / 1000} seconds each. Faster correct answers score more. Win to earn 40 XP.</p>
+  <div class="row" style="justify-content:center;gap:18px;margin:6px 0 4px"><span class="bstat"><b class="num">${P}</b>played</span><span class="bstat"><b class="num">${W}</b>won</span><span class="bstat"><b class="num">${P ? Math.round(W / P * 100) : 0}%</b>win rate</span></div></div>
+  <div class="battle-actions">
+    <button class="bcard b1" id="bQuick"><span class="bi">⚡</span><b>Quick match</b><span>Play anyone online right now</span></button>
+    <button class="bcard b2" id="bCreate"><span class="bi">👥</span><b>Challenge a friend</b><span>Get a code and send it on WhatsApp</span></button>
+    <div class="bcard b3"><span class="bi">🔑</span><b>Join with a code</b><div class="row" style="margin-top:8px;flex-wrap:nowrap"><input class="field" id="bCode" maxlength="5" placeholder="ABCDE" style="margin:0;text-transform:uppercase;letter-spacing:.2em;font-size:18px"><button class="btn primary" id="bJoin">Join</button></div></div>
+    <button class="bcard b4" id="bBot"><span class="bi">🤖</span><b>Practice vs bot</b><span>Works offline too</span></button>
+  </div>
+  ${!online ? `<p class="muted" style="text-align:center;font-size:13.5px">You're offline: only the bot is available right now.</p>` : ""}`;
+  $("#bBot").onclick = () => { location.hash = "#battle/bot"; };
+  $("#bCreate").onclick = () => createBattle(v, false);
+  $("#bQuick").onclick = () => quickMatch(v);
+  $("#bJoin").onclick = () => { const c = $("#bCode").value.trim().toUpperCase(); if (c.length === 5) location.hash = "#battle/" + c; else toast("Enter the 5-letter code"); };
+  $("#bCode").onkeydown = e => { if (e.key === "Enter") $("#bJoin").click(); };
+}
+async function createBattle(v, isPublic) {
+  if (!online || !uid) return toast("You need to be online for live battles");
+  const code = code5();
+  await set(fbPath("battles/" + code), { subj: SUBJ.id, v: SUBJ.v || 1, seed: Math.floor(Math.random() * 1e9), host: uid, state: "waiting", created: serverTimestamp(), pub: !!isPublic, players: { [uid]: { name: S.name, score: 0 } } });
+  location.hash = "#battle/" + code;
+  return code;
+}
+async function quickMatch(v) {
+  if (!online || !uid) return toast("You need to be online for live battles");
+  v.innerHTML = `<div class="battle-wait"><div class="spinner"></div><h3>Finding an opponent…</h3><p class="muted">Looking for someone studying ${esc(SUBJ.short)}.</p></div>`;
+  let mine = null, found = null;
+  const slot = fbPath("match/" + SUBJ.id);
+  const newCode = code5();
+  await runTransaction(slot, cur => {
+    if (cur && cur.code && cur.uid !== uid && Date.now() - (cur.ts || 0) < 45000) { found = cur.code; return null; }
+    found = null; return { code: newCode, uid, ts: Date.now() };
+  }).catch(() => { });
+  if (found) { location.hash = "#battle/" + found; return; }
+  mine = newCode;
+  await set(fbPath("battles/" + mine), { subj: SUBJ.id, v: SUBJ.v || 1, seed: Math.floor(Math.random() * 1e9), host: uid, state: "waiting", created: serverTimestamp(), pub: true, players: { [uid]: { name: S.name, score: 0 } } });
+  location.hash = "#battle/" + mine;
+}
+async function joinBattle(v, code, tries = 0) {
+  if (!online || !uid) {
+    if (tries < 40 && navigator.onLine !== false) { v.innerHTML = `<div class="battle-wait"><div class="spinner"></div><h3>Connecting to the battle…</h3></div>`; setTimeout(() => { if (location.hash.toUpperCase() === ("#battle/" + code).toUpperCase()) joinBattle(v, code, tries + 1); }, 300); return; }
+    v.innerHTML = `<div class="empty">Live battles need an internet connection. <a href="#battle/bot">Play the bot instead</a>.</div>`; return;
+  }
+  const snap = await get(fbPath("battles/" + code)); const b = snap.val();
+  if (!b) { v.innerHTML = `<div class="empty"><h3>Battle ${esc(code)} not found</h3><p>Check the code, or start a new one.</p><a class="btn primary" href="#battle">Back to battles</a></div>`; return; }
+  if (b.subj !== SUBJ.id) { const s2 = SUBJECTS.find(x => x.id === b.subj); if (s2) { toast(`This battle is in ${s2.short}. Switching…`); await loadSubject(b.subj); LS.set("cr_subject_chosen", true); } }
+  if (b.host !== uid && !b.guest && b.state === "waiting") {
+    await update(fbPath("battles/" + code), { guest: uid, state: "playing", startAt: sNow() + BCOUNT, [`players/${uid}`]: { name: S.name, score: 0 } }).catch(e => console.warn(e));
+    if (b.pub) runTransaction(fbPath("match/" + b.subj), cur => (cur && cur.code === code ? null : cur)).catch(() => { });
+  } else if (b.host !== uid && b.guest !== uid) { v.innerHTML = `<div class="empty"><h3>This battle is already full</h3><a class="btn primary" href="#battle">Start your own</a></div>`; return; }
+  runBattle(v, { code });
+}
+function runBattle(v, opt) {
+  const code = opt.code, isBot = !!opt.bot;
+  let room = isBot ? { subj: SUBJ.id, seed: opt.seed, host: uid || "me", guest: "bot", state: "playing", startAt: sNow() + BCOUNT, players: { [uid || "me"]: { name: S.name || "You", score: 0 }, bot: { name: "Boardroom Bot 🤖", score: 0 } } } : null;
+  const me = uid || "me"; let qs = null, myAns = {}, tick = null, awarded = false, botPlan = null, finished = false;
+  const ensureQs = () => { if (!qs && room) qs = seededSet("battle:" + room.seed, Math.min(BQ, BANK.length)); };
+  const opp = () => Object.keys(room.players || {}).find(k => k !== me);
+  const answer = (i, k) => {
+    if (myAns[i] !== undefined) return; const ms = sNow() - (room.startAt + i * BQDUR); if (ms < 0 || ms > BQDUR) return;
+    const ok = k === qs[i].ans, pts = bScore(ok, ms); myAns[i] = { k, ms, ok, pts };
+    const total = Object.values(myAns).reduce((a, x) => a + x.pts, 0);
+    room.players[me].score = total; room.players[me].ans = { ...(room.players[me].ans || {}), [i]: { k, ms, ok } };
+    if (!isBot) fbUpdate({ [`battles/${code}/players/${me}/ans/${i}`]: { k, ms, ok }, [`battles/${code}/players/${me}/score`]: total });
+    recordAnswer(qs[i], ok); draw();
+  };
+  const draw = () => {
+    if (!room) return;
+    ensureQs();
+    if (finished) return; const now = sNow(), o = opp(), P = room.players || {};
+    if (room.state === "waiting") {
+      const link = shareLink("#battle/" + code);
+      v.innerHTML = `<div class="battle-wait"><div class="spinner"></div><h3>${room.pub ? "Waiting for an opponent…" : "Waiting for your friend"}</h3>
+      ${room.pub ? `<p class="muted">If nobody joins in a minute, play the bot or share a code.</p>` : `<p class="muted">Share this code. The battle starts as soon as they join.</p>`}
+      <div class="room-code num">${esc(code)}</div>
+      <div class="row" style="justify-content:center"><button class="btn primary" id="bShare">Share on WhatsApp</button><button class="btn" id="bCopy">Copy link</button></div>
+      <div class="row" style="justify-content:center;margin-top:12px"><a class="btn ghost small" href="#battle/bot">Play the bot instead</a><button class="btn ghost small" id="bCancel">Cancel</button></div></div>`;
+      $("#bShare").onclick = () => shareText(`⚔️ ${S.name} challenged you to a ${SUBJ.short} quiz battle on Boardroom! Code: ${code}`, link);
+      $("#bCopy").onclick = () => { navigator.clipboard?.writeText(link).then(() => toast("Link copied")).catch(() => toast(link)); };
+      $("#bCancel").onclick = () => { if (!isBot && room.host === me) { set(fbPath("battles/" + code), null).catch(() => { }); runTransaction(fbPath("match/" + SUBJ.id), cur => (cur && cur.code === code ? null : cur)).catch(() => { }); } location.hash = "#battle"; };
+      return;
+    }
+    const t = now - room.startAt, i = Math.floor(t / BQDUR), N = qs.length;
+    const meP = P[me] || { name: "You", score: 0 }, oP = P[o] || { name: "Opponent", score: 0 };
+    const scoreBar = `<div class="vs-bar"><div class="vs-p me"><span class="vs-av">${esc(initials(meP.name))}</span><span><b>You</b><span class="num">${meP.score || 0}</span></span></div><div class="vs-mid">VS</div><div class="vs-p op"><span><b>${esc((oP.name || "").split(" ")[0])}</b><span class="num">${oP.score || 0}</span></span><span class="vs-av">${esc(initials(oP.name))}</span></div></div>`;
+    if (t < 0) { v.__bkey = null; v.innerHTML = `<div class="battle">${scoreBar}<div class="countdown-big num">${Math.ceil(-t / 1000)}</div><p class="muted" style="text-align:center">Get ready. ${N} questions, ${BQDUR / 1000}s each.</p></div>`; return; }
+    if (i >= N) return finish();
+    const q = qs[i], mine = myAns[i], left = Math.max(0, BQDUR - (t - i * BQDUR)), oAns = (oP.ans || {})[i];
+    const key = [i, mine ? mine.k : "-", oAns ? 1 : 0, meP.score || 0, oP.score || 0].join(":");
+    if (v.__bkey === key && $("#bTime", v)) { $("#bTime", v).style.width = (left / BQDUR * 100) + "%"; $("#bSec", v).textContent = Math.ceil(left / 1000) + "s"; return; }
+    v.__bkey = key;
+    v.innerHTML = `<div class="battle">${scoreBar}
+    <div class="qhead"><span class="num">Q${i + 1}/${N}</span><div class="bar timebar"><i id="bTime" style="width:${left / BQDUR * 100}%"></i></div><span class="num" id="bSec">${Math.ceil(left / 1000)}s</span></div>
+    <div class="qcard"><div class="qtopic">${esc(NOTE[q.t]?.title || "")}</div><div class="qtext">${qf(q.q)}</div>
+    <div class="opts">${q.opts.map((x, k) => `<button class="opt ${mine ? (k === q.ans ? "right" : k === mine.k ? "wrong" : "") : ""}" data-k="${k}" ${mine ? "disabled" : ""}><span class="k">${"ABCD"[k]}</span><span>${esc(x)}</span></button>`).join("")}</div>
+    <div class="bstatus">${mine ? (mine.ok ? `<b class="ok">+${mine.pts}</b> correct` : `<b class="no">0</b> wrong`) : "Tap your answer"} · ${oAns ? `${esc((oP.name || "Opponent").split(" ")[0])} has answered` : `${esc((oP.name || "Opponent").split(" ")[0])} is thinking…`}</div></div></div>`;
+    $$(".opt", v).forEach(b => b.onclick = () => answer(i, +b.dataset.k));
+  };
+  const finish = () => {
+    clearInterval(tick); finished = true; const o = opp(), P = room.players, my = P[me]?.score || 0, th = P[o]?.score || 0, win = my > th, tie = my === th;
+    if (!awarded) { awarded = true; const done = LS.get("cr_battles_done", {}); if (!done[code + room.seed]) { done[code + room.seed] = 1; LS.set("cr_battles_done", done); bonus(win ? 40 : tie ? 20 : 10, { battles: 1, wins: win ? 1 : 0 }); } if (!isBot && room.host === me) fbUpdate({ [`battles/${code}/state`]: "done" }); }
+    const rows = qs.map((q, i) => { const a = (P[me].ans || {})[i], b = (P[o]?.ans || {})[i]; return `<div class="review-item"><div class="q">${i + 1}. ${qf(q.q)}</div><div class="a ok">✓ ${esc(q.c)}</div><div class="a"><span class="${a?.ok ? "ok" : "no"}">You: ${a ? (a.ok ? "right" : "wrong") + ` (${(a.ms / 1000).toFixed(1)}s)` : "no answer"}</span> · <span class="${b?.ok ? "ok" : "no"}">${esc((P[o]?.name || "").split(" ")[0])}: ${b ? (b.ok ? "right" : "wrong") : "no answer"}</span></div></div>`; }).join("");
+    v.innerHTML = `<div class="battle"><div class="qcard battle-result ${win ? "won" : tie ? "tie" : "lost"}"><div class="br-emoji">${win ? "🏆" : tie ? "🤝" : "💪"}</div><h2>${win ? "You won!" : tie ? "It's a tie" : "Good fight"}</h2>
+    <div class="br-score num"><span>${my}</span><small>vs</small><span>${th}</span></div><p class="muted">${win ? "+40 XP" : tie ? "+20 XP" : "+10 XP. Review the misses and rematch"}</p>
+    <div class="row" style="justify-content:center"><button class="btn primary" id="bAgain">${isBot ? "Play again" : "New battle"}</button>${!isBot ? `<button class="btn" id="bShareRes">Share result</button>` : ""}<a class="btn ghost" href="#battle">Battle home</a></div></div>
+    <div class="panel" style="margin-top:14px"><h3>Answers</h3>${rows}</div></div>`;
+    $("#bAgain").onclick = () => { if (isBot) { location.hash = "#battle"; setTimeout(() => location.hash = "#battle/bot", 30); } else createBattle(v, false); };
+    const sr = $("#bShareRes"); if (sr) sr.onclick = () => shareText(`${win ? "🏆 I beat" : tie ? "🤝 I tied with" : "⚔️ I battled"} ${(P[o]?.name || "a friend").split(" ")[0]} ${my}–${th} in a ${SUBJ.short} quiz battle on Boardroom. Think you can beat me?`, shareLink("#battle"));
+  };
+  if (isBot) {
+    ensureQs(); botPlan = qs.map(() => ({ ms: 2500 + Math.random() * 9000, ok: Math.random() < .62 }));
+    tick = setInterval(() => {
+      const t = sNow() - room.startAt, i = Math.floor(t / BQDUR);
+      if (i >= 0 && i < qs.length) { const pl = botPlan[i], bp = room.players.bot; bp.ans = bp.ans || {}; if (!bp.ans[i] && t - i * BQDUR >= pl.ms) { const k = pl.ok ? qs[i].ans : (qs[i].ans + 1 + Math.floor(Math.random() * 3)) % 4; bp.ans[i] = { k, ms: pl.ms, ok: pl.ok }; bp.score = (bp.score || 0) + bScore(pl.ok, pl.ms); } }
+      draw();
+    }, 250);
+  } else {
+    battleUnsub = onValue(fbPath("battles/" + code), s => { const val = s.val(); if (!val) { if (room) { clearInterval(tick); v.innerHTML = `<div class="empty"><h3>This battle was cancelled</h3><a class="btn primary" href="#battle">Back to battles</a></div>`; } return; } room = val; room.players = room.players || {}; room.players[me] = room.players[me] || { name: S.name, score: 0 }; draw(); });
+    tick = setInterval(() => { if (room && room.state !== "waiting") draw(); }, 250);
+  }
+  cleanup = () => { clearInterval(tick); if (battleUnsub) { battleUnsub(); battleUnsub = null; } };
+  draw();
+}
+
+/* ================= daily challenge ================= */
+const DAILY_N = 5;
+function vDaily(v) {
+  if (!BANK.length) { v.innerHTML = `<h2>Daily challenge</h2>` + comingSoon("The daily challenge"); return; }
+  const d = today(), key = SUBJ.id + "_" + d, done = (S.dailyDone || {})[key];
+  const qs = seededSet("daily:" + SUBJ.id + ":" + d, Math.min(DAILY_N, BANK.length));
+  const board = async () => {
+    const el = $("#dBoard"); if (!el) return;
+    if (!online) { el.innerHTML = `<p class="muted">Today's ranking needs an internet connection.</p>`; return; }
+    try { const s = await get(fbPath(`daily/${SUBJ.id}/${d}`)); const rows = Object.entries(s.val() || {}).map(([id, r]) => ({ id, ...r })).sort((a, b) => b.score - a.score || a.ms - b.ms);
+      el.innerHTML = rows.length ? `<div class="lb-list">${rows.slice(0, 15).map((r, k) => `<div class="lb-row ${r.id === uid ? "me" : ""}"><span class="rk">${k + 1}</span><span class="nm">${esc(r.name || "")}${r.id === uid ? " (you)" : ""}</span><span class="val num">${r.score}/${DAILY_N}<small>${(r.ms / 1000).toFixed(1)}s</small></span></div>`).join("")}</div>` : `<p class="muted">Nobody has played today yet. Be first!</p>`;
+    } catch { el.innerHTML = `<p class="muted">Couldn't load today's ranking.</p>`; }
+  };
+  if (done) {
+    v.innerHTML = `<h2>Daily challenge</h2><div class="daily-done"><div class="br-emoji">${done.score === DAILY_N ? "🌟" : "✅"}</div><h3>You scored ${done.score}/${DAILY_N} today</h3><p class="muted">in ${(done.ms / 1000).toFixed(1)} seconds. A new challenge unlocks at midnight.</p>
+    <div class="row" style="justify-content:center"><button class="btn primary" id="dShare">Challenge friends</button><a class="btn" href="#battle">Play a battle</a></div></div>
+    <div class="section-head"><h2>Today's ranking</h2></div><div id="dBoard"><p class="muted">Loading…</p></div>`;
+    $("#dShare").onclick = () => shareText(`📅 I got ${done.score}/${DAILY_N} in today's ${SUBJ.short} daily challenge on Boardroom in ${(done.ms / 1000).toFixed(0)}s. Beat that!`, shareLink("#daily"));
+    board(); return;
+  }
+  v.innerHTML = `<h2>Daily challenge</h2><div class="daily-intro"><div class="br-emoji">📅</div><h3>${DAILY_N} questions · same for everyone today</h3><p class="muted">One attempt per day. Ranked by score, then speed. +10 XP for playing, +10 more for a perfect 5.</p><button class="btn primary" id="dGo">Start today's challenge</button></div>
+  <div class="section-head"><h2>Today's ranking</h2></div><div id="dBoard"><p class="muted">Loading…</p></div>`;
+  board();
+  $("#dGo").onclick = () => {
+    let i = 0, score = 0; const t0 = Date.now();
+    const draw = () => {
+      const q = qs[i];
+      v.innerHTML = `<div class="qwrap"><div class="qhead"><span class="num">${i + 1}/${qs.length}</span><div class="bar"><i style="width:${i / qs.length * 100}%"></i></div><span class="num" id="dClock">0.0s</span></div>
+      <div class="qcard"><div class="qtopic">${esc(NOTE[q.t]?.title || "")}</div><div class="qtext">${qf(q.q)}</div><div class="opts">${q.opts.map((o, k) => `<button class="opt" data-k="${k}"><span class="k">${"ABCD"[k]}</span><span>${esc(o)}</span></button>`).join("")}</div><div id="exp"></div></div></div>`;
+      $$(".opt", v).forEach(b => b.onclick = () => {
+        const k = +b.dataset.k, ok = k === q.ans; if (ok) score++;
+        $$(".opt", v).forEach((x, j) => { x.disabled = true; if (j === q.ans) x.classList.add("right"); else if (j === k) x.classList.add("wrong"); });
+        $("#exp").innerHTML = `<div class="explain"><b class="${ok ? "ok" : "no"}">${ok ? "Correct." : "Not quite."}</b> ${esc(q.e)}</div>`;
+        recordAnswer(q, ok);
+        setTimeout(() => { i++; if (i < qs.length) draw(); else end(); }, ok ? 900 : 2200);
+      });
+    };
+    const clk = setInterval(() => { const c = $("#dClock"); if (c) c.textContent = ((Date.now() - t0) / 1000).toFixed(1) + "s"; }, 100);
+    cleanup = () => clearInterval(clk);
+    const end = () => {
+      clearInterval(clk); const ms = Date.now() - t0;
+      S.dailyDone = S.dailyDone || {}; S.dailyDone[key] = { score, ms };
+      fbUpdate({ [`users/${uid}/dailyDone/${key}`]: { score, ms }, [`daily/${SUBJ.id}/${d}/${uid}`]: { score, ms, name: S.name, ts: serverTimestamp() } });
+      bonus(10 + (score === qs.length ? 10 : 0), { dailies: 1 });
+      toast(score === qs.length ? "Perfect! +20 XP" : `+10 XP · ${score}/${qs.length}`);
+      vDaily(v);
+    };
+    draw();
+  };
+}
+
+/* ================= flashcards (spaced repetition) ================= */
+const BOX_DAYS = [0, 1, 2, 4, 8, 16, 32];
+const dayNum = () => Math.floor((Date.now() + 5.5 * 3600000) / 86400000);
+let cardTopic = "";
+function vCards(v, p) {
+  const all = (SD.cards || []).map(c => ({ id: hash("c" + c[1]), t: c[0], f: c[1], b: c[2] }));
+  if (!all.length) { v.innerHTML = `<h2>Flashcards</h2>` + comingSoon("Flashcards"); return; }
+  if (p && p.startsWith("t:")) cardTopic = p.slice(2); else if (p === "all") cardTopic = "";
+  S.cards = S.cards || {};
+  const pool = all.filter(c => !cardTopic || c.t === cardTopic), dn = dayNum();
+  const due = pool.filter(c => S.cards[c.id] && S.cards[c.id].d <= dn), fresh = pool.filter(c => !S.cards[c.id]);
+  const mastered = pool.filter(c => (S.cards[c.id]?.b || 0) >= 4).length;
+  let queue = shuffle(due).concat(fresh.slice(0, 20));
+  const topics = [...new Set(all.map(c => c.t))];
+  const head = `<div class="row" style="align-items:baseline"><h2 style="margin:0">Flashcards</h2><span class="spacer"></span><span class="muted num" style="font-size:14px">${mastered}/${pool.length} mastered</span></div>
+  <p class="muted">Tap to flip. Swipe right (or "Got it") if you knew it, left ("Again") if not. Cards you miss come back sooner.</p>
+  <div class="chips" style="margin-bottom:14px"><select class="field" id="cTopic" style="margin:0;font-size:14px;padding:10px 12px"><option value="">All topics (${all.length} cards)</option>${topics.map(t => `<option value="${t}" ${t === cardTopic ? "selected" : ""}>${esc(NOTE[t]?.title || t)}</option>`).join("")}</select></div>`;
+  const persist = c => { save(); clearTimeout(vCards._t); vCards._t = setTimeout(() => fbUpdate({ [`users/${uid}/cards/${c.id}`]: S.cards[c.id] }), 800); };
+  const draw = () => {
+    if (!queue.length) { v.innerHTML = head + `<div class="daily-done"><div class="br-emoji">🎉</div><h3>All caught up</h3><p class="muted">No cards due right now. ${mastered} mastered so far. Come back tomorrow for your next review.</p><div class="row" style="justify-content:center"><button class="btn primary" id="cMore">Study 20 more anyway</button><a class="btn" href="#revise">Revision sheets</a></div></div>`; bindTopic(); $("#cMore").onclick = () => { queue = shuffle(pool).slice(0, 20); draw(); }; return; }
+    const c = queue[0];
+    v.innerHTML = head + `<div class="fc-count muted num">${queue.length} left in this session</div>
+    <div class="fc-stage"><div class="fc" id="fc" tabindex="0"><div class="fc-face fc-front"><span class="fc-tag">${esc(NOTE[c.t]?.title || "")}</span><b>${esc(c.f)}</b><span class="fc-hint">Tap to flip</span></div><div class="fc-face fc-back"><span class="fc-tag">${esc(NOTE[c.t]?.title || "")}</span><p>${esc(c.b)}</p></div></div></div>
+    <div class="row fc-btns"><button class="btn" id="cAgain">↺ Again</button><button class="btn primary" id="cGood">Got it ✓</button></div>`;
+    bindTopic();
+    const fc = $("#fc"); fc.onclick = () => fc.classList.toggle("flip"); fc.onkeydown = e => { if (e.key === " " || e.key === "Enter") { e.preventDefault(); fc.classList.toggle("flip"); } };
+    const rate = good => {
+      const st = S.cards[c.id] || { b: 0, d: dn };
+      if (good) { st.b = Math.min(6, st.b + 1); st.d = dn + BOX_DAYS[st.b]; queue.shift(); } else { st.b = 0; st.d = dn; queue.shift(); queue.splice(Math.min(3, queue.length), 0, c); }
+      S.cards[c.id] = st; persist(c);
+      fc.classList.add(good ? "out-r" : "out-l"); setTimeout(draw, 260);
+    };
+    $("#cGood").onclick = () => rate(true); $("#cAgain").onclick = () => rate(false);
+    let sx = null; fc.onpointerdown = e => { sx = e.clientX; }; fc.onpointerup = e => { if (sx === null) return; const dx = e.clientX - sx; sx = null; if (Math.abs(dx) > 70) { fc.onclick = null; rate(dx > 0); } };
+  };
+  const bindTopic = () => { const s = $("#cTopic"); if (s) s.onchange = () => { location.hash = s.value ? "#cards/t:" + s.value : "#cards/all"; }; };
+  draw();
+}
+
+/* ================= revision sheets ================= */
+function vRevise(v) {
+  const R = SD.revision || {};
+  if (!Object.keys(R).length) { v.innerHTML = `<h2>Revision sheets</h2>` + comingSoon("Revision sheets"); return; }
+  v.innerHTML = `<div class="crumb"><a href="#notes">Notes</a> / Revision</div><div class="row" style="align-items:baseline"><h2 style="margin:0">Last-minute revision</h2><span class="spacer"></span><button class="btn small" id="rPrint">🖨️ Save as PDF</button></div>
+  <p class="muted">One page per unit: the definitions, frameworks and formulas to read the night before.</p>
+  ${UNITS.filter(u => R[u.id]).map(u => `<section class="panel revise ${u.id}"><h3><span class="pill" style="font-size:12px;color:#fff;padding:4px 10px;border-radius:99px;background:var(--ug);font-family:var(--body)">${u.name}</span> ${esc(u.title)}</h3><div class="note-body">${R[u.id]}</div></section>`).join("")}`;
+  $("#rPrint").onclick = () => printHTML(`<h1>${esc(SUBJ.name)}: revision</h1>` + UNITS.filter(u => R[u.id]).map(u => `<h2>${u.name}: ${esc(u.title)}</h2>${R[u.id]}`).join(""));
+}
+
+/* ================= doubt board ================= */
+let doubtUnsub = null;
+function vDoubts(v, p) {
+  if (doubtUnsub) { doubtUnsub(); doubtUnsub = null; }
+  if (!online) { v.innerHTML = `<h2>Doubts</h2><div class="empty">The doubt board needs an internet connection.</div>`; return; }
+  if (p) return vDoubt(v, p);
+  v.innerHTML = `<h2>Doubts</h2><p class="muted">Stuck on something in ${esc(SUBJ.short || SUBJ.name)}? Ask the class. Be kind and specific; the admin removes spam.</p>
+  <div class="panel"><h3>Ask a doubt</h3><select class="field" id="dqTopic" style="font-size:15px"><option value="">General</option>${NOTES.map(n => `<option value="${n.id}">${esc(n.title)}</option>`).join("")}</select>
+  <textarea id="dqText" maxlength="600" placeholder="e.g. What's the difference between divestment and liquidation?"></textarea><button class="btn primary" style="margin-top:10px" id="dqGo">Post doubt</button></div>
+  <div id="dList"><p class="muted">Loading…</p></div>`;
+  $("#dqGo").onclick = async () => {
+    const text = $("#dqText").value.trim(); if (text.length < 8) return toast("Write a bit more detail");
+    const id = Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+    try { await set(fbPath(`doubts/${SUBJ.id}/${id}`), { uid, name: S.name, text, topic: $("#dqTopic").value || null, ts: serverTimestamp(), n: 0 }); $("#dqText").value = ""; toast("Doubt posted"); } catch (e) { toast("Couldn't post. Check the database rules are updated."); }
+  };
+  doubtUnsub = onValue(query(fbPath(`doubts/${SUBJ.id}`), limitToLast(100)), s => {
+    const rows = Object.entries(s.val() || {}).map(([id, d]) => ({ id, ...d })).sort((a, b) => (b.ts || 0) - (a.ts || 0));
+    const el = $("#dList"); if (!el) return;
+    el.innerHTML = rows.length ? `<div class="topic-list one">${rows.map(d => `<a class="topic doubt ${d.solved ? "done" : ""}" href="#doubts/${d.id}"><span><span class="tt">${esc(d.text.length > 140 ? d.text.slice(0, 140) + "…" : d.text)}</span><span class="ts">${esc(d.name || "")} · ${d.topic && NOTE[d.topic] ? esc(shortTitle(NOTE[d.topic])) + " · " : ""}${timeAgo(d.ts)} · ${d.n || 0} answer${d.n === 1 ? "" : "s"}</span></span><span class="chk">${d.solved ? "✓" : d.n || ""}</span></a>`).join("")}</div>` : `<div class="empty">No doubts yet. Ask the first one.</div>`;
+  });
+  cleanup = () => { if (doubtUnsub) { doubtUnsub(); doubtUnsub = null; } };
+}
+const timeAgo = ts => { if (!ts) return "just now"; const s = (Date.now() - ts) / 1000; return s < 60 ? "just now" : s < 3600 ? Math.floor(s / 60) + "m ago" : s < 86400 ? Math.floor(s / 3600) + "h ago" : Math.floor(s / 86400) + "d ago"; };
+function vDoubt(v, id) {
+  const path = `doubts/${SUBJ.id}/${id}`, apath = `doubtAns/${SUBJ.id}/${id}`;
+  let d = null, ans = [];
+  const draw = () => {
+    if (!d) { v.innerHTML = `<div class="empty">This doubt was removed. <a href="#doubts">Back to doubts</a></div>`; return; }
+    const mine = d.uid === uid;
+    v.innerHTML = `<div class="crumb"><a href="#doubts">Doubts</a></div><div class="qcard"><div class="qtopic">${d.topic && NOTE[d.topic] ? esc(NOTE[d.topic].title) : "General"}</div><div class="qtext" style="font-size:18px">${esc(d.text)}</div><div class="muted" style="font-size:13px">Asked by ${esc(d.name || "")} · ${timeAgo(d.ts)}${mine ? ` · <a href="#" id="dDel">delete</a>` : ""}</div>${d.topic && NOTE[d.topic] ? `<a class="btn small" style="margin-top:10px" href="#note/${d.topic}">Open the notes for this topic</a>` : ""}</div>
+    <div class="section-head"><h3 style="margin:0">${ans.length} answer${ans.length === 1 ? "" : "s"}</h3></div>
+    ${ans.map(a => `<div class="answer ${d.solved === a.id ? "best" : ""}"><div class="row"><b>${esc(a.name || "")}</b><span class="dim" style="font-size:12.5px">${timeAgo(a.ts)}</span><span class="spacer"></span>${d.solved === a.id ? `<span class="chip on" style="cursor:default">✓ Helped</span>` : mine ? `<button class="btn small ghost" data-best="${a.id}">Mark as helpful</button>` : ""}</div><p style="white-space:pre-wrap;margin:6px 0 0">${esc(a.text)}</p></div>`).join("") || `<p class="muted">No answers yet.</p>`}
+    <div class="panel" style="margin-top:14px"><h3>Your answer</h3><textarea id="aText" maxlength="1200" placeholder="Explain it the way you'd explain it to a friend…"></textarea><button class="btn primary" style="margin-top:10px" id="aGo">Post answer</button></div>`;
+    $("#aGo").onclick = async () => {
+      const text = $("#aText").value.trim(); if (text.length < 5) return toast("Write an answer first");
+      const aid = Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+      try { await set(fbPath(`${apath}/${aid}`), { uid, name: S.name, text, ts: serverTimestamp() }); runTransaction(fbPath(path + "/n"), n => (n || 0) + 1).catch(() => { }); bonus(5, { helped: 1 }); toast("Answer posted · +5 XP"); } catch { toast("Couldn't post. Check the database rules are updated."); }
+    };
+    $$("[data-best]", v).forEach(b => b.onclick = () => update(fbPath(path), { solved: b.dataset.best }).catch(() => toast("Couldn't update")));
+    const del = $("#dDel"); if (del) del.onclick = e => { e.preventDefault(); if (confirm("Delete your doubt?")) { update(fbPath(""), { [path]: null, [apath]: null }).then(() => location.hash = "#doubts").catch(() => toast("Couldn't delete")); } };
+  };
+  const u1 = onValue(fbPath(path), s => { d = s.val(); draw(); });
+  const u2 = onValue(fbPath(apath), s => { ans = Object.entries(s.val() || {}).map(([k, a]) => ({ id: k, ...a })).sort((a, b) => (a.ts || 0) - (b.ts || 0)); draw(); });
+  doubtUnsub = () => { u1(); u2(); };
+  cleanup = () => { if (doubtUnsub) { doubtUnsub(); doubtUnsub = null; } };
+}
+
+/* ================= announcements ================= */
+let announceData = {};
+function announceHTML() {
+  const hidden = LS.get("cr_ann_hidden", {});
+  const list = Object.entries(announceData).map(([id, a]) => ({ id, ...a })).filter(a => !hidden[a.id] && (!a.subj || a.subj === "all" || a.subj === SUBJ.id) && Date.now() - (a.ts || 0) < 30 * 86400000).sort((a, b) => (b.pin ? 1 : 0) - (a.pin ? 1 : 0) || (b.ts || 0) - (a.ts || 0)).slice(0, 3);
+  return list.map(a => `<div class="announce"><span class="an-ic">📢</span><div><b>${a.pin ? "📌 " : ""}${esc(a.title || "Announcement")}</b><p>${esc(a.text)}</p><span class="dim" style="font-size:12px">${timeAgo(a.ts)}${a.subj && a.subj !== "all" ? " · " + esc(SUBJECTS.find(x => x.id === a.subj)?.short || "") : ""}</span></div><button class="an-x" data-anx="${a.id}" aria-label="Dismiss">✕</button></div>`).join("");
+}
+function bindAnnounce(root) { $$("[data-anx]", root).forEach(b => b.onclick = () => { const h = LS.get("cr_ann_hidden", {}); h[b.dataset.anx] = 1; LS.set("cr_ann_hidden", h); b.closest(".announce").remove(); }); }
+
+/* ================= calculators (with exam-style working) ================= */
+const n2 = x => (Math.round(x * 100) / 100).toLocaleString("en-IN");
+const CALCS = [
+  { id: "eoq", t: "EOQ (Economic Order Quantity)", i: [["D", "Annual demand (units)", 10000], ["S", "Ordering cost per order (₹)", 200], ["H", "Holding cost per unit per year (₹)", 4]], f: v => { const r = Math.sqrt(2 * v.D * v.S / v.H); return { steps: [`EOQ = √(2DS ÷ H)`, `= √(2 × ${n2(v.D)} × ${n2(v.S)} ÷ ${n2(v.H)})`, `= √${n2(2 * v.D * v.S / v.H)}`], ans: `${n2(r)} units`, note: `Order about ${Math.round(r)} units each time; this balances ordering and holding costs. Orders per year ≈ ${n2(v.D / r)}.` }; } },
+  { id: "rol", t: "Reorder level", i: [["U", "Usage per day", 20], ["L", "Lead time (days)", 5]], f: v => ({ steps: [`Reorder level = Usage × Lead time`, `= ${n2(v.U)} × ${n2(v.L)}`], ans: n2(v.U * v.L), note: `Place a new order when stock falls to ${n2(v.U * v.L)}.` }) },
+  { id: "wc", t: "Working capital, current & quick ratio", i: [["CA", "Current assets (₹)", 1200000], ["CL", "Current liabilities (₹)", 400000], ["ST", "Stock (₹)", 700000], ["PP", "Prepaid expenses (₹)", 100000]], f: v => { const cr = v.CA / v.CL, lq = v.CA - v.ST - v.PP, qr = lq / v.CL; return { steps: [`Working capital = CA − CL = ${n2(v.CA)} − ${n2(v.CL)} = ₹${n2(v.CA - v.CL)}`, `Current ratio = CA ÷ CL = ${n2(v.CA)} ÷ ${n2(v.CL)} = ${n2(cr)} : 1`, `Liquid assets = CA − (Stock + Prepaid) = ${n2(v.CA)} − ${n2(v.ST + v.PP)} = ${n2(lq)}`, `Quick ratio = Liquid assets ÷ CL = ${n2(lq)} ÷ ${n2(v.CL)} = ${n2(qr)} : 1`], ans: `CR ${n2(cr)}:1 · QR ${n2(qr)}:1`, note: `Current ratio is ${cr >= 2 ? "at or above" : "below"} the 2:1 norm; quick ratio is ${qr >= 1 ? "at or above" : "below"} the 1:1 norm.${cr >= 2 && qr < 1 ? " The gap suggests too much money is tied up in stock." : ""}` }; } },
+  { id: "de", t: "Debt-equity ratio", i: [["D", "Long-term debt (₹)", 1800000], ["E", "Shareholders' funds (₹)", 1200000]], f: v => { const r = v.D / v.E; return { steps: [`Debt-equity = Long-term debt ÷ Shareholders' funds`, `= ${n2(v.D)} ÷ ${n2(v.E)}`], ans: `${n2(r)} : 1`, note: r <= 2 ? "Within the 2:1 safe limit." : "Above 2:1: high financial risk from fixed interest." }; } },
+  { id: "gp", t: "Gross / net profit ratio", i: [["S", "Net sales (₹)", 2500000], ["GP", "Gross profit (₹)", 500000], ["NP", "Net profit after tax (₹)", 200000]], f: v => ({ steps: [`GP ratio = GP ÷ Net sales × 100 = ${n2(v.GP)} ÷ ${n2(v.S)} × 100 = ${n2(v.GP / v.S * 100)}%`, `NP ratio = NP ÷ Net sales × 100 = ${n2(v.NP)} ÷ ${n2(v.S)} × 100 = ${n2(v.NP / v.S * 100)}%`], ans: `GP ${n2(v.GP / v.S * 100)}% · NP ${n2(v.NP / v.S * 100)}%`, note: "The gap between GP and NP shows how much indirect (operating) expenses take." }) },
+  { id: "roce", t: "Return on capital employed (ROCE)", i: [["EBIT", "Profit before interest & tax (₹)", 600000], ["FA", "Net fixed assets (₹)", 3000000], ["CA", "Current assets (₹)", 1200000], ["CL", "Current liabilities (₹)", 400000]], f: v => { const ce = v.FA + v.CA - v.CL; return { steps: [`Capital employed = Fixed assets + CA − CL = ${n2(v.FA)} + ${n2(v.CA)} − ${n2(v.CL)} = ${n2(ce)}`, `ROCE = EBIT ÷ Capital employed × 100 = ${n2(v.EBIT)} ÷ ${n2(ce)} × 100`], ans: `${n2(v.EBIT / ce * 100)}%`, note: "Higher ROCE means capital is used more profitably; compare with the cost of borrowing." }; } },
+  { id: "itr", t: "Inventory turnover", i: [["C", "Cost of goods sold (₹)", 2000000], ["O", "Opening stock (₹)", 300000], ["X", "Closing stock (₹)", 500000]], f: v => { const avg = (v.O + v.X) / 2, r = v.C / avg; return { steps: [`Average stock = (Opening + Closing) ÷ 2 = (${n2(v.O)} + ${n2(v.X)}) ÷ 2 = ${n2(avg)}`, `Inventory turnover = COGS ÷ Average stock = ${n2(v.C)} ÷ ${n2(avg)}`], ans: `${n2(r)} times`, note: `Stock is sold about ${n2(r)} times a year (every ${n2(365 / r)} days). Higher is better.` }; } },
+  { id: "trend", t: "Trend % (horizontal analysis)", i: [["A", "Earlier year value", 4000000], ["B", "Later year value", 5000000]], f: v => ({ steps: [`% change = (Later − Earlier) ÷ Earlier × 100`, `= (${n2(v.B)} − ${n2(v.A)}) ÷ ${n2(v.A)} × 100`], ans: `${n2((v.B - v.A) / v.A * 100)}%`, note: v.B >= v.A ? "An increase." : "A decrease." }) },
+  { id: "prod", t: "Labour productivity", i: [["O1", "Output before", 1000], ["L1", "Workers before", 10], ["O2", "Output after", 2000], ["L2", "Workers after", 4]], f: v => { const a = v.O1 / v.L1, b = v.O2 / v.L2; return { steps: [`Before = ${n2(v.O1)} ÷ ${n2(v.L1)} = ${n2(a)} per worker`, `After = ${n2(v.O2)} ÷ ${n2(v.L2)} = ${n2(b)} per worker`, `Change = ${n2(b)} ÷ ${n2(a)} = ${n2(b / a)} times`], ans: `${n2(b / a)}× productivity`, note: "Also consider accuracy, employee impact, cost and customer experience, not just output." }; } },
+  { id: "aeq", t: "Accounting equation", i: [["A", "Total assets (₹)", 1000000], ["L", "Liabilities (₹)", 400000]], f: v => ({ steps: [`Assets = Liabilities + Capital`, `Capital = Assets − Liabilities = ${n2(v.A)} − ${n2(v.L)}`], ans: `₹${n2(v.A - v.L)}`, note: "Owner's capital is what remains after outsiders' claims." }) }
+];
+function vTools(v, p) {
+  if (!SD.tools) { v.innerHTML = `<h2>Calculators</h2><div class="empty">No calculators for this subject.</div>`; return; }
+  const c = CALCS.find(x => x.id === p);
+  if (!c) { v.innerHTML = `<div class="crumb"><a href="#practice">Practice</a> / Calculators</div><h2>Finance & operations calculators</h2><p class="muted">Each one shows the full working, formula then substitution then answer, the way to write it in the exam.</p><div class="topic-list">${CALCS.map(x => `<a class="topic" href="#tools/${x.id}"><span class="lec">🧮</span><span><span class="tt">${esc(x.t)}</span><span class="ts">${x.i.map(i => i[1].replace(/ \(.*\)/, "")).join(" · ")}</span></span></a>`).join("")}</div>`; return; }
+  v.innerHTML = `<div class="crumb"><a href="#tools">Calculators</a></div><h2>${esc(c.t)}</h2><div class="panel">${c.i.map(([k, l, d]) => `<label class="label" style="display:block">${esc(l)}</label><input class="field" type="number" inputmode="decimal" data-ci="${k}" value="${d}">`).join("")}<button class="btn primary block" id="cGo">Calculate</button></div><div id="cOut"></div>`;
+  const run = () => { const vals = {}; let bad = false; $$("[data-ci]", v).forEach(i => { vals[i.dataset.ci] = parseFloat(i.value); if (!isFinite(vals[i.dataset.ci])) bad = true; }); if (bad) return toast("Fill in every value"); const r = c.f(vals); $("#cOut").innerHTML = `<div class="panel working"><h3>Working</h3><ol>${r.steps.map(s => `<li>${esc(s)}</li>`).join("")}</ol><div class="formula">${esc(r.ans)}</div><p class="muted" style="margin:0">${esc(r.note)}</p></div>`; };
+  $("#cGo").onclick = run; run();
 }
 
 /* ================= name popup ================= */
@@ -1095,6 +1438,7 @@ function heroSceneInner(canvas) {
 /* ================= boot ================= */
 const LOGO = id => `<defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8B5CF6"/><stop offset=".55" stop-color="#EC4899"/><stop offset="1" stop-color="#FB923C"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="url(#${id})"/><rect x="13" y="36" width="9" height="15" rx="3" fill="#fff" opacity=".65"/><rect x="27.5" y="27" width="9" height="24" rx="3" fill="#fff" opacity=".82"/><rect x="42" y="18" width="9" height="33" rx="3" fill="#fff"/><path d="M12 30 L26 20 L34 25 L50 11" fill="none" stroke="#FDE68A" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M43 10 L51 10 L51 18" fill="none" stroke="#FDE68A" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>`;
 window.__pick = () => pickSubject();
+if ("serviceWorker" in navigator && location.protocol === "https:") addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => { }));
 (async function boot() {
   $$("[data-logo]").forEach((el, i) => el.innerHTML = LOGO("lg" + i));
   try { await loadSubject(LS.get("cr_subject", SUBJECTS[0].id)); } catch (e) { console.warn(e); await loadSubject(SUBJECTS[0].id); }

@@ -1,4 +1,4 @@
-/* Principles of Business & Management (Sem 1) — Dr. Sulochna Syal. Content written from Lectures 1–24 and the course handout. */
+/* Principles of Business Management (Sem 1) — Dr. Sulochna Syal. Content written from Lectures 1–25 and the course handout. */
 window.SUBJECT_DATA = window.SUBJECT_DATA || {};
 window.SUBJECT_DATA.pbm = {
  "units": [
@@ -18,7 +18,7 @@ window.SUBJECT_DATA.pbm = {
    "id": "u3",
    "name": "Unit 3",
    "title": "Operations, finance, HR & marketing",
-   "lectures": "Lectures 11–24"
+   "lectures": "Lectures 11–25"
   }
  ],
  "notes": [
@@ -229,6 +229,14 @@ window.SUBJECT_DATA.pbm = {
    "title": "Marketing: concepts, philosophies & the marketing mix",
    "sum": "Marketing myths, Kotler's definitions, six marketing philosophies, marketing myopia, 4Ps, 7Ps and the 11Ps of digital marketing.",
    "html": "\n<div class=\"tip\"><b>\"Marketing is not selling, it is identifying the needs.\"</b> Marketing is about people, not products.</div>\n<h3>Common misconceptions</h3>\n<p>Marketing is <b>not</b> just advertising, sales, fooling people, door-to-door selling or show business. Not \"anyone can do it\", and every business needs it.</p>\n<h3>What marketing is</h3>\n<ul>\n<li><b>AMA view:</b> an organisational function and a set of processes for <b>creating, communicating and delivering value</b> to customers and <b>managing customer relationships</b> in ways that benefit the organisation and its stakeholders.</li>\n<li><b>Marketing concept:</b> the company's main task is to find what a target set of customers <b>needs, wants and values</b>, and dedicate the organisation to delivering that solution.</li>\n<li><b>Philip Kotler:</b> \"satisfying needs and wants through an exchange process\".</li>\n<li>\"All the activities involved in the transfer of goods and services to the ultimate consumer.\"</li>\n<li><b>Managing profitable customer relationships</b>, with a twofold goal: <b>attract new customers</b> by promising superior value, and <b>keep and grow current customers</b> by delivering satisfaction.</li>\n</ul>\n<div class=\"def\"><b>Marketing management</b> is the art and science of choosing target markets and getting, keeping and growing customers through creating, delivering and communicating superior customer value.</div>\n<p>In full: the <b>analysis, planning, implementation and control</b> of programmes designed to bring about desired exchanges with target audiences for personal and mutual gain, relying on coordination of <b>product, price, place and promotion</b>.</p>\n<h3>What can be marketed, and to whom</h3>\n<p><b>10 things:</b> goods, services, places, ideas, events, persons, properties, organisations, information, experiences.</p>\n<p><b>Markets:</b> consumer, business, global, nonprofit/government; also urban and rural markets.</p>\n<h3>Six marketing philosophies (in order of evolution)</h3>\n<table><tr><th>Philosophy</th><th>Belief</th><th>Focus</th><th>Example / problem</th></tr>\n<tr><td><b>Production concept</b></td><td>Demand &gt; supply. Customers want products that are <b>widely available and cheap</b></td><td>Production and distribution efficiency</td><td>Basic low-cost feature phones</td></tr>\n<tr><td><b>Product concept</b></td><td>Customers want the best <b>quality, performance and innovative features</b></td><td>R&amp;D, new product development</td><td>Xiaomi. Risk: <b>marketing myopia</b></td></tr>\n<tr><td><b>Selling concept</b></td><td>Customers won't buy enough unless <b>pushed</b></td><td>Aggressive hard-sell, sales targets/quotas</td><td><b>Unsought goods</b>: HomeShop18, Sona belt, cemetery plots, election candidates</td></tr>\n<tr><td><b>Marketing concept</b></td><td>Find the <b>needs and wants</b> of the target market and deliver them better than competitors</td><td>Customer needs</td><td>Apple, Tata Magic, Scooty</td></tr>\n<tr><td><b>Societal marketing concept</b></td><td>Balance <b>company profits, consumer wants and society's welfare</b></td><td>Long-term human welfare</td><td>Honda, recycled bags, no child labour (vs \"the ugly face of beauty\")</td></tr>\n<tr><td><b>Holistic marketing concept</b></td><td>Everything matters: integrate value exploration, creation and delivery for long-term mutual relationships</td><td>The business as one entity with a shared purpose</td><td>Combines internal, integrated, relationship and performance marketing</td></tr></table>\n<h4>Marketing myopia</h4>\n<p>Sellers pay more attention to the <b>specific products</b> they offer than to the <b>benefits and experiences</b> those products produce. They focus on \"wants\" and lose sight of the underlying \"needs\". Examples on the slide: <b>Nokia</b> and <b>BlackBerry</b> (loved their phones, missed the smartphone shift) and <b>Harley-Davidson</b> exiting India in 2020 (fewer than 2,500 units sold that year).</p>\n<h4>Selling concept vs marketing concept</h4>\n<table><tr><th></th><th>Starting point</th><th>Focus</th><th>Means</th><th>Ends</th></tr>\n<tr><td><b>Selling concept</b></td><td>Factory</td><td>Existing products</td><td>Selling and promoting</td><td>Profits through <b>sales volume</b></td></tr>\n<tr><td><b>Marketing concept</b></td><td>Market</td><td>Customer needs</td><td>Integrated marketing</td><td>Profits through <b>customer satisfaction</b></td></tr></table>\n<p>Selling is <b>inside-out</b>; marketing is <b>outside-in</b>.</p>\n<h4>Holistic marketing: 4 components</h4>\n<ul><li><b>Internal marketing:</b> marketing department, senior management, other departments</li>\n<li><b>Integrated marketing:</b> communications, products &amp; services, channels</li>\n<li><b>Relationship marketing:</b> customers, channel, partners</li>\n<li><b>Performance marketing:</b> sales revenue, brand and customer equity, ethics, environment, legal, community</li></ul>\n<h3>Marketing mix</h3>\n<p>The set of tools or tactics a firm uses to pursue its marketing objectives in the target market: the <b>right product, right place, right time, right price</b>.</p>\n<table><tr><th>Product mix</th><th>Price mix</th><th>Place mix</th><th>Promotion mix</th></tr>\n<tr><td>Variety, quality, design, features, brand name, packaging, sizes, services, warranties, returns</td>\n<td>List price, discounts, allowances, payment period, credit terms; strategies like <b>skimming</b> (high launch price) and <b>penetration</b> (low price to win share)</td>\n<td>Channels, coverage, location, inventory, transport (assortments)</td>\n<td>Advertising, sales promotion, sales force (personal selling), public relations, direct marketing, publicity</td></tr></table>\n<h3>7Ps of services marketing</h3>\n<p>Services are intangible, so add three Ps to the 4Ps:</p>\n<ul><li><b>People:</b> staff and customers involved in delivery (waiters, doctors, bank staff)</li>\n<li><b>Process:</b> how the service is delivered (ordering, waiting, payment, delivery steps)</li>\n<li><b>Physical evidence:</b> the tangible cues of an intangible service (ambience, interiors, uniforms, website, receipts)</li></ul>\n<h3>ICT and marketing: 11Ps</h3>\n<p>The virtual world adds four more to the 7Ps: <b>Privacy, Personal interests, Personal networks</b> (social networks) and <b>Public commentary</b> (ratings and reviews).</p>\n<h3>Also on ma'am's topic list for this lecture</h3>\n<p>The slides list these topics but don't explain them yet. Here are the standard textbook basics (Kotler &amp; Keller) in case they come up:</p>\n<ul><li><b>STP:</b> <b>Segmentation</b> (divide the market by demographic, geographic, psychographic, behavioural factors) → <b>Targeting</b> (choose which segments to serve) → <b>Positioning</b> (the distinct place the brand occupies in customers' minds).</li>\n<li><b>Customer value proposition:</b> the promise of benefits that makes a target customer choose you over rivals: \"for [target], we offer [benefit], unlike [alternative]\".</li>\n<li><b>Brand basics:</b> a brand is a name, term, sign, symbol or design that identifies a seller's offering. Strong brands create loyalty and let firms charge a premium (brand equity).</li>\n<li><b>Digital marketing:</b> using digital channels (search, social media, email, apps, influencers) to reach customers; measurable and personalised.</li></ul>\n<div class=\"tip\"><b>Case answer tip:</b> Name the philosophy the firm follows (e.g. \"selling concept: pushing stock through discounts\"), point out myopia if it's in love with its product, then recommend a marketing-concept fix using the 4Ps (or 7Ps for a service).</div>"
+  },
+  {
+   "id": "stp",
+   "unit": "u3",
+   "lec": "L25",
+   "title": "Segmentation, targeting & customer value proposition",
+   "sum": "Market segment, mass vs target marketing, geographic/demographic/psychographic (VALS)/behavioural bases, B2B segmentation, effective segmentation criteria, five targeting patterns, undifferentiated/differentiated/concentrated marketing, CVP vs USP.",
+   "html": "\n<div class=\"tip\">From Lecture 25 (Marketing Management, Kuldeep C Rojhe). This completes STP from Lecture 24.</div>\n<h3>Market segment</h3><p>A <b>market segment</b> is a group of customers who share a similar set of needs and wants. <b>Mass marketing</b> offers one product to everyone; <b>target marketing</b> picks segments and designs offers for them.</p>\n<h3>Bases for segmenting consumer markets</h3><table><tr><th>Basis</th><th>Divides by</th><th>Example</th></tr>\n<tr><td><b>Geographic</b></td><td>Nations, states, regions, cities, neighbourhoods; can operate in one area or all but adapt to local variation</td><td>Spicier menu in South India</td></tr>\n<tr><td><b>Demographic</b></td><td>Age & life cycle, life stage, gender, income, generation, social class, race & culture</td><td>Kids' toothpaste, luxury cars for high income</td></tr>\n<tr><td><b>Psychographic</b></td><td>Psychology + demographics: values, attitudes, lifestyle, personality (VALS)</td><td>Adventure travel for thrill-seekers</td></tr>\n<tr><td><b>Behavioural</b></td><td>Needs & benefits, decision roles, user & usage, occasions, loyalty, readiness, attitude</td><td>Festival-season gift packs</td></tr></table>\n<h3>VALS framework (Values, Attitudes and Lifestyles)</h3><p>By Strategic Business Insights (SBI). Classifies US adults into <b>8 types</b> using two dimensions: <b>primary motivation</b> and <b>resources</b> (income, education, self-confidence, energy, innovativeness, impulsiveness, leadership, vanity…).</p>\n<ul><li><b>Motivations:</b> <b>Ideals</b> (guided by knowledge and principles) · <b>Achievement</b> (demonstrate success to peers) · <b>Self-expression</b> (social or physical activity, variety, risk)</li></ul>\n<table><tr><th>Type</th><th>Profile</th></tr>\n<tr><td>Innovators</td><td>Successful, sophisticated, take-charge, high self-esteem; highest resources</td></tr>\n<tr><td>Thinkers</td><td>Mature, satisfied, reflective; ideals; value order, knowledge; seek durability, functionality, value</td></tr>\n<tr><td>Achievers</td><td>Goal-oriented, career and family; premium products that show success</td></tr>\n<tr><td>Experiencers</td><td>Young, enthusiastic, impulsive; spend on fashion, entertainment, socialising</td></tr>\n<tr><td>Believers</td><td>Conservative, conventional, traditional, concrete beliefs (ideals, low resources)</td></tr>\n<tr><td>Strivers</td><td>Trendy, fun-loving, resource-constrained; stylish products that copy the wealthy</td></tr>\n<tr><td>Makers</td><td>Practical, down-to-earth, self-sufficient; like working with their hands</td></tr>\n<tr><td>Survivors</td><td>Elderly, passive, worried about change, loyal to favourite brands; lowest resources</td></tr></table>\n<h3>Behavioural segmentation variables</h3><ul><li><b>Decision roles:</b> initiator → influencer → decider → buyer → user</li><li><b>User status:</b> non-user, potential, ex-user, first-time, regular</li><li><b>Usage rate:</b> light, medium, heavy</li><li><b>Buyer-readiness:</b> unaware → aware → informed → interested → desire → intend to buy</li><li><b>Loyalty status:</b> hard-core, split loyal, shifting loyal, switchers</li><li><b>Attitude:</b> enthusiastic, positive, indifferent, negative, hostile</li><li>Also occasions and benefits sought</li></ul>\n<h3>Segmenting business (B2B) markets</h3><table><tr><th>Variable</th><th>Questions</th></tr>\n<tr><td>Demographic</td><td>Which industry, company size, location to serve</td></tr>\n<tr><td>Operating variables</td><td>Technology; user status (heavy/medium/light/non-user); customer capabilities</td></tr>\n<tr><td>Purchasing approaches</td><td>Centralised vs decentralised buying; engineering vs finance-dominated power; existing relationships; policies (leasing, service, bidding); criteria (quality, service, price)</td></tr>\n<tr><td>Situational factors</td><td>Urgency, specific application, order size</td></tr>\n<tr><td>Personal characteristics</td><td>Buyer–seller similarity, attitude towards risk, loyalty</td></tr></table>\n<p>Flexible market offering: a <b>naked solution</b> (same for all) plus <b>discretionary options</b> that add value.</p>\n<h3>Target market and targeting</h3><p>A <b>target market</b> is the group within the serviceable available market at which a firm aims its marketing efforts; a subset of the total market. <b>Market targeting</b> = deciding how many and which segments to serve. Segment attractiveness can be judged with <b>Porter's Five Forces</b>.</p>\n<h3>Effective segmentation criteria</h3><ul><li><b>Measurable</b>: size, purchasing power can be measured</li><li><b>Substantial</b>: large and profitable enough</li><li><b>Accessible</b>: can be reached and served</li><li><b>Differentiable</b>: distinguishable, respond differently to marketing programmes</li><li><b>Actionable</b>: a programme can be developed to serve it</li></ul>\n<h3>Levels of segmentation</h3><p>No segmentation (mass) → segments → <b>niche</b> (a narrowly defined group seeking a distinctive mix of benefits) → <b>individuals (customerization)</b>.</p>\n<h3>Five patterns of target market selection</h3><ol><li><b>Single-segment concentration</b>: one product, one market</li><li><b>Selective specialisation</b>: a few attractive segments, unrelated</li><li><b>Product specialisation</b>: one product sold to several markets</li><li><b>Market specialisation</b>: many products for one market</li><li><b>Full market coverage</b>: all customers with all products</li></ol>\n<h3>Full-coverage strategies</h3><table><tr><th>Strategy</th><th>Meaning</th></tr><tr><td><b>Undifferentiated</b></td><td>One offer for the whole market (one marketing mix)</td></tr><tr><td><b>Differentiated</b></td><td>Different products/mixes for different segments</td></tr><tr><td><b>Concentrated</b></td><td>Focus on a smaller group (niche)</td></tr></table>\n<h3>Customer value proposition (CVP)</h3><p>A clear, concise statement of <b>why a specific customer should choose your offering over competitors</b>, by showing how it solves their problem.</p>\n<ul><li><b>CVP</b>: broad: total value, relevance and outcomes; converts attention into a buying decision</li><li><b>USP</b>: narrow: one distinct feature; captures initial attention</li><li>Three parts: <b>target customer</b> (who, what job) · <b>customer need</b> (problem/desire) · <b>unique value</b> (benefit delivered better or differently)</li><li><b>Perceived value = customer benefits (functional, emotional, social, convenience) − customer sacrifices (money, time, effort, risk)</b>. Value is more than a low price (e.g. IKEA: stylish furniture at accessible prices via self-service and flat-pack)</li></ul>\n<p><b>CVP formula:</b> For [target customer], our [offering] helps them [achieve an outcome] by [distinctive benefit / reason to believe].<br><i>Campus café: For students between classes, our café provides fresh, affordable meals in under five minutes, so they can eat well without missing class.</i></p>\n<p>A strong CVP is customer-specific, focused on outcomes not features, differentiated, and credible/deliverable. Key test: would the target customer understand the benefit, and why choose you?</p>\n"
   }
  ],
  "guide": "\n<h3>How to crack scenario & case questions</h3>\n<p>Ma'am's course objective is \"case-method discipline: <b>read, identify, analyse, recommend</b>\". Use that exact sequence.</p>\n<ol>\n<li><b>Read the question first</b>, then the case. Underline numbers, names, complaints and quotes.</li>\n<li><b>Identify the concept</b> the case is testing. Clue words: \"two bosses\" → organising/unity of command; \"observed\", \"attention\" → Hawthorne; \"suppliers few\" → supplier power; \"sell the loss-making division\" → divestment; \"rated everyone average\" → central tendency.</li>\n<li><b>Analyse</b> using a named framework: POLC, Mintzberg, PESTEL, Five Forces, SWOT/TOWS, generic strategy, VRIO, ratios, recruitment sources, appraisal methods.</li>\n<li><b>Recommend</b> 2–4 specific actions, each justified by the framework and the case facts.</li>\n<li><b>Conclude</b> with one line linking back to the goal (growth, profit, customer value, ethics).</li>\n</ol>\n<h3>For MCQ-style scenarios</h3>\n<ul><li>Eliminate options that are true statements but don't answer <i>this</i> scenario.</li>\n<li>Watch for internal vs external (SWOT), backward vs forward (integration), efficiency vs effectiveness, recruitment vs selection, incentives vs fringe benefits.</li>\n<li>If two options look right, pick the one that matches the <b>specific detail</b> in the case.</li></ul>\n<h3>Answer template for a 10-mark case</h3>\n<div class=\"flow\">Problem (2 lines) → Concept/framework named → Analysis using 3–4 case facts → Recommendations with reasons → Conclusion</div>",
@@ -3774,6 +3782,424 @@ window.SUBJECT_DATA.pbm = {
     "Selling, promoting and pricing"
    ],
    "STP: segment the market, target chosen segments, position the brand in customers' minds."
+  ],
+  [
+   "stp",
+   "A market segment is:",
+   "A group of customers sharing a similar set of needs and wants",
+   [
+    "All customers in a country",
+    "A single product line",
+    "The company's sales team"
+   ],
+   "Definition from Lecture 25."
+  ],
+  [
+   "stp",
+   "Dividing a market into nations, states, cities or neighbourhoods is:",
+   "Geographic segmentation",
+   [
+    "Demographic segmentation",
+    "Psychographic segmentation",
+    "Behavioural segmentation"
+   ],
+   "Geographic units."
+  ],
+  [
+   "stp",
+   "Segmenting by age, gender, income and life stage is:",
+   "Demographic segmentation",
+   [
+    "Geographic segmentation",
+    "Behavioural segmentation",
+    "Psychographic segmentation"
+   ],
+   "Demographic variables."
+  ],
+  [
+   "stp",
+   "Using psychology and demographics to understand consumers' values and lifestyles is:",
+   "Psychographic segmentation",
+   [
+    "Geographic segmentation",
+    "Usage-rate segmentation",
+    "Mass marketing"
+   ],
+   "VALS is the classic psychographic tool."
+  ],
+  [
+   "stp",
+   "VALS stands for:",
+   "Values, Attitudes and Lifestyles",
+   [
+    "Value Added Line Services",
+    "Variable Analysis of Loyal Segments",
+    "Volume And Loyalty Score"
+   ],
+   "Developed by Strategic Business Insights (SBI)."
+  ],
+  [
+   "stp",
+   "VALS classifies consumers along which two dimensions?",
+   "Primary motivation and resources",
+   [
+    "Price and place",
+    "Age and gender",
+    "Loyalty and usage rate"
+   ],
+   "Motivations: ideals, achievement, self-expression."
+  ],
+  [
+   "stp",
+   "How many VALS segments are there?",
+   "8",
+   [
+    "4",
+    "5",
+    "10"
+   ],
+   "Innovators, Thinkers, Achievers, Experiencers, Believers, Strivers, Makers, Survivors."
+  ],
+  [
+   "stp",
+   "Consumers driven by knowledge and principles are motivated primarily by:",
+   "Ideals",
+   [
+    "Achievement",
+    "Self-expression",
+    "Survival"
+   ],
+   "Thinkers and Believers."
+  ],
+  [
+   "stp",
+   "Young, enthusiastic, impulsive consumers who spend heavily on fashion and socialising are VALS:",
+   "Experiencers",
+   [
+    "Thinkers",
+    "Survivors",
+    "Makers"
+   ],
+   "Motivated by self-expression."
+  ],
+  [
+   "stp",
+   "Goal-oriented people focused on career and family who favour premium products that show success are:",
+   "Achievers",
+   [
+    "Strivers",
+    "Believers",
+    "Makers"
+   ],
+   "Motivated by achievement, higher resources."
+  ],
+  [
+   "stp",
+   "Trendy, fun-loving but resource-constrained consumers who buy stylish products imitating the wealthy are:",
+   "Strivers",
+   [
+    "Innovators",
+    "Thinkers",
+    "Survivors"
+   ],
+   "Achievement-motivated with low resources."
+  ],
+  [
+   "stp",
+   "Elderly, passive consumers concerned about change and loyal to favourite brands are:",
+   "Survivors",
+   [
+    "Believers",
+    "Experiencers",
+    "Achievers"
+   ],
+   "Lowest resources."
+  ],
+  [
+   "stp",
+   "Practical, self-sufficient people who like to work with their hands are:",
+   "Makers",
+   [
+    "Thinkers",
+    "Strivers",
+    "Innovators"
+   ],
+   "Self-expression with lower resources."
+  ],
+  [
+   "stp",
+   "Mature, reflective people who value order, knowledge and responsibility and seek durable, functional products are:",
+   "Thinkers",
+   [
+    "Experiencers",
+    "Strivers",
+    "Makers"
+   ],
+   "Ideals-motivated with higher resources."
+  ],
+  [
+   "stp",
+   "Segmenting by usage rate, loyalty status and buyer-readiness is:",
+   "Behavioural segmentation",
+   [
+    "Geographic segmentation",
+    "Demographic segmentation",
+    "Psychographic segmentation"
+   ],
+   "Based on how people behave towards the product."
+  ],
+  [
+   "stp",
+   "In the decision roles of buying, the person who first suggests buying the product is the:",
+   "Initiator",
+   [
+    "Decider",
+    "Buyer",
+    "User"
+   ],
+   "Initiator → influencer → decider → buyer → user."
+  ],
+  [
+   "stp",
+   "A customer who buys one brand all the time is, in loyalty status:",
+   "Hard-core loyal",
+   [
+    "Switcher",
+    "Shifting loyal",
+    "Split loyal"
+   ],
+   "Split loyal: 2–3 brands; shifting: moves from one to another; switchers: no loyalty."
+  ],
+  [
+   "stp",
+   "The buyer-readiness stage that comes just before purchase is:",
+   "Intend to buy",
+   [
+    "Aware",
+    "Informed",
+    "Unaware"
+   ],
+   "Unaware → aware → informed → interested → desire → intend to buy."
+  ],
+  [
+   "stp",
+   "For business markets, 'centralised vs decentralised purchasing' falls under:",
+   "Purchasing approaches",
+   [
+    "Situational factors",
+    "Operating variables",
+    "Personal characteristics"
+   ],
+   "Along with power structure, relationships, policies, criteria."
+  ],
+  [
+   "stp",
+   "Urgency, specific application and size of order are B2B:",
+   "Situational factors",
+   [
+    "Demographic variables",
+    "Operating variables",
+    "Purchasing approaches"
+   ],
+   "From the B2B segmentation table."
+  ],
+  [
+   "stp",
+   "Which is NOT a criterion for effective segmentation?",
+   "Fashionable",
+   [
+    "Measurable",
+    "Substantial",
+    "Actionable"
+   ],
+   "Measurable, Substantial, Accessible, Differentiable, Actionable."
+  ],
+  [
+   "stp",
+   "A segment that is large and profitable enough to serve is:",
+   "Substantial",
+   [
+    "Accessible",
+    "Measurable",
+    "Differentiable"
+   ],
+   "Substantial = worth serving."
+  ],
+  [
+   "stp",
+   "A segment that can be effectively reached and served is:",
+   "Accessible",
+   [
+    "Substantial",
+    "Actionable",
+    "Measurable"
+   ],
+   "Accessible."
+  ],
+  [
+   "stp",
+   "A narrowly defined customer group seeking a distinctive mix of benefits within a segment is a:",
+   "Niche",
+   [
+    "Mass market",
+    "Full market",
+    "Customerization"
+   ],
+   "Niche marketing."
+  ],
+  [
+   "stp",
+   "Serving each customer individually is called:",
+   "Customerization",
+   [
+    "Mass marketing",
+    "Undifferentiated marketing",
+    "Product specialisation"
+   ],
+   "The finest level of segmentation."
+  ],
+  [
+   "stp",
+   "Selling one product to several different markets is:",
+   "Product specialisation",
+   [
+    "Market specialisation",
+    "Single-segment concentration",
+    "Selective specialisation"
+   ],
+   "Market specialisation = many products for one market."
+  ],
+  [
+   "stp",
+   "Offering many products to serve one customer group is:",
+   "Market specialisation",
+   [
+    "Product specialisation",
+    "Full market coverage",
+    "Undifferentiated marketing"
+   ],
+   "Pattern 4 of 5."
+  ],
+  [
+   "stp",
+   "One offer for the whole market with a single marketing mix is:",
+   "Undifferentiated marketing",
+   [
+    "Differentiated marketing",
+    "Concentrated marketing",
+    "Niche marketing"
+   ],
+   "Mass approach."
+  ],
+  [
+   "stp",
+   "Designing different products and marketing mixes for different segments is:",
+   "Differentiated marketing",
+   [
+    "Undifferentiated marketing",
+    "Concentrated marketing",
+    "Customerization"
+   ],
+   "Full coverage with tailored mixes."
+  ],
+  [
+   "stp",
+   "Focusing on a small niche group is:",
+   "Concentrated marketing",
+   [
+    "Differentiated marketing",
+    "Undifferentiated marketing",
+    "Mass marketing"
+   ],
+   "Common for start-ups."
+  ],
+  [
+   "stp",
+   "The tool suggested in Lecture 25 to judge segment attractiveness is:",
+   "Porter's Five Forces",
+   [
+    "SWOT only",
+    "Fayol's 14 principles",
+    "Maslow's hierarchy"
+   ],
+   "Competitive intensity decides attractiveness."
+  ],
+  [
+   "stp",
+   "A customer value proposition (CVP) explains:",
+   "Why a specific customer should choose your offering over alternatives",
+   [
+    "The company's mission statement",
+    "The price list",
+    "The organisation chart"
+   ],
+   "Clear promise of the value a customer can expect."
+  ],
+  [
+   "stp",
+   "CVP vs USP: a USP focuses on:",
+   "One distinct feature that separates a product from others",
+   [
+    "Total value and outcomes for the customer",
+    "The firm's profit",
+    "The supply chain"
+   ],
+   "USP captures attention; CVP converts it into a buying decision."
+  ],
+  [
+   "stp",
+   "Perceived value equals:",
+   "Customer benefits − customer sacrifices",
+   [
+    "Price − cost",
+    "Sales − expenses",
+    "Features × price"
+   ],
+   "Benefits: functional, emotional, social, convenience. Sacrifices: money, time, effort, risk."
+  ],
+  [
+   "stp",
+   "Which is a customer SACRIFICE in perceived value?",
+   "Time and effort",
+   [
+    "Emotional benefit",
+    "Convenience",
+    "Social status"
+   ],
+   "Sacrifices: money, time, effort, risk."
+  ],
+  [
+   "stp",
+   "'For students between classes, our café provides fresh, affordable meals in under five minutes' is an example of a:",
+   "Customer value proposition",
+   [
+    "Mission statement",
+    "SWOT",
+    "Brand logo"
+   ],
+   "Follows the CVP formula."
+  ],
+  [
+   "stp",
+   "A strong CVP should be:",
+   "Customer-specific, outcome-focused, differentiated and credible",
+   [
+    "Feature-heavy and vague",
+    "Only about low price",
+    "The same for every customer"
+   ],
+   "From the Lecture 25 checklist."
+  ],
+  [
+   "stp",
+   "IKEA's value proposition shows that:",
+   "Value is more than a low price: style and function at accessible prices",
+   [
+    "Only price matters",
+    "Delivery must always be free",
+    "Luxury is the only value"
+   ],
+   "Self-service and flat-pack keep costs down."
   ]
  ],
  "casesets": [
@@ -5997,6 +6423,136 @@ window.SUBJECT_DATA.pbm = {
      "physical evidence|ambience|interior"
     ]
    ]
+  ],
+  [
+   "stp",
+   "Explain the four bases of segmenting consumer markets with one example each. (5 marks)",
+   [
+    [
+     "Geographic: nations, regions, cities; example",
+     1.25,
+     "geographic|region|city"
+    ],
+    [
+     "Demographic: age, gender, income, life stage; example",
+     1.25,
+     "demographic|age|income|gender"
+    ],
+    [
+     "Psychographic: lifestyle, values, personality, VALS; example",
+     1.25,
+     "psychographic|lifestyle|vals|values"
+    ],
+    [
+     "Behavioural: usage rate, loyalty, occasions, benefits; example",
+     1.25,
+     "behaviour|usage|loyal|occasion|benefit"
+    ]
+   ]
+  ],
+  [
+   "stp",
+   "What are the criteria for effective segmentation? Apply them to a segment of 'college students who order food late at night'. (5 marks)",
+   [
+    [
+     "Measurable: size and spending can be measured",
+     1,
+     "measurable|measure"
+    ],
+    [
+     "Substantial: large and profitable enough",
+     1,
+     "substantial|profitable|large"
+    ],
+    [
+     "Accessible: can be reached (apps, campus)",
+     1,
+     "accessible|reach"
+    ],
+    [
+     "Differentiable: responds differently from other segments",
+     1,
+     "differentiable|different"
+    ],
+    [
+     "Actionable: a programme can be designed for it",
+     1,
+     "actionable|programme|program"
+    ]
+   ]
+  ],
+  [
+   "stp",
+   "Distinguish undifferentiated, differentiated and concentrated marketing with examples. (5 marks)",
+   [
+    [
+     "Undifferentiated: one offer and mix for the whole market",
+     1.5,
+     "undifferentiated|one offer|whole market|mass"
+    ],
+    [
+     "Differentiated: different products/mixes for different segments",
+     1.5,
+     "differentiated|different segments|different products"
+    ],
+    [
+     "Concentrated: focus on a small niche",
+     1.5,
+     "concentrated|niche"
+    ],
+    [
+     "Relevant examples",
+     0.5,
+     "example|e.g|such as"
+    ]
+   ]
+  ],
+  [
+   "stp",
+   "What is a customer value proposition? How is it different from a USP? Write a CVP for a product of your choice. (5 marks)",
+   [
+    [
+     "CVP: why a specific customer should choose you, how it solves their problem",
+     1.5,
+     "why|choose|solve|problem"
+    ],
+    [
+     "USP: one distinct feature; CVP: total value/outcomes; USP gets attention, CVP converts",
+     1.5,
+     "usp|feature|attention|convert"
+    ],
+    [
+     "Perceived value = benefits − sacrifices",
+     1,
+     "benefit|sacrific"
+    ],
+    [
+     "A CVP written in the formula: for [customer], our [offering] helps [outcome] by [benefit]",
+     1,
+     "for |helps|by "
+    ]
+   ]
+  ],
+  [
+   "stp",
+   "Explain the VALS framework and describe any four VALS segments. (5 marks)",
+   [
+    [
+     "VALS = Values, Attitudes and Lifestyles by SBI; 8 types",
+     1,
+     "values|attitude|lifestyle|sbi|eight|8"
+    ],
+    [
+     "Two dimensions: primary motivation (ideals, achievement, self-expression) and resources",
+     1.5,
+     "motivation|ideals|achievement|self-expression|resources"
+    ],
+    [
+     "Describes four types correctly (e.g. Innovators, Thinkers, Achievers, Experiencers, Believers, Strivers, Makers, Survivors)",
+     2.5,
+     "innovator|thinker|achiever|experiencer|believer|striver|maker|survivor"
+    ]
+   ]
   ]
  ],
  "long": [
@@ -6838,5 +7394,853 @@ window.SUBJECT_DATA.pbm = {
   "shortMarks": 5,
   "longMarks": 30,
   "note": "Pattern assumed from the course handout (end-term 70 marks). Will be updated when the exact pattern is confirmed."
- }
+ },
+ "cards": [
+  [
+   "business",
+   "Business (definition)",
+   "An organised economic activity combining resources to create and deliver products/services that give customers value, usually for revenue, aiming at sustainable value."
+  ],
+  [
+   "business",
+   "Business = ?",
+   "Problem solving + Value creation + Value capture"
+  ],
+  [
+   "business",
+   "Why does growth need management?",
+   "The business grows faster than its management system: more staff, orders and complexity need planning, organising, delegation, coordination and control."
+  ],
+  [
+   "business",
+   "Organisation",
+   "A structured arrangement of people, resources, responsibilities and authority to achieve common objectives."
+  ],
+  [
+   "business",
+   "What does the form of organisation decide?",
+   "Ownership, control, profit sharing, who bears risk, capital that can be raised, legal status, continuity."
+  ],
+  [
+   "business",
+   "Sole proprietorship: key limitation",
+   "Unlimited personal liability (plus limited capital and heavy dependence on the owner)."
+  ],
+  [
+   "business",
+   "Partnership: key risk",
+   "Conflict between partners, slow joint decisions, shared profits, continuity issues."
+  ],
+  [
+   "forms",
+   "LLP in one line",
+   "Hybrid: partnership flexibility + limited liability and separate legal identity (LLP Act, 2008)."
+  ],
+  [
+   "forms",
+   "Why LLP suits law/consulting firms",
+   "Value lies in expertise, reputation and relationships (intellectual capital); partners manage with limited liability."
+  ],
+  [
+   "forms",
+   "Company law in India",
+   "Companies Act, 2013 (Section 3: public, private, One Person Company)."
+  ],
+  [
+   "forms",
+   "One Person Company (OPC)",
+   "A single person forms a company with separate legal identity and limited liability."
+  ],
+  [
+   "forms",
+   "Private vs public company",
+   "Private: closely held, share transfer restricted. Public: broad shareholders, can list, governance matters more."
+  ],
+  [
+   "forms",
+   "Cooperative + example",
+   "Voluntary association for members' common needs, member benefit over profit. Amul."
+  ],
+  [
+   "forms",
+   "Digital business value loop",
+   "Data → Algorithms → Decisions → Customer experience → Transactions → More data"
+  ],
+  [
+   "polc",
+   "Efficiency vs effectiveness",
+   "Efficiency = doing things right (fewer resources). Effectiveness = doing the right things (right goals)."
+  ],
+  [
+   "polc",
+   "Efficient but ineffective example",
+   "Fastest delivery algorithm that customers don't want: excellent execution, wrong strategy."
+  ],
+  [
+   "polc",
+   "POLC",
+   "Planning, Organising, Leading, Controlling (Fayol's functions, modernised)."
+  ],
+  [
+   "polc",
+   "Fayol's original 5 functions",
+   "Planning, Organising, Commanding, Coordinating, Controlling."
+  ],
+  [
+   "polc",
+   "Controlling means…",
+   "Comparing actual performance with desired performance and taking corrective action (not controlling people)."
+  ],
+  [
+   "polc",
+   "Control loop",
+   "Measure → Compare → Diagnose → Correct → Learn"
+  ],
+  [
+   "polc",
+   "Planning chain",
+   "Objective → Strategy → Activities → Resources → Timeline → KPIs"
+  ],
+  [
+   "mintz",
+   "Mintzberg's 3 role groups",
+   "Interpersonal, Informational, Decisional (10 roles in total)."
+  ],
+  [
+   "mintz",
+   "Interpersonal roles",
+   "Figurehead, Leader, Liaison"
+  ],
+  [
+   "mintz",
+   "Informational roles",
+   "Monitor, Disseminator, Spokesperson"
+  ],
+  [
+   "mintz",
+   "Decisional roles",
+   "Entrepreneur, Disturbance handler, Resource allocator, Negotiator"
+  ],
+  [
+   "mintz",
+   "Katz's 3 skills",
+   "Technical (lower level), Human (all levels), Conceptual (top level)."
+  ],
+  [
+   "mintz",
+   "Luthans: successful vs effective",
+   "Successful (fast-promoted) managers network most; effective managers communicate most."
+  ],
+  [
+   "evolution",
+   "Scientific management (Taylor)",
+   "Find the one best way: divide tasks, standardise, time-study, train, set standards."
+  ],
+  [
+   "evolution",
+   "Systems theory",
+   "Organisation = interconnected parts; a failure in one affects all."
+  ],
+  [
+   "evolution",
+   "Contingency approach",
+   "\"It depends\": no single best way; fit management to the situation."
+  ],
+  [
+   "evolution",
+   "TQM",
+   "Continuous improvement, customer satisfaction, employee involvement: fix the whole process, not blame one person."
+  ],
+  [
+   "evolution",
+   "Agile management",
+   "Identify → small change → test → feedback → improve → repeat."
+  ],
+  [
+   "evolution",
+   "Modern management question",
+   "How can we continuously adapt and create value in a rapidly changing environment?"
+  ],
+  [
+   "hawthorne",
+   "Hawthorne effect",
+   "People change behaviour when they know they are being observed."
+  ],
+  [
+   "hawthorne",
+   "Illumination study result",
+   "Output rose when lighting increased AND decreased, so attention, not light, mattered."
+  ],
+  [
+   "hawthorne",
+   "Bank wiring room lesson",
+   "Informal group norms beat financial incentives."
+  ],
+  [
+   "hawthorne",
+   "Relay assembly test room",
+   "Output stayed high even after improvements were removed: attention and a friendly group."
+  ],
+  [
+   "hawthorne",
+   "Hawthorne's big shift",
+   "From Taylor's engineering approach to the social-science / human relations approach (Elton Mayo)."
+  ],
+  [
+   "env",
+   "Business environment features",
+   "Dynamic, complex, uncertain, interrelated, relative."
+  ],
+  [
+   "env",
+   "Micro environment",
+   "Suppliers, customers, competitors, intermediaries, financiers, publics."
+  ],
+  [
+   "env",
+   "PESTEL",
+   "Political, Economic, Social, Technological, Environmental, Legal"
+  ],
+  [
+   "env",
+   "Environmental scanning",
+   "Scan → Analyse → Interpret → Act (the \"eyes and ears\" of a business)."
+  ],
+  [
+   "env",
+   "IKEA India: political factor",
+   "FDI rule: source 30% locally (delayed entry until 2018)."
+  ],
+  [
+   "env",
+   "IKEA India: social factor",
+   "Small homes, joint families, carpenter culture → paid assembly and delivery."
+  ],
+  [
+   "env",
+   "Netflix India: economic factor",
+   "Price-sensitive market → ₹149 mobile-only plan."
+  ],
+  [
+   "swot",
+   "SWOT: internal vs external",
+   "S & W = internal (controllable). O & T = external."
+  ],
+  [
+   "swot",
+   "TOWS quadrants",
+   "SO (use strengths for opportunities), WO, ST, WT (defensive)."
+  ],
+  [
+   "swot",
+   "SWOT vs TOWS",
+   "SWOT understands the situation; TOWS turns it into strategy."
+  ],
+  [
+   "swot",
+   "Kodak's core mistake",
+   "Protected film profits (70%+) and sat on its own 1975 digital camera; bankrupt in 2012."
+  ],
+  [
+   "swot",
+   "Amul ST example",
+   "Strong brand + distribution used against private dairy brands."
+  ],
+  [
+   "porter5",
+   "Porter's five forces",
+   "New entrants, supplier power, buyer power, substitutes, rivalry."
+  ],
+  [
+   "porter5",
+   "Biggest single force",
+   "Competitive rivalry: the other four feed into it."
+  ],
+  [
+   "porter5",
+   "Substitute vs rival",
+   "Rival = same industry (Ola vs Uber). Substitute = different product, same need (metro vs cab)."
+  ],
+  [
+   "porter5",
+   "Entry barriers",
+   "Economies of scale, network effects, switching costs, capital, distribution access, government policy."
+  ],
+  [
+   "porter5",
+   "Strong forces mean…",
+   "Lower industry profitability and attractiveness."
+  ],
+  [
+   "strategy",
+   "Strategy (Porter)",
+   "Creating a unique and valuable position through activities different from rivals."
+  ],
+  [
+   "strategy",
+   "Vision / Mission / Values",
+   "Vision = destination; Mission = present purpose (what, whom, why); Values = rules for the journey."
+  ],
+  [
+   "strategy",
+   "Tesla's mission",
+   "\"To accelerate the world's transition to sustainable energy.\""
+  ],
+  [
+   "strategy",
+   "3 levels of strategy",
+   "Corporate (which businesses?), Business (how to compete?), Functional (how each department supports)."
+  ],
+  [
+   "strategy",
+   "Corporate alternatives",
+   "Expansion, Stability, Retrenchment, Combination."
+  ],
+  [
+   "strategy",
+   "Backward vs forward integration",
+   "Backward = toward suppliers (make components). Forward = toward customers (own stores)."
+  ],
+  [
+   "strategy",
+   "Concentration",
+   "Pour more resources into the existing business instead of new industries."
+  ],
+  [
+   "generic",
+   "Related vs unrelated diversification",
+   "Related = synergy with existing tech/customers. Unrelated = no operational link (conglomerate)."
+  ],
+  [
+   "generic",
+   "Retrenchment types",
+   "Turnaround = fix it; Divestment = sell it; Liquidation = close it."
+  ],
+  [
+   "generic",
+   "Combination strategy",
+   "Different strategies for different businesses at the same time."
+  ],
+  [
+   "generic",
+   "Porter's generic strategies",
+   "Cost leadership, Differentiation, Focus (cost focus / differentiation focus)."
+  ],
+  [
+   "generic",
+   "Cost leadership examples",
+   "Walmart, IndiGo."
+  ],
+  [
+   "generic",
+   "Differentiation example",
+   "Apple: design, brand, ecosystem → premium price."
+  ],
+  [
+   "generic",
+   "3 bases of strategic positioning",
+   "Variety-based (what), Needs-based (who), Access-based (how reached)."
+  ],
+  [
+   "generic",
+   "Business strategy formula",
+   "WHO → WHAT → HOW"
+  ],
+  [
+   "rbv",
+   "RBV (Barney)",
+   "Advantage comes from internal resources (what you have) and capabilities (what you can do)."
+  ],
+  [
+   "rbv",
+   "VRIO",
+   "Valuable, Rare, Inimitable, Organised → sustained competitive advantage."
+  ],
+  [
+   "rbv",
+   "Valuable but not rare =",
+   "Competitive parity"
+  ],
+  [
+   "rbv",
+   "Valuable + rare but easy to copy =",
+   "Temporary competitive advantage"
+  ],
+  [
+   "rbv",
+   "Blue ocean",
+   "Create uncontested market space; differentiation + low cost together (value innovation)."
+  ],
+  [
+   "rbv",
+   "Red ocean",
+   "Fight in existing markets for the same customers; margins shrink."
+  ],
+  [
+   "ops",
+   "Operations management",
+   "Design, direction and control of processes that transform inputs into products/services."
+  ],
+  [
+   "ops",
+   "Process vs operation",
+   "Process = activities that transform inputs to outputs. Operation = resources performing (part of) a process."
+  ],
+  [
+   "ops",
+   "Productivity formula",
+   "Output ÷ Input (labour, machine, material, multifactor)."
+  ],
+  [
+   "ops",
+   "5 process types (low → high volume)",
+   "Project, Job, Batch, Line, Continuous"
+  ],
+  [
+   "ops",
+   "Volume–variety rule",
+   "As volume rises, variety falls and standardisation/automation rise."
+  ],
+  [
+   "scm",
+   "Three supply-chain flows",
+   "Material (supplier → customer), Information (both ways), Financial (customer → suppliers)."
+  ],
+  [
+   "scm",
+   "Bullwhip effect",
+   "Small demand changes amplify upstream (5% → 40%). Fix: share information."
+  ],
+  [
+   "scm",
+   "Internal vs external failure",
+   "Internal = defect caught before customer. External = after (refunds, reputation)."
+  ],
+  [
+   "scm",
+   "Competitive priorities",
+   "Cost, Quality, Time, Dependability, Flexibility, Innovation."
+  ],
+  [
+   "scm",
+   "Operations–strategy linkage",
+   "Marketing promises must be backed by operations capacity."
+  ],
+  [
+   "accounting",
+   "Accounting (definition)",
+   "Identifying, measuring, recording and communicating economic transactions."
+  ],
+  [
+   "accounting",
+   "Accounting equation",
+   "Assets = Liabilities + Capital"
+  ],
+  [
+   "accounting",
+   "Golden rules",
+   "Personal: debit receiver, credit giver. Real: debit what comes in, credit what goes out. Nominal: debit expenses/losses, credit incomes/gains."
+  ],
+  [
+   "accounting",
+   "5 accounting concepts",
+   "Business entity, Going concern, Money measurement, Dual aspect, Accounting period."
+  ],
+  [
+   "accounting",
+   "3 conventions",
+   "Conservatism, Consistency, Disclosure."
+  ],
+  [
+   "accounting",
+   "Trading vs P&L",
+   "Trading → gross profit (direct expenses). P&L → net profit (indirect expenses)."
+  ],
+  [
+   "accounting",
+   "Trial balance checks…",
+   "Arithmetical accuracy: total debits = total credits."
+  ],
+  [
+   "fsa",
+   "Common-size base",
+   "Income statement: net sales. Balance sheet: total assets."
+  ],
+  [
+   "fsa",
+   "Trend %",
+   "(Later − Earlier) ÷ Earlier × 100"
+  ],
+  [
+   "fsa",
+   "Cash flow: 3 activities",
+   "Operating, Investing, Financing."
+  ],
+  [
+   "fsa",
+   "Interest/dividend received vs paid",
+   "Received = investing. Paid = financing."
+  ],
+  [
+   "fsa",
+   "Indirect method starts with…",
+   "Net profit before tax, adjusted for non-cash items (add back depreciation)."
+  ],
+  [
+   "ratios",
+   "Current ratio (ideal)",
+   "Current assets ÷ Current liabilities = 2:1"
+  ],
+  [
+   "ratios",
+   "Quick ratio (ideal)",
+   "(CA − stock − prepaid) ÷ CL = 1:1"
+  ],
+  [
+   "ratios",
+   "Absolute liquid ratio (ideal)",
+   "(Cash + bank + marketable securities) ÷ CL = 0.5:1"
+  ],
+  [
+   "ratios",
+   "Debt-equity (safe)",
+   "Long-term debt ÷ Shareholders' funds = 2:1"
+  ],
+  [
+   "ratios",
+   "Inventory turnover",
+   "COGS ÷ Average stock (higher = better)"
+  ],
+  [
+   "ratios",
+   "ROCE",
+   "EBIT ÷ Capital employed × 100"
+  ],
+  [
+   "ratios",
+   "4 ratio groups",
+   "Liquidity, Solvency, Activity (turnover), Profitability."
+  ],
+  [
+   "wcm",
+   "Working capital",
+   "Current assets − Current liabilities"
+  ],
+  [
+   "wcm",
+   "EOQ formula",
+   "√(2DS ÷ H)"
+  ],
+  [
+   "wcm",
+   "Reorder level",
+   "Usage × Lead time"
+  ],
+  [
+   "wcm",
+   "ABC analysis",
+   "A = few items, high value (tight control). C = many items, low value."
+  ],
+  [
+   "wcm",
+   "Baumol vs Miller-Orr",
+   "Baumol: predictable cash flows. Miller-Orr: uncertain flows, upper/lower limits + target."
+  ],
+  [
+   "wcm",
+   "Liberal credit policy →",
+   "More working capital needed."
+  ],
+  [
+   "capstr",
+   "Capital structure",
+   "Mix of debt and equity financing a firm."
+  ],
+  [
+   "capstr",
+   "Optimum capital structure",
+   "Mix that minimises cost of capital and maximises firm value."
+  ],
+  [
+   "capstr",
+   "Why debt is cheaper",
+   "Interest is tax-deductible (tax shield)."
+  ],
+  [
+   "capstr",
+   "Operating vs financial leverage",
+   "Operating = fixed operating costs (business risk). Financial = interest (financial risk)."
+  ],
+  [
+   "capstr",
+   "Relevance theories",
+   "Net Income (Durand) and Traditional: capital structure affects value."
+  ],
+  [
+   "capstr",
+   "Irrelevance theories",
+   "Net Operating Income and Modigliani–Miller: value unaffected under ideal conditions."
+  ],
+  [
+   "hrm",
+   "HRM view of employees",
+   "An asset to be nurtured, not a cost to be controlled."
+  ],
+  [
+   "hrm",
+   "Ulrich's 4 HR roles",
+   "Strategic partner, Change agent, Employee champion, Administrative expert."
+  ],
+  [
+   "hrm",
+   "7 operative HR functions",
+   "Procurement, Development, Compensation, Integration, Maintenance, Human relations, Research."
+  ],
+  [
+   "hrm",
+   "Integration function includes",
+   "Motivation, satisfaction, grievance handling, discipline, industrial relations, engagement."
+  ],
+  [
+   "hrm",
+   "Maintenance function includes",
+   "Health & safety, welfare, retention, work-life balance, EAPs."
+  ],
+  [
+   "recruit",
+   "Recruitment vs selection",
+   "Recruitment = positive, builds a pool. Selection = negative, rejects unsuitable, leads to contract."
+  ],
+  [
+   "recruit",
+   "4 recruitment techniques",
+   "Direct (campus), Indirect (ads), Third-party (agencies, headhunters), Internet."
+  ],
+  [
+   "recruit",
+   "Confidential senior hire →",
+   "Executive search / headhunter (third-party)."
+  ],
+  [
+   "recruit",
+   "Selection steps",
+   "Application → Preliminary interview → Tests → Interview → Medical → Reference check → Final approval."
+  ],
+  [
+   "appraisal",
+   "Appraisal process",
+   "Set standards → Communicate → Measure → Compare → Feedback → Corrective action."
+  ],
+  [
+   "appraisal",
+   "360° vs 720°",
+   "720° = 360° feedback + development phase + second 360° to measure improvement."
+  ],
+  [
+   "appraisal",
+   "Halo effect",
+   "One trait colours ratings on all factors."
+  ],
+  [
+   "appraisal",
+   "Central tendency error",
+   "Rating everyone \"average\"."
+  ],
+  [
+   "appraisal",
+   "Recency error",
+   "Rating based on the most recent behaviour only."
+  ],
+  [
+   "appraisal",
+   "BARS",
+   "Rating scale where each point is anchored to an observable behaviour."
+  ],
+  [
+   "appraisal",
+   "MBO (Drucker)",
+   "Goals set jointly by employee and manager, reviewed together."
+  ],
+  [
+   "appraisal",
+   "Best interview style",
+   "Problem-solving (not tell-and-sell or tell-and-listen)."
+  ],
+  [
+   "comp",
+   "Internal equity vs external competitiveness",
+   "Fair pay inside the firm vs pay comparable to the market."
+  ],
+  [
+   "comp",
+   "Wages vs salary",
+   "Wages: manual work, daily/hourly. Salary: fixed monthly, professional roles."
+  ],
+  [
+   "comp",
+   "Time rate vs piece rate",
+   "Time: per hour/day, non-measurable work. Piece: per unit, output up, quality may fall."
+  ],
+  [
+   "comp",
+   "Incentives vs fringe benefits",
+   "Incentives: performance-based, direct. Fringe: welfare-based, indirect (PF, insurance)."
+  ],
+  [
+   "comp",
+   "Employee engagement",
+   "Emotional commitment, involvement and enthusiasm toward the organisation."
+  ],
+  [
+   "training",
+   "Gap concept",
+   "Expected − actual performance = training need (1,000 − 800 cars)."
+  ],
+  [
+   "training",
+   "ASK",
+   "Attitude, Skills, Knowledge"
+  ],
+  [
+   "training",
+   "Training vs development",
+   "Training: short, job-specific, non-managerial, reactive. Development: long-term, managerial, proactive."
+  ],
+  [
+   "training",
+   "OJT vs off-the-job",
+   "OJT: learn while doing, low cost. Off-the-job: classroom, workshops, e-learning."
+  ],
+  [
+   "hrtrends",
+   "Personnel mgmt vs strategic HRM",
+   "Personnel: administrative, reactive, employee = cost. SHRM: strategic, proactive, employee = asset."
+  ],
+  [
+   "hrtrends",
+   "Gig economy example",
+   "Zomato delivery partner: paid per delivery, flexible hours, no fixed salary."
+  ],
+  [
+   "hrtrends",
+   "AI in recruitment caution",
+   "\"AI can shortlist talent, but humans must make final decisions.\""
+  ],
+  [
+   "hrtrends",
+   "HR analytics example",
+   "Microsoft's data → hybrid work model."
+  ],
+  [
+   "hrtrends",
+   "E-HRM example",
+   "SAP SuccessFactors: leave, salary, training online."
+  ],
+  [
+   "marketing",
+   "Marketing (one line)",
+   "Not selling: identifying and meeting needs profitably."
+  ],
+  [
+   "marketing",
+   "6 marketing philosophies",
+   "Production, Product, Selling, Marketing, Societal, Holistic."
+  ],
+  [
+   "marketing",
+   "Marketing myopia",
+   "Focusing on your product, not the customer's underlying need (Nokia, Harley-Davidson)."
+  ],
+  [
+   "marketing",
+   "Selling vs marketing concept",
+   "Selling: factory → products → push → volume. Marketing: market → needs → integrated → satisfaction."
+  ],
+  [
+   "marketing",
+   "4Ps",
+   "Product, Price, Place, Promotion"
+  ],
+  [
+   "marketing",
+   "7Ps (services)",
+   "4Ps + People, Process, Physical evidence"
+  ],
+  [
+   "marketing",
+   "Skimming vs penetration",
+   "Skimming: high launch price. Penetration: low price to win share."
+  ],
+  [
+   "marketing",
+   "STP",
+   "Segmentation → Targeting → Positioning"
+  ],
+  [
+   "stp",
+   "4 bases of consumer segmentation",
+   "Geographic · Demographic · Psychographic · Behavioural"
+  ],
+  [
+   "stp",
+   "VALS",
+   "Values, Attitudes & Lifestyles (SBI): 8 types by motivation (ideals, achievement, self-expression) × resources"
+  ],
+  [
+   "stp",
+   "8 VALS types",
+   "Innovators, Thinkers, Achievers, Experiencers, Believers, Strivers, Makers, Survivors"
+  ],
+  [
+   "stp",
+   "Buying decision roles",
+   "Initiator → Influencer → Decider → Buyer → User"
+  ],
+  [
+   "stp",
+   "Loyalty status",
+   "Hard-core · split loyal · shifting loyal · switchers"
+  ],
+  [
+   "stp",
+   "Effective segmentation",
+   "Measurable, Substantial, Accessible, Differentiable, Actionable"
+  ],
+  [
+   "stp",
+   "5 targeting patterns",
+   "Single-segment, selective specialisation, product specialisation, market specialisation, full coverage"
+  ],
+  [
+   "stp",
+   "Full coverage strategies",
+   "Undifferentiated (one offer) · differentiated (mix per segment) · concentrated (niche)"
+  ],
+  [
+   "stp",
+   "CVP vs USP",
+   "CVP: total value/outcomes, converts. USP: one distinct feature, grabs attention."
+  ],
+  [
+   "stp",
+   "Perceived value",
+   "Benefits (functional, emotional, social, convenience) − sacrifices (money, time, effort, risk)"
+  ],
+  [
+   "stp",
+   "CVP formula",
+   "For [target customer], our [offering] helps them [outcome] by [distinctive benefit]."
+  ],
+  [
+   "stp",
+   "B2B segmentation variables",
+   "Demographic, operating variables, purchasing approaches, situational factors, personal characteristics"
+  ]
+ ],
+ "revision": {
+  "u1": "<h3>Business & forms</h3><ul><li><b>Business</b> = problem solving + value creation + value capture</li><li>Growth → complexity → need for <b>planning, organising, delegation, control</b></li><li>Forms: Sole (unlimited liability) → Partnership (conflict) → <b>LLP</b> (hybrid, LLP Act 2008) → <b>Company</b> (Companies Act 2013: private, public, OPC) → <b>Cooperative</b> (Amul)</li><li>Compare forms on: ownership, control, liability, capital, continuity</li></ul>\n<h3>Management</h3><ul><li><b>Efficiency</b> = doing things right · <b>Effectiveness</b> = doing the right things</li><li><b>POLC</b> (Fayol): plan → organise → lead → control (measure, compare, correct)</li><li><b>Mintzberg</b>: Interpersonal (figurehead, leader, liaison) · Informational (monitor, disseminator, spokesperson) · Decisional (entrepreneur, disturbance handler, resource allocator, negotiator)</li><li><b>Katz</b>: technical (low) · human (all) · conceptual (top)</li><li><b>Luthans</b>: successful managers network; effective managers communicate</li></ul>\n<h3>Evolution & Hawthorne</h3><ul><li>Taylor (efficiency) → Human relations → Systems & contingency (\"it depends\") → TQM → Digital, agile, CSR</li><li><b>Hawthorne effect</b>: behaviour changes when observed. Bank wiring: group norms beat pay. Elton Mayo → human relations</li></ul>",
+  "u2": "<h3>Environment</h3><ul><li>Features: dynamic, complex, uncertain, interrelated, relative</li><li>Internal · Micro (suppliers, customers, competitors…) · Macro (<b>PESTEL</b>)</li><li>Scanning: scan → analyse → interpret → act</li><li>IKEA: FDI 30% (P), ₹199 (E), assembly (S), app (T), wood (E), GST (L)</li></ul>\n<h3>SWOT, TOWS, Five Forces</h3><ul><li>SW internal, OT external · TOWS: SO, WO, ST, WT · Kodak = failure to act</li><li><b>Five forces</b>: entrants, suppliers, buyers, substitutes, rivalry (biggest). Strong forces = low profit</li></ul>\n<h3>Strategy</h3><ul><li>Vision (destination) · Mission (purpose) · Values (rules) – Tesla</li><li>Levels: corporate (which businesses) · business (how to compete) · functional</li><li>Corporate: <b>expansion</b> (concentration, integration: backward = suppliers, forward = customers, diversification), <b>stability</b>, <b>retrenchment</b> (turnaround fix, divestment sell, liquidation close), <b>combination</b></li><li>Generic: cost leadership (IndiGo), differentiation (Apple), focus</li><li>Positioning: variety (McDonald's) · needs (luxury hotel) · access (rural bank)</li><li><b>RBV/VRIO</b> (Barney) → sustained advantage · <b>Blue ocean</b> = new market space</li></ul>",
+  "u3": "<h3>Operations & supply chain</h3><ul><li>Inputs → transformation → outputs → customers · productivity = output ÷ input</li><li>Process types: project, job, batch, line, continuous (volume ↑, variety ↓)</li><li>3 flows: material, information, financial · <b>bullwhip</b> (fix: share info)</li><li>Quality = meet/exceed requirements · internal vs external failure · priorities: cost, quality, time, dependability, flexibility, innovation</li></ul>\n<h3>Finance</h3><ul><li><b>A = L + C</b> · golden rules · journal → ledger → trial balance → trading, P&L, balance sheet</li><li>Cash flow: operating, investing (interest received), financing (dividend paid)</li><li>Ratios: current 2:1, quick 1:1, absolute 0.5:1, D/E 2:1, ROCE = EBIT ÷ capital employed</li><li>WC = CA − CL · <b>EOQ = √(2DS/H)</b> · reorder = usage × lead time · ABC · Baumol vs Miller-Orr</li><li>Capital structure: debt cheaper (tax shield) but riskier · NI, Traditional (relevance) vs NOI, MM (irrelevance)</li></ul>\n<h3>HR</h3><ul><li>Ulrich: strategic partner, change agent, employee champion, admin expert · 7 operative functions</li><li>Recruitment (positive) vs selection (negative) · direct, indirect, third-party, internet</li><li>Appraisal: BARS, MBO, 360°/720° · errors: halo, central tendency, leniency, recency, similar-to-me</li><li>Pay: internal equity, external competitiveness · incentives vs fringe benefits</li><li>Training: gap concept, ASK, OJT vs off-the-job · Trends: SHRM, gig, AI, analytics, e-HRM</li></ul>\n<h3>Marketing</h3><ul><li>Philosophies: production → product → selling → marketing → societal → holistic · myopia</li><li>4Ps + People, Process, Physical evidence = 7Ps · skimming vs penetration · STP</li></ul><h3>Segmentation & CVP (L25)</h3><ul><li>Bases: geographic · demographic · psychographic (VALS: 8 types, ideals/achievement/self-expression × resources) · behavioural (roles, usage, loyalty, readiness)</li><li>Effective: measurable, substantial, accessible, differentiable, actionable</li><li>Patterns: single segment, selective, product spec., market spec., full coverage · undifferentiated / differentiated / concentrated (niche)</li><li>CVP = why choose us (outcomes) vs USP = one feature · value = benefits − sacrifices</li></ul>"
+ },
+ "tools": true
 };

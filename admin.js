@@ -27,7 +27,7 @@ loadAllNotes().then(() => { if (auth.currentUser && auth.currentUser.uid === ADM
 const app = initializeApp(firebaseConfig, "admin");
 const auth = getAuth(app), db = getDatabase(app);
 const R = p => ref(db, p);
-const D = { names: {}, lb: {}, users: {}, attempts: {}, presence: {} };
+const D = { names: {}, lb: {}, users: {}, attempts: {}, presence: {}, announce: {}, doubts: {} };
 let subs = [], sortKey = "xp", sortDir = -1, q = "";
 
 /* ---------- login ---------- */
@@ -52,7 +52,7 @@ onAuthStateChanged(auth, user => {
   $("#out").onclick = () => signOut(auth);
   $("#csv").onclick = exportCSV;
   $("#adm").innerHTML = `<p class="muted">Loading class data…</p>`;
-  for (const k of Object.keys(D)) subs.push(onValue(R(k), s => { D[k] = s.val() || {}; schedule(); }, e => { $("#adm").innerHTML = `<div class="empty">Couldn't read <b>${k}</b>: ${esc(e.message)}.<br>Check that the database rules from database.rules.json are published.</div>`; }));
+  for (const k of Object.keys(D)) subs.push(onValue(R(k), s => { D[k] = s.val() || {}; if (["presence"].includes(k) && $("#anText") && document.activeElement && ["anText", "anTitle"].includes(document.activeElement.id)) return; schedule(); }, e => { $("#adm").innerHTML = `<div class="empty">Couldn't read <b>${k}</b>: ${esc(e.message)}.<br>Check that the database rules from database.rules.json are published.</div>`; }));
 });
 let rt; const schedule = () => { clearTimeout(rt); rt = setTimeout(() => { render(); autoMerge(); }, 150); };
 /* students who registered the same name on two phones are combined automatically into their oldest profile */
@@ -78,7 +78,7 @@ function students() {
   return [...ids].map(id => {
     const u = D.users[id] || {}, l = D.lb[id] || {}, at = D.attempts[id] || {};
     const lastSeen = Math.max(u.lastSeen || 0, D.presence[id]?.ts || 0, l.ts || 0);
-    return { id, name: D.names[id] || "(no name yet)", u, l, live: live(id), lastSeen, study: u.studySec || 0, notes: count(u.notesRead), ans: u.mcqA || 0, acc: u.mcqA ? Math.round((u.mcqC || 0) / u.mcqA * 100) : 0, mocks: u.mockCount || count(at), best: u.mockBest || 0, xp: l.xp || 0, cases: count(u.casesDone), joined: u.createdAt || 0, dup: D.names[id] && dupKey[norm(D.names[id])].length > 1 };
+    return { id, name: D.names[id] || "(no name yet)", u, l, live: live(id), lastSeen, study: u.studySec || 0, notes: count(u.notesRead), ans: u.mcqA || 0, acc: u.mcqA ? Math.round((u.mcqC || 0) / u.mcqA * 100) : 0, mocks: u.mockCount || count(at), best: u.mockBest || 0, xp: l.xp || 0, cases: count(u.casesDone), wins: l.wins || u.wins || 0, joined: u.createdAt || 0, dup: D.names[id] && dupKey[norm(D.names[id])].length > 1 };
   });
 }
 
@@ -111,6 +111,7 @@ function bindTips(root) {
 function render() {
   if (sheetId && !students().some(x => x.id === sheetId)) closeSheet();
   const hadFocus = document.activeElement?.id === "srch";
+  const keepAn = { t: $("#anTitle")?.value || "", x: $("#anText")?.value || "", f: document.activeElement?.id };
   const st = students(), named = st.filter(s => D.names[s.id]);
   const now = new Date(), todayK = dayKey(now);
   const days = [...Array(14)].map((_, i) => { const d = new Date(now); d.setDate(d.getDate() - 13 + i); return d; });
@@ -132,7 +133,7 @@ function render() {
   // table
   let rows = st.filter(s => !q || s.name.toLowerCase().includes(q));
   rows.sort((a, b) => { const x = a[sortKey], y = b[sortKey]; return (typeof x === "string" ? x.localeCompare(y) : (x - y)) * sortDir; });
-  const cols = [["name", "Student"], ["lastSeen", "Last active"], ["study", "Study time", 1], ["notes", "Notes", 1], ["ans", "Answered", 1], ["acc", "Accuracy", 1], ["mocks", "Mocks", 1], ["best", "Best mock", 1], ["cases", "Cases", 1], ["xp", "XP", 1]];
+  const cols = [["name", "Student"], ["lastSeen", "Last active"], ["study", "Study time", 1], ["notes", "Notes", 1], ["ans", "Answered", 1], ["acc", "Accuracy", 1], ["mocks", "Mocks", 1], ["best", "Best mock", 1], ["cases", "Cases", 1], ["wins", "Wins", 1], ["xp", "XP", 1]];
   const feed = allAtt.sort((a, b) => (b.ts || 0) - (a.ts || 0)).slice(0, 12);
 
   $("#adm").innerHTML = `
@@ -161,10 +162,23 @@ function render() {
   </div>
   <div class="panel"><div class="toolbar"><h3 style="margin:0">Students</h3><span class="spacer"></span><input class="search" id="srch" placeholder="Search by name" value="${esc(q)}"></div>
     <div class="tbl-wrap"><table class="tbl"><thead><tr>${cols.map(([k, l, r]) => `<th data-k="${k}" class="${r ? "r" : ""}">${l}${sortKey === k ? (sortDir < 0 ? " ↓" : " ↑") : ""}</th>`).join("")}</tr></thead>
-    <tbody>${rows.map(s => `<tr class="rowx" data-id="${s.id}"><td><span class="dot ${s.live ? "on" : ""}"></span>${esc(s.name)}${s.dup ? '<span class="dup">possible duplicate</span>' : ""}</td><td>${ago(s.lastSeen)}</td><td class="r">${fmtTime(s.study)}</td><td class="r">${s.notes}/${NOTES.length}</td><td class="r">${s.ans}</td><td class="r">${s.acc}%</td><td class="r">${s.mocks}</td><td class="r">${s.best ? s.best + "%" : "–"}</td><td class="r">${s.cases}</td><td class="r">${s.xp.toLocaleString("en-IN")}</td></tr>`).join("") || `<tr><td colspan="10" class="muted">No students yet. Share the site link with your class.</td></tr>`}</tbody></table></div>
+    <tbody>${rows.map(s => `<tr class="rowx" data-id="${s.id}"><td><span class="dot ${s.live ? "on" : ""}"></span>${esc(s.name)}${s.dup ? '<span class="dup">possible duplicate</span>' : ""}</td><td>${ago(s.lastSeen)}</td><td class="r">${fmtTime(s.study)}</td><td class="r">${s.notes}/${NOTES.length}</td><td class="r">${s.ans}</td><td class="r">${s.acc}%</td><td class="r">${s.mocks}</td><td class="r">${s.best ? s.best + "%" : "–"}</td><td class="r">${s.cases}</td><td class="r">${s.wins}</td><td class="r">${s.xp.toLocaleString("en-IN")}</td></tr>`).join("") || `<tr><td colspan="11" class="muted">No students yet. Share the site link with your class.</td></tr>`}</tbody></table></div>
     <p class="muted" style="font-size:13px;margin:10px 0 0">Tap a student to see details, rename, merge duplicates or remove a fake name.</p></div>
+  <div class="grid2">
+  <div class="panel"><h3>📢 Announcements</h3><p class="muted" style="font-size:13px;margin-top:-6px">Shows on everyone's home screen for 30 days.</p>
+    <input class="field" id="anTitle" maxlength="60" placeholder="Title, e.g. Exam pattern update" style="font-size:15px">
+    <textarea id="anText" maxlength="500" placeholder="Message for the class…" style="min-height:90px"></textarea>
+    <div class="row" style="margin-top:8px"><select class="field" id="anSubj" style="flex:1;margin:0;font-size:14px"><option value="all">All subjects</option>${(window.SUBJECTS || []).map(x => `<option value="${x.id}">${esc(x.short || x.name)}</option>`).join("")}</select><label class="row" style="gap:6px;font-size:14px"><input type="checkbox" id="anPin"> Pin</label><button class="btn primary" id="anGo">Post</button></div>
+    <div class="feed" style="margin-top:10px">${Object.entries(D.announce).sort((a, b) => (b[1].ts || 0) - (a[1].ts || 0)).map(([id, a]) => `<div><span>${a.pin ? "📌 " : ""}<b>${esc(a.title || "")}</b> ${esc(a.text)} <span class="dim">· ${esc(a.subj === "all" ? "All" : SUBJ_NAME[a.subj] || a.subj)}</span></span><span class="t">${ago(a.ts)} <button class="btn small ghost" data-andel="${id}">Delete</button></span></div>`).join("") || `<span class="muted">No announcements yet.</span>`}</div></div>
+  <div class="panel"><h3>💬 Doubt board</h3><p class="muted" style="font-size:13px;margin-top:-6px">Latest doubts from all subjects. Delete spam or abuse.</p>
+    <div class="feed">${Object.entries(D.doubts).flatMap(([sj, m]) => Object.entries(m || {}).map(([id, d]) => ({ sj, id, ...d }))).sort((a, b) => (b.ts || 0) - (a.ts || 0)).slice(0, 25).map(d => `<div><span><b>${esc(d.name || "")}</b> · ${esc(SUBJ_NAME[d.sj] || d.sj)} · ${esc(d.text.slice(0, 120))} <span class="dim">(${d.n || 0} answers)</span></span><span class="t">${ago(d.ts)} <button class="btn small ghost" data-ddel="${d.sj}/${d.id}">Delete</button></span></div>`).join("") || `<span class="muted">No doubts yet.</span>`}</div></div>
+  </div>
   <div class="panel"><h3>Recent mock tests</h3>${feed.length ? `<div class="feed">${feed.map(a => `<div><b>${esc(D.names[a.id] || "Unknown")}</b><span>${a.type === "exam" ? "📝 Paper" : "⏱️ Mock"}${a.subj ? " · " + esc(SUBJ_NAME[a.subj] || a.subj) : ""} · ${a.score}/${a.total} (${a.pct}%) in ${fmtTime(a.dur)}</span><span class="t">${ago(a.ts)}</span></div>`).join("")}</div>` : `<div class="empty">No mock tests yet.</div>`}</div>`;
   bindTips($("#adm"));
+  $("#anTitle").value = keepAn.t; $("#anText").value = keepAn.x; if (keepAn.f === "anText" || keepAn.f === "anTitle") $("#" + keepAn.f).focus();
+  $("#anGo").onclick = async () => { const text = $("#anText").value.trim(); if (!text) return toast("Write a message"); const id = Date.now().toString(36); await set(R("announce/" + id), { title: $("#anTitle").value.trim() || "Announcement", text, subj: $("#anSubj").value, pin: $("#anPin").checked, ts: Date.now() }); toast("Announcement posted"); };
+  $$("[data-andel]").forEach(b => b.onclick = () => { if (confirm("Delete this announcement?")) set(R("announce/" + b.dataset.andel), null); });
+  $$("[data-ddel]").forEach(b => b.onclick = () => { if (confirm("Delete this doubt and its answers?")) { const [sj, id] = b.dataset.ddel.split("/"); update(R(""), { [`doubts/${sj}/${id}`]: null, [`doubtAns/${sj}/${id}`]: null }).then(() => toast("Deleted")); } });
   const sr = $("#srch");
   if (hadFocus) { sr.focus(); sr.setSelectionRange(sr.value.length, sr.value.length); } sr.oninput = () => { q = sr.value.toLowerCase().trim(); const pos = sr.selectionStart; render(); const n = $("#srch"); n.focus(); n.setSelectionRange(pos, pos); };
   $$("th[data-k]").forEach(th => th.onclick = () => { if (sortKey === th.dataset.k) sortDir *= -1; else { sortKey = th.dataset.k; sortDir = th.dataset.k === "name" ? 1 : -1; } render(); });

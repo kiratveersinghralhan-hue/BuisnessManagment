@@ -2,7 +2,6 @@
   "rules": {
     ".read": false,
     ".write": false,
-
     "names": {
       ".read": true,
       "$uid": {
@@ -10,17 +9,21 @@
         ".validate": "newData.isString() && newData.val().length >= 3 && newData.val().length <= 40"
       }
     },
-
     "lb": {
       ".read": true,
       "$uid": {
         ".write": "auth != null && (auth.uid === $uid || auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2')",
-        "xp": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() < 200000" },
-        "best": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100" },
-        "acc": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100" }
+        "xp": {
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() < 200000"
+        },
+        "best": {
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100"
+        },
+        "acc": {
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100"
+        }
       }
     },
-
     "users": {
       ".read": "auth != null && auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2'",
       "$uid": {
@@ -28,7 +31,6 @@
         ".write": "auth != null && (auth.uid === $uid || auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2')"
       }
     },
-
     "attempts": {
       ".read": "auth != null && auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2'",
       "$uid": {
@@ -39,20 +41,90 @@
         }
       }
     },
-
     "presence": {
       ".read": true,
       "$uid": {
         ".write": "auth != null && (auth.uid === $uid || auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2')"
       }
     },
-
     "removed": {
       ".read": "auth != null && auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2'",
       "$uid": {
         ".read": "auth != null && auth.uid === $uid",
         ".write": "auth != null && auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2'"
       }
+    },
+    "daily": {
+      ".read": "auth != null",
+      "$subj": {
+        "$day": {
+          "$uid": {
+            ".write": "auth != null && ((auth.uid === $uid && !data.exists()) || auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2')",
+            ".validate": "newData.hasChildren(['score','ms'])"
+          }
+        }
+      }
+    },
+    "battles": {
+      ".read": "auth != null",
+      ".indexOn": [
+        "state"
+      ],
+      "$code": {
+        ".write": "auth != null && (!data.exists() || data.child('host').val() === auth.uid || auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2')",
+        "guest": {
+          ".write": "auth != null && !data.exists() && newData.val() === auth.uid"
+        },
+        "state": {
+          ".write": "auth != null && (newData.parent().child('guest').val() === auth.uid)"
+        },
+        "startAt": {
+          ".write": "auth != null && (newData.parent().child('guest').val() === auth.uid)"
+        },
+        "players": {
+          "$uid": {
+            ".write": "auth != null && auth.uid === $uid"
+          }
+        }
+      }
+    },
+    "match": {
+      "$subj": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      }
+    },
+    "doubts": {
+      ".read": "auth != null",
+      "$subj": {
+        ".indexOn": [
+          "ts"
+        ],
+        "$id": {
+          ".write": "auth != null && ((!data.exists() && newData.child('uid').val() === auth.uid) || data.child('uid').val() === auth.uid || auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2')",
+          ".validate": "!newData.exists() || (newData.child('text').isString() && newData.child('text').val().length <= 600)",
+          "n": {
+            ".write": "auth != null",
+            ".validate": "newData.isNumber()"
+          }
+        }
+      }
+    },
+    "doubtAns": {
+      ".read": "auth != null",
+      "$subj": {
+        "$id": {
+          ".write": "auth != null && (root.child('doubts').child($subj).child($id).child('uid').val() === auth.uid || auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2')",
+          "$aid": {
+            ".write": "auth != null && ((!data.exists() && newData.child('uid').val() === auth.uid) || data.child('uid').val() === auth.uid || auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2')",
+            ".validate": "!newData.exists() || (newData.child('text').isString() && newData.child('text').val().length <= 1200)"
+          }
+        }
+      }
+    },
+    "announce": {
+      ".read": true,
+      ".write": "auth != null && auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2'"
     }
   }
 }
