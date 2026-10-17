@@ -15,7 +15,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,650;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
-<link rel="stylesheet" href="v7-games.css">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%238B5CF6'/%3E%3Cstop offset='.55' stop-color='%23EC4899'/%3E%3Cstop offset='1' stop-color='%23FB923C'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='18' fill='url(%23g)'/%3E%3Crect x='14' y='36' width='8' height='14' rx='3' fill='%23fff' opacity='.7'/%3E%3Crect x='28' y='27' width='8' height='23' rx='3' fill='%23fff' opacity='.85'/%3E%3Crect x='42' y='18' width='8' height='32' rx='3' fill='%23fff'/%3E%3C/svg%3E">
 </head>
 <body>
@@ -38,7 +37,7 @@
   <button class="subj-chip" id="subjChip" aria-label="Change subject"><span>📘</span><b>Loading…</b><span class="caret">▾</span></button>
   <nav class="top-nav" id="topNav">
     <a href="#home" data-r="home">Home</a><a href="#notes" data-r="notes">Notes</a><a href="#practice" data-r="practice">Practice</a>
-    <a href="#exam" data-r="exam">Exam</a><a href="#battle" data-r="battle">Battle</a><a href="#games" data-r="games">🎮 Games</a><a href="#written" data-r="written">Written</a><a href="#videos" data-r="videos">Videos</a><a href="#ranks" data-r="ranks">Leaderboard</a>
+    <a href="#exam" data-r="exam">Exam</a><a href="#battle" data-r="battle">Battle</a><a href="#written" data-r="written">Written</a><a href="#videos" data-r="videos">Videos</a><a href="#ranks" data-r="ranks">Leaderboard</a>
   </nav>
   <div class="top-right">
     <span class="sync" id="syncDot" title="Sync status"></span>
@@ -56,14 +55,13 @@
   <a href="#notes" data-r="notes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h11a3 3 0 013 3v13H7a3 3 0 01-3-3z"/><path d="M8 9h6M8 13h6"/></svg>Notes</a>
   <a href="#practice" data-r="practice"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 5-6"/></svg>Practice</a>
   <a href="#exam" data-r="exam"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6"/></svg>Exam</a>
-  <a href="#games" data-r="games"><span style="font-size:22px;line-height:1">🎮</span>Games</a>
   <a href="#ranks" data-r="ranks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21V11H3v10zM15 21V5h-5v16zM21 21v-7h-5v7z"/></svg>Ranks</a>
 </nav>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="subjects.js?v=5"></script>
+<script src="subjects.js?v=6"></script>
 <script type="module" src="app.js"></script>
 </body>
 </html>

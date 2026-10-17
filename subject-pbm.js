@@ -8242,5 +8242,763 @@ window.SUBJECT_DATA.pbm = {
   "u2": "<h3>Environment</h3><ul><li>Features: dynamic, complex, uncertain, interrelated, relative</li><li>Internal · Micro (suppliers, customers, competitors…) · Macro (<b>PESTEL</b>)</li><li>Scanning: scan → analyse → interpret → act</li><li>IKEA: FDI 30% (P), ₹199 (E), assembly (S), app (T), wood (E), GST (L)</li></ul>\n<h3>SWOT, TOWS, Five Forces</h3><ul><li>SW internal, OT external · TOWS: SO, WO, ST, WT · Kodak = failure to act</li><li><b>Five forces</b>: entrants, suppliers, buyers, substitutes, rivalry (biggest). Strong forces = low profit</li></ul>\n<h3>Strategy</h3><ul><li>Vision (destination) · Mission (purpose) · Values (rules) – Tesla</li><li>Levels: corporate (which businesses) · business (how to compete) · functional</li><li>Corporate: <b>expansion</b> (concentration, integration: backward = suppliers, forward = customers, diversification), <b>stability</b>, <b>retrenchment</b> (turnaround fix, divestment sell, liquidation close), <b>combination</b></li><li>Generic: cost leadership (IndiGo), differentiation (Apple), focus</li><li>Positioning: variety (McDonald's) · needs (luxury hotel) · access (rural bank)</li><li><b>RBV/VRIO</b> (Barney) → sustained advantage · <b>Blue ocean</b> = new market space</li></ul>",
   "u3": "<h3>Operations & supply chain</h3><ul><li>Inputs → transformation → outputs → customers · productivity = output ÷ input</li><li>Process types: project, job, batch, line, continuous (volume ↑, variety ↓)</li><li>3 flows: material, information, financial · <b>bullwhip</b> (fix: share info)</li><li>Quality = meet/exceed requirements · internal vs external failure · priorities: cost, quality, time, dependability, flexibility, innovation</li></ul>\n<h3>Finance</h3><ul><li><b>A = L + C</b> · golden rules · journal → ledger → trial balance → trading, P&L, balance sheet</li><li>Cash flow: operating, investing (interest received), financing (dividend paid)</li><li>Ratios: current 2:1, quick 1:1, absolute 0.5:1, D/E 2:1, ROCE = EBIT ÷ capital employed</li><li>WC = CA − CL · <b>EOQ = √(2DS/H)</b> · reorder = usage × lead time · ABC · Baumol vs Miller-Orr</li><li>Capital structure: debt cheaper (tax shield) but riskier · NI, Traditional (relevance) vs NOI, MM (irrelevance)</li></ul>\n<h3>HR</h3><ul><li>Ulrich: strategic partner, change agent, employee champion, admin expert · 7 operative functions</li><li>Recruitment (positive) vs selection (negative) · direct, indirect, third-party, internet</li><li>Appraisal: BARS, MBO, 360°/720° · errors: halo, central tendency, leniency, recency, similar-to-me</li><li>Pay: internal equity, external competitiveness · incentives vs fringe benefits</li><li>Training: gap concept, ASK, OJT vs off-the-job · Trends: SHRM, gig, AI, analytics, e-HRM</li></ul>\n<h3>Marketing</h3><ul><li>Philosophies: production → product → selling → marketing → societal → holistic · myopia</li><li>4Ps + People, Process, Physical evidence = 7Ps · skimming vs penetration · STP</li></ul><h3>Segmentation & CVP (L25)</h3><ul><li>Bases: geographic · demographic · psychographic (VALS: 8 types, ideals/achievement/self-expression × resources) · behavioural (roles, usage, loyalty, readiness)</li><li>Effective: measurable, substantial, accessible, differentiable, actionable</li><li>Patterns: single segment, selective, product spec., market spec., full coverage · undifferentiated / differentiated / concentrated (niche)</li><li>CVP = why choose us (outcomes) vs USP = one feature · value = benefits − sacrifices</li></ul>"
  },
- "tools": true
+ "tools": true,
+ "longq": [
+  [
+   "business",
+   "What is business? Explain its characteristics and objectives, and compare sole proprietorship, partnership and company with suitable Indian examples. (10 marks)",
+   [
+    [
+     "Defines business as organised economic activity creating value for customers, usually for profit",
+     2,
+     "organised|economic activity|value|profit"
+    ],
+    [
+     "Characteristics: dealings in goods/services, regularity, profit motive, risk/uncertainty, customer satisfaction",
+     2,
+     "regular|risk|uncertain|customer"
+    ],
+    [
+     "Objectives: economic (profit, growth), social, human, national",
+     2,
+     "objective|social|growth|human"
+    ],
+    [
+     "Compares ownership, liability, capital, continuity of sole proprietor vs partnership vs company",
+     3,
+     "liability|unlimited|limited|continuity|capital|partner"
+    ],
+    [
+     "Relevant examples (kirana store, CA firm/LLP, Infosys/Tata)",
+     1,
+     "example|kirana|tata|infosys|reliance"
+    ]
+   ]
+  ],
+  [
+   "forms",
+   "Explain LLP, One Person Company and cooperative society. Which form would you recommend for a three-friend digital marketing start-up, and why? (10 marks)",
+   [
+    [
+     "LLP: partnership flexibility + limited liability, separate legal entity",
+     2.5,
+     "llp|limited liability partnership"
+    ],
+    [
+     "OPC: single owner company with limited liability and a nominee",
+     2,
+     "one person|opc|nominee"
+    ],
+    [
+     "Cooperative: voluntary association, one member one vote, service motive (Amul)",
+     2.5,
+     "cooperative|one vote|amul|service"
+    ],
+    [
+     "Clear recommendation (LLP or private company) for the start-up",
+     1.5,
+     "recommend|suggest|best|suitable"
+    ],
+    [
+     "Justified with liability, compliance cost, funding and growth",
+     1.5,
+     "compliance|funding|investor|cost|growth"
+    ]
+   ]
+  ],
+  [
+   "polc",
+   "Explain the four functions of management (POLC) with a running example of opening a new café outlet. How are they interrelated? (10 marks)",
+   [
+    [
+     "Planning: setting goals and deciding actions in advance",
+     2,
+     "planning|goal|objective"
+    ],
+    [
+     "Organising: arranging resources, roles, structure, authority",
+     2,
+     "organis|structure|roles|resources"
+    ],
+    [
+     "Leading/directing: motivating, communicating, guiding people",
+     2,
+     "leading|directing|motivat|communicat"
+    ],
+    [
+     "Controlling: setting standards, measuring, correcting deviation",
+     2,
+     "controlling|standard|measure|deviation|correct"
+    ],
+    [
+     "Interrelation: continuous cycle; control feeds back into planning; uses the café example throughout",
+     2,
+     "cycle|feedback|interrelat|café|cafe"
+    ]
+   ]
+  ],
+  [
+   "polc",
+   "Discuss any six of Fayol's 14 principles of management with workplace examples. Are they still relevant today? (10 marks)",
+   [
+    [
+     "Names and explains at least six principles correctly (division of work, authority & responsibility, unity of command, scalar chain, equity, esprit de corps…)",
+     6,
+     "division of work|unity of command|scalar|equity|esprit|discipline|order|initiative|centralisation|remuneration|unity of direction"
+    ],
+    [
+     "Workplace example for the principles",
+     2,
+     "example|e.g|for instance"
+    ],
+    [
+     "Relevance today: flexible use, modern organisations adapt them",
+     2,
+     "relevan|today|modern|still"
+    ]
+   ]
+  ],
+  [
+   "mintz",
+   "Explain Mintzberg's ten managerial roles and Katz's three managerial skills. Which skills matter most at each level of management? (10 marks)",
+   [
+    [
+     "Interpersonal roles: figurehead, leader, liaison",
+     2,
+     "figurehead|liaison|interpersonal"
+    ],
+    [
+     "Informational roles: monitor, disseminator, spokesperson",
+     2,
+     "monitor|disseminator|spokesperson|informational"
+    ],
+    [
+     "Decisional roles: entrepreneur, disturbance handler, resource allocator, negotiator",
+     2,
+     "entrepreneur|disturbance|allocator|negotiator|decisional"
+    ],
+    [
+     "Skills: technical, human, conceptual",
+     2,
+     "technical|human|conceptual"
+    ],
+    [
+     "Level mapping: technical at lower, human at all, conceptual at top",
+     2,
+     "top|lower|middle|level"
+    ]
+   ]
+  ],
+  [
+   "evolution",
+   "Trace the evolution of management thought from classical to modern approaches. Compare Taylor's scientific management with Fayol's administrative theory. (10 marks)",
+   [
+    [
+     "Classical school: scientific, administrative, bureaucratic (Weber)",
+     2,
+     "classical|weber|bureaucra"
+    ],
+    [
+     "Taylor: one best way, time and motion study, differential piece rate, shop-floor focus",
+     2.5,
+     "taylor|time|motion|piece rate|one best way"
+    ],
+    [
+     "Fayol: functions and 14 principles, top-management focus",
+     2.5,
+     "fayol|principles|administrative"
+    ],
+    [
+     "Neo-classical/behavioural (Hawthorne) and modern (systems, contingency) approaches",
+     2,
+     "behavio|hawthorne|systems|contingency|human relations"
+    ],
+    [
+     "Clear comparison/conclusion",
+     1,
+     "whereas|while|compar|differ"
+    ]
+   ]
+  ],
+  [
+   "hawthorne",
+   "Describe the Hawthorne studies and their findings. What do they teach a manager about motivating employees today? (10 marks)",
+   [
+    [
+     "Context: Elton Mayo, Western Electric, 1924–32",
+     1.5,
+     "mayo|western electric|1924|1932"
+    ],
+    [
+     "Experiments: illumination, relay assembly, interviewing, bank wiring",
+     3,
+     "illumination|relay|interview|bank wiring"
+    ],
+    [
+     "Findings: social and psychological factors, attention, group norms, informal groups affect productivity",
+     3,
+     "social|group|informal|attention|norm"
+    ],
+    [
+     "Lessons today: recognition, communication, team culture, employee voice",
+     2.5,
+     "recognition|communicat|team|feedback|culture"
+    ]
+   ]
+  ],
+  [
+   "env",
+   "What is the business environment? Explain the PESTEL framework and apply it to an EV (electric vehicle) maker in India. (10 marks)",
+   [
+    [
+     "Defines environment: internal and external (micro/macro) forces",
+     2,
+     "internal|external|micro|macro"
+    ],
+    [
+     "Explains all six PESTEL factors",
+     3,
+     "political|economic|social|technolog|environment|legal"
+    ],
+    [
+     "Applies to EVs: FAME subsidies, fuel prices, green awareness, battery tech, emission norms",
+     3,
+     "subsid|fame|battery|charging|emission|fuel"
+    ],
+    [
+     "Concludes with opportunities and threats",
+     2,
+     "opportunit|threat|conclu"
+    ]
+   ]
+  ],
+  [
+   "swot",
+   "Explain SWOT analysis and the TOWS matrix. Using Kodak's story, show how failing to act on a SWOT can destroy a market leader. (10 marks)",
+   [
+    [
+     "SWOT: strengths, weaknesses (internal), opportunities, threats (external)",
+     2.5,
+     "strength|weakness|opportunit|threat|internal|external"
+    ],
+    [
+     "TOWS strategies: SO, ST, WO, WT",
+     2.5,
+     "so |st |wo |wt |tows|maxi"
+    ],
+    [
+     "Kodak: invented digital camera (1975) but protected film profits",
+     2.5,
+     "kodak|digital|film|1975"
+    ],
+    [
+     "Lesson: ignoring threats/opportunities, need for innovation and adaptation",
+     2.5,
+     "innovat|adapt|ignor|lesson|disrupt"
+    ]
+   ]
+  ],
+  [
+   "porter5",
+   "Explain Porter's Five Forces model. Analyse the Indian food-delivery industry using it. (10 marks)",
+   [
+    [
+     "Threat of new entrants",
+     1.5,
+     "new entrant|entry barrier"
+    ],
+    [
+     "Bargaining power of buyers",
+     1.5,
+     "buyer|customer"
+    ],
+    [
+     "Bargaining power of suppliers",
+     1.5,
+     "supplier|restaurant"
+    ],
+    [
+     "Threat of substitutes",
+     1.5,
+     "substitute"
+    ],
+    [
+     "Industry rivalry",
+     1.5,
+     "rivalry|competit|zomato|swiggy"
+    ],
+    [
+     "Overall attractiveness conclusion for the industry",
+     2.5,
+     "attractive|profitab|conclu|overall"
+    ]
+   ]
+  ],
+  [
+   "strategy",
+   "Differentiate vision, mission and values. Explain the three levels of strategy with examples from a diversified group like Tata. (10 marks)",
+   [
+    [
+     "Vision: future aspiration; mission: purpose/what we do; values: guiding beliefs",
+     3,
+     "vision|mission|values"
+    ],
+    [
+     "Corporate-level strategy: which businesses to be in",
+     2,
+     "corporate"
+    ],
+    [
+     "Business-level strategy: how to compete in each business",
+     2,
+     "business-level|business level|compete"
+    ],
+    [
+     "Functional-level strategy: marketing, HR, finance, operations",
+     2,
+     "functional"
+    ],
+    [
+     "Tata or similar examples",
+     1,
+     "tata|example"
+    ]
+   ]
+  ],
+  [
+   "generic",
+   "Explain Porter's generic competitive strategies and the grand strategies (expansion, stability, retrenchment). Give one Indian example of each. (10 marks)",
+   [
+    [
+     "Cost leadership",
+     1.5,
+     "cost leader"
+    ],
+    [
+     "Differentiation",
+     1.5,
+     "differentiat"
+    ],
+    [
+     "Focus (cost focus / differentiation focus)",
+     1.5,
+     "focus|niche"
+    ],
+    [
+     "Expansion/diversification, stability, retrenchment (turnaround, divestment, liquidation)",
+     3.5,
+     "expansion|diversif|stability|retrench|turnaround|divest|liquidat"
+    ],
+    [
+     "Indian examples",
+     2,
+     "example|d-mart|dmart|tata|reliance|patanjali|maruti"
+    ]
+   ]
+  ],
+  [
+   "rbv",
+   "Explain the Resource-Based View and the VRIO framework. How can a firm build a sustainable competitive advantage? Add a note on Blue Ocean strategy. (10 marks)",
+   [
+    [
+     "RBV: advantage comes from internal resources and capabilities",
+     2,
+     "resource|capabilit|internal"
+    ],
+    [
+     "VRIO: valuable, rare, inimitable, organised",
+     3,
+     "valuable|rare|inimitable|imitate|organi"
+    ],
+    [
+     "Sustainable competitive advantage needs all four",
+     2,
+     "sustain|competitive advantage"
+    ],
+    [
+     "Blue Ocean: create uncontested market space, value innovation (vs red ocean)",
+     3,
+     "blue ocean|red ocean|uncontested|value innovation"
+    ]
+   ]
+  ],
+  [
+   "ops",
+   "What is operations management? Explain productivity and the types of production processes (job, batch, mass, continuous) with examples. (10 marks)",
+   [
+    [
+     "Operations: transforming inputs into outputs (goods/services)",
+     2,
+     "input|output|transform"
+    ],
+    [
+     "Productivity = output ÷ input; ways to improve it",
+     2,
+     "productivity|output.*input|efficien"
+    ],
+    [
+     "Job and batch production with examples",
+     2.5,
+     "job|batch|tailor|bakery"
+    ],
+    [
+     "Mass and continuous production with examples",
+     2.5,
+     "mass|continuous|car|refiner|cement"
+    ],
+    [
+     "Conclusion on choosing a process (volume vs variety)",
+     1,
+     "volume|variety|choose"
+    ]
+   ]
+  ],
+  [
+   "scm",
+   "Explain supply chain management and its components. How do quality management (TQM) and lean/JIT improve a supply chain? (10 marks)",
+   [
+    [
+     "SCM: flow of goods, information and money from supplier to customer",
+     2,
+     "supplier|customer|flow|supply chain"
+    ],
+    [
+     "Components: sourcing, production, inventory, logistics, distribution",
+     2.5,
+     "sourc|inventor|logistic|distribut|procure"
+    ],
+    [
+     "TQM: continuous improvement, customer focus, everyone responsible",
+     2.5,
+     "tqm|total quality|continuous improvement|kaizen"
+    ],
+    [
+     "Lean/JIT: reduce waste and inventory, deliver just in time",
+     2,
+     "lean|jit|just in time|waste"
+    ],
+    [
+     "Example (Toyota, Amazon, Amul)",
+     1,
+     "toyota|amazon|amul|example"
+    ]
+   ]
+  ],
+  [
+   "accounting",
+   "Explain the meaning and objectives of accounting. Describe the three final accounts and what each tells a manager. (10 marks)",
+   [
+    [
+     "Accounting: identifying, recording, classifying, summarising, communicating financial info",
+     2,
+     "record|classif|summar|communicat"
+    ],
+    [
+     "Objectives: profit/loss, financial position, decisions, control",
+     2,
+     "objective|profit|position|decision"
+    ],
+    [
+     "Trading/Profit & Loss account: performance, gross/net profit",
+     2,
+     "profit and loss|p&l|trading|gross|net profit"
+    ],
+    [
+     "Balance sheet: assets, liabilities, capital at a date",
+     2,
+     "balance sheet|asset|liabilit"
+    ],
+    [
+     "Cash flow statement: operating, investing, financing cash flows",
+     2,
+     "cash flow|operating|investing|financing"
+    ]
+   ]
+  ],
+  [
+   "ratios",
+   "What is ratio analysis? Explain liquidity, profitability and solvency ratios with formulas, and state the limitations of ratio analysis. (10 marks)",
+   [
+    [
+     "Meaning and purpose of ratio analysis",
+     1.5,
+     "ratio|compar|relationship"
+    ],
+    [
+     "Liquidity: current ratio, quick ratio with formulas",
+     2.5,
+     "current ratio|quick|liquid"
+    ],
+    [
+     "Profitability: gross/net profit margin, ROE/ROCE",
+     2.5,
+     "profit margin|roe|roce|return on"
+    ],
+    [
+     "Solvency: debt-equity, interest coverage",
+     2,
+     "debt.?equity|solvency|interest coverage"
+    ],
+    [
+     "Limitations: historical data, window dressing, inflation, different policies",
+     1.5,
+     "limitation|historical|window dress|inflation"
+    ]
+   ]
+  ],
+  [
+   "wcm",
+   "Explain working capital, its types and the factors that determine it. How should a growing D2C brand manage its working capital? (10 marks)",
+   [
+    [
+     "Working capital = current assets − current liabilities",
+     2,
+     "current assets|current liabilit"
+    ],
+    [
+     "Types: gross/net, permanent/temporary",
+     2,
+     "gross|net|permanent|temporary|fluctuating"
+    ],
+    [
+     "Factors: nature of business, operating cycle, seasonality, credit policy, growth",
+     3,
+     "operating cycle|season|credit|nature of business|growth"
+    ],
+    [
+     "Advice for D2C: manage inventory, receivables, payables, cash cycle",
+     3,
+     "inventor|receivable|payable|cash cycle|cash conversion"
+    ]
+   ]
+  ],
+  [
+   "capstr",
+   "What is capital structure? Discuss the factors that determine it and the trade-off between debt and equity. (10 marks)",
+   [
+    [
+     "Capital structure: mix of debt and equity finance",
+     2,
+     "debt|equity|mix"
+    ],
+    [
+     "Debt: cheaper, tax shield, fixed burden, risk",
+     2,
+     "tax|interest|fixed|cheaper"
+    ],
+    [
+     "Equity: no fixed cost, ownership dilution, costlier",
+     2,
+     "dilution|ownership|dividend"
+    ],
+    [
+     "Factors: cost of capital, risk, control, cash flows, flexibility, market conditions",
+     3,
+     "cost of capital|risk|control|cash flow|flexib"
+    ],
+    [
+     "Optimal capital structure / trading on equity conclusion",
+     1,
+     "optimal|trading on equity|leverage"
+    ]
+   ]
+  ],
+  [
+   "hrm",
+   "Explain the meaning, objectives and functions of Human Resource Management. How is HRM different from personnel management? (10 marks)",
+   [
+    [
+     "Meaning: managing people to achieve organisational goals",
+     2,
+     "people|employees|human resource"
+    ],
+    [
+     "Objectives: societal, organisational, functional, personal",
+     2,
+     "objective|organisational|personal|societal"
+    ],
+    [
+     "Functions: planning, recruitment, selection, training, appraisal, compensation, relations",
+     3,
+     "recruit|selection|training|appraisal|compensation|planning"
+    ],
+    [
+     "HRM (strategic, proactive) vs personnel management (administrative, reactive)",
+     3,
+     "personnel|strategic|proactive|reactive|administrat"
+    ]
+   ]
+  ],
+  [
+   "recruit",
+   "Distinguish recruitment from selection. Explain internal and external sources of recruitment and the steps in the selection process. (10 marks)",
+   [
+    [
+     "Recruitment is positive (attract pool); selection is negative (choose best)",
+     2,
+     "positive|negative|pool|attract"
+    ],
+    [
+     "Internal sources with merits: promotion, transfer, referrals",
+     2,
+     "internal|promotion|transfer|referral"
+    ],
+    [
+     "External sources: job portals, campus, consultants, advertisements",
+     2,
+     "external|campus|portal|consultant|advertis"
+    ],
+    [
+     "Selection steps: screening, tests, interviews, reference/background check, medical, offer",
+     3,
+     "screen|test|interview|reference|medical|offer"
+    ],
+    [
+     "Example or conclusion",
+     1,
+     "example|conclu"
+    ]
+   ]
+  ],
+  [
+   "appraisal",
+   "What is performance appraisal? Explain traditional and modern methods, including 360-degree feedback and MBO, and common appraisal errors. (10 marks)",
+   [
+    [
+     "Meaning and purpose of appraisal",
+     2,
+     "evaluat|perform|purpose"
+    ],
+    [
+     "Traditional methods: ranking, rating scales, paired comparison, critical incidents",
+     2,
+     "ranking|rating|paired|critical incident"
+    ],
+    [
+     "Modern: 360-degree feedback and MBO explained",
+     3,
+     "360|mbo|management by objectives"
+    ],
+    [
+     "Errors: halo, recency, leniency/strictness, central tendency, bias",
+     3,
+     "halo|recency|lenien|central tendency|bias"
+    ]
+   ]
+  ],
+  [
+   "training",
+   "Differentiate training and development. Explain the training process and on-the-job and off-the-job methods. (10 marks)",
+   [
+    [
+     "Training (job-specific, short-term) vs development (career, long-term)",
+     2,
+     "development|short.?term|long.?term|career"
+    ],
+    [
+     "Process: needs assessment (gap), design, delivery, evaluation (Kirkpatrick)",
+     3,
+     "need|gap|design|evaluat|kirkpatrick"
+    ],
+    [
+     "On-the-job: coaching, job rotation, apprenticeship",
+     2.5,
+     "on-the-job|on the job|coaching|rotation|apprentice"
+    ],
+    [
+     "Off-the-job: lectures, case studies, role play, simulations, e-learning",
+     2.5,
+     "off-the-job|off the job|lecture|role play|simulation|e-learning"
+    ]
+   ]
+  ],
+  [
+   "marketing",
+   "Explain the evolution of marketing philosophies and the 7Ps of the marketing mix with a services example. (10 marks)",
+   [
+    [
+     "Production, product and selling concepts",
+     2,
+     "production concept|product concept|selling"
+    ],
+    [
+     "Marketing, societal and holistic concepts",
+     2,
+     "marketing concept|societal|holistic"
+    ],
+    [
+     "4Ps: product, price, place, promotion",
+     3,
+     "product|price|place|promotion"
+    ],
+    [
+     "Extra 3Ps: people, process, physical evidence with a services example",
+     3,
+     "people|process|physical evidence"
+    ]
+   ]
+  ],
+  [
+   "stp",
+   "Explain the STP process in marketing. Describe the bases of segmentation, the criteria for effective segments and targeting strategies, with an example. (10 marks)",
+   [
+    [
+     "STP: segmentation → targeting → positioning",
+     2,
+     "segment|target|position"
+    ],
+    [
+     "Bases: geographic, demographic, psychographic (VALS), behavioural",
+     3,
+     "geographic|demographic|psychographic|behavio|vals"
+    ],
+    [
+     "Criteria: measurable, substantial, accessible, differentiable, actionable",
+     2,
+     "measurable|substantial|accessible|differentiable|actionable"
+    ],
+    [
+     "Targeting: undifferentiated, differentiated, concentrated/niche",
+     2,
+     "undifferentiated|differentiated|concentrated|niche"
+    ],
+    [
+     "A real example (e.g. Titan, Maruti, Nike)",
+     1,
+     "example|titan|maruti|nike"
+    ]
+   ]
+  ],
+  [
+   "stp",
+   "What is a customer value proposition? How does it differ from a USP? Build a CVP for a student-focused product and test it against the qualities of a strong CVP. (10 marks)",
+   [
+    [
+     "CVP meaning: why a specific customer should choose you, solving their problem",
+     2,
+     "why|choose|problem|value proposition"
+    ],
+    [
+     "CVP vs USP: total value and outcomes vs one distinct feature",
+     2,
+     "usp|feature|outcome"
+    ],
+    [
+     "Perceived value = benefits − sacrifices",
+     2,
+     "benefit|sacrific|perceived value"
+    ],
+    [
+     "A CVP written with the formula: for [customer], our [offering] helps them [outcome] by [benefit]",
+     2,
+     "for |helps|by "
+    ],
+    [
+     "Tested: customer-specific, outcome-focused, differentiated, credible",
+     2,
+     "specific|outcome|differentiat|credible|deliverable"
+    ]
+   ]
+  ]
+ ]
 };

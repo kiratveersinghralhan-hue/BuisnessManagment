@@ -22,7 +22,7 @@ function toast(msg) { const t = $("#toast"); t.textContent = msg; t.classList.ad
 
 /* ================= content (one subject loaded at a time) ================= */
 const SUBJECTS = window.SUBJECTS || [], PROGRAM = window.PROGRAM || {};
-let SUBJ = null, SD = null, NOTES = [], UNITS = [], NOTE = {}, BANK = [], CASESETS = [], CASES = [], SHORT = [], LONG = [], VIDEOS = [], GUIDE = "", EXAM = {};
+let SUBJ = null, SD = null, NOTES = [], UNITS = [], NOTE = {}, BANK = [], CASESETS = [], CASES = [], SHORT = [], LONG = [], LONGQ = [], VIDEOS = [], GUIDE = "", EXAM = {};
 const toQ = (r, prefix = "") => ({ id: hash(prefix + r[1]), t: r[0], q: r[1], c: r[2], w: r[3], e: r[4] });
 const loadScript = src => new Promise((res, rej) => { const el = document.createElement("script"); el.src = src; el.onload = res; el.onerror = rej; document.head.appendChild(el); });
 async function loadSubject(id) {
@@ -38,6 +38,8 @@ async function loadSubject(id) {
   LONG = SD.long || [];
   VIDEOS = (SD.videos || []).map(x => ({ id: x[0], t: x[1], title: x[2] }));
   EXAM = Object.assign({ title: "End-term practice paper", minutes: 90, total: 70, mcq: 15, mcqCaseSets: 1, shortShow: 5, shortAttempt: 4, shortMarks: 5, longMarks: 30 }, SD.exam || {}, sub.paper || {});
+  LONGQ = (SD.longq || []).map(r => ({ id: hash("lq" + r[1]), t: r[0], q: r[1], pts: r[2], marks: r[2].reduce((a, x) => a + x[1], 0) }));
+  if (EXAM.format === "4sec" && EXAM.shortMarks) SHORT = SHORT.map(x => ({ ...x, pts: scalePts(x.pts, EXAM.shortMarks), marks: EXAM.shortMarks, q: x.q.replace(/\(\d+(\.\d+)? marks\)\s*$/, `(${EXAM.shortMarks} marks)`) }));
   LS.set("cr_subject", sub.id);
   document.documentElement.style.setProperty("--subj", `linear-gradient(135deg,${(sub.grad || ["#8B5CF6", "#EC4899"]).join(",")})`);
   const chip = $("#subjChip"); if (chip) chip.innerHTML = `<span>${sub.icon || "📘"}</span><b>${esc(sub.short || sub.name)}</b><span class="caret">▾</span>`;
@@ -97,7 +99,7 @@ const BADGES = [
   { id: "N", e: "📚", n: "Full syllabus", d: "Finish every topic note in a subject", t: s => NOTES.length > 0 && NOTES.every(n => s.notesRead[n.id]) },
   { id: "s", e: "⚡", n: "Sharpshooter", d: "100 different questions right", t: s => count(s.correct) >= 100 },
   { id: "m", e: "⏱️", n: "Exam ready", d: "Complete a mock test or exam paper", t: s => s.mockCount >= 1 },
-  { id: "p", e: "📝", n: "Paper writer", d: "Finish a full 70-mark exam paper", t: s => (s.papers || 0) >= 1 },
+  { id: "p", e: "📝", n: "Paper writer", d: "Finish a full exam paper", t: s => (s.papers || 0) >= 1 },
   { id: "M", e: "🏆", n: "Topper", d: "Score 80%+ in a mock", t: s => s.mockBest >= 80 },
   { id: "c", e: "🧠", n: "Case cracker", d: "Write answers for 3 cases", t: s => count(s.casesDone) >= 3 },
   { id: "h", e: "🔥", n: "Marathon", d: "Study 5 hours in total", t: s => s.studySec >= 18000 },
@@ -230,10 +232,10 @@ function route(soft) {
   if (soft && r === "home") { const h = $("#rankStat"); if (h) h.textContent = myRank(); return; }
   if (cleanup) { cleanup(); cleanup = null; }
   cur = r || "home";
-  const group = { q: "practice", cases: "practice", case: "practice", written: "practice", battle: "practice", daily: "practice", cards: "practice", tools: "practice", arena: "practice", missions: "practice", coach: "practice", games: "practice", mock: "exam", paper: "exam", note: "notes", guide: "notes", videos: "notes", revise: "notes", doubts: "notes" };
+  const group = { q: "practice", cases: "practice", case: "practice", written: "practice", battle: "practice", daily: "practice", cards: "practice", tools: "practice", arena: "practice", missions: "practice", coach: "practice", mock: "exam", paper: "exam", note: "notes", guide: "notes", videos: "notes", revise: "notes", doubts: "notes" };
   $$("[data-r]").forEach(a => a.classList.toggle("on", a.dataset.r === cur || group[cur] === a.dataset.r));
   const v = $("#view");
-  const views = { home: vHome, notes: vNotes, note: vNote, practice: vPractice, q: vQuiz, mock: vMock, cases: vCases, case: vCase, written: vWritten, ranks: vRanks, me: vMe, guide: vGuide, exam: vExam, paper: vPaper, videos: vVideos, battle: vBattle, daily: vDaily, cards: vCards, revise: vRevise, doubts: vDoubts, tools: vTools, arena: vArena62, missions: vMissions62, coach: vCoach62, games: vGames7 };
+  const views = { home: vHome, notes: vNotes, note: vNote, practice: vPractice, q: vQuiz, mock: vMock, cases: vCases, case: vCase, written: vWritten, ranks: vRanks, me: vMe, guide: vGuide, exam: vExam, paper: vPaper, videos: vVideos, battle: vBattle, daily: vDaily, cards: vCards, revise: vRevise, doubts: vDoubts, tools: vTools, arena: vArena62, missions: vMissions62, coach: vCoach62 };
   (views[cur] || vHome)(v, p ? decodeURIComponent(p) : undefined);
   if (!soft) { scrollTo({ top: 0, behavior: "instant" }); v.classList.remove("enter"); void v.offsetWidth; v.classList.add("enter"); showBars(); }
   document.body.classList.toggle("focus", cur === "q" || cur === "paper" || (cur === "battle" && !!p)); moveNavInd(); reveal(v);
@@ -318,7 +320,6 @@ function vHome(v) {
   <div class="actions">
     ${!NOTES.length ? "" : next ? `<a class="action feature" href="#note/${next.id}"><span class="ic">📖</span><div><b>Continue: ${esc(next.title)}</b><br><span>${esc(next.lec)} · ${esc(UNITS.find(u => u.id === next.unit).name)}</span></div></a>`
       : `<a class="action feature" href="#mock"><span class="ic">🏁</span><div><b>All notes done. Time for a full mock.</b><br><span>90 minutes, case-based</span></div></a>`}
-    <a class="action c3" href="#games"><span class="ic">🎮</span><b>Quiz Game World · NEW</b><span>5 game modes · avatars · party rooms</span></a>
     <a class="action c1" href="#arena"><span class="ic">🏢</span><b>Case Study Arena</b><span>Realistic scenarios · linked MCQs</span></a>
     <a class="action c5" href="#missions"><span class="ic">🏅</span><b>Daily missions</b><span>Three quests · earn bonus XP</span></a>
     <a class="action c2" href="#coach"><span class="ic">🎯</span><b>Revision coach</b><span>Your weak topics · focused practice</span></a>
@@ -373,7 +374,7 @@ function vNote(v, id) {
   <h2>${esc(n.title)}</h2><p class="muted">${esc(n.sum)}</p>
   <div class="note-body">${n.html}</div>
   ${noteVideos(id)}
-  <div class="panel mynotes"><h3>📝 My notes</h3><p class="muted" style="font-size:13.5px;margin-top:-6px">Private to you. Saved automatically and synced to your profile.</p><textarea id="myNote" placeholder="Write your own points, mnemonics or doubts for this topic…">${esc(S.mynotes[id] || "")}</textarea></div>
+  <div class="panel mynotes"><h3>📝 My notes</h3><p class="muted" style="font-size:13.5px;margin-top:-6px">Private to you. Saved automatically and synced to your profile.</p><textarea id="myNote" data-mynote="1" placeholder="Write your own points, mnemonics or doubts for this topic…">${esc(S.mynotes[id] || "")}</textarea></div>
   <div class="note-foot">
     <button class="btn ${S.notesRead[id] ? "" : "primary"}" id="doneBtn">${S.notesRead[id] ? "✓ Finished" : "Mark as finished"}</button>
     <a class="btn" href="#q/t:${id}">Practise ${qn} questions</a>
@@ -588,7 +589,7 @@ function runMock(v, m) {
     if (inC) {
       const c = CASES.find(x => x.id === m.written);
       body = `<div class="sec-tag">Section C · Descriptive case (self-check)</div><div class="casebox"><h4>${esc(c.title)}</h4>${esc(c.text)}</div>
-      ${c.qs.map((q, k) => `<div class="qcard" style="margin-bottom:12px"><div class="qtext" style="font-size:17px">${k + 1}. ${esc(q[0])}</div><textarea data-w="${k}" placeholder="Write your answer like you would in the exam…">${esc(m.text[k] || "")}</textarea></div>`).join("")}
+      ${c.qs.map((q, k) => `<div class="qcard" style="margin-bottom:12px"><div class="qtext" style="font-size:17px">${k + 1}. ${esc(q[0])}</div><textarea data-w="${k}" data-topic="${esc(topic || "")}" data-q="${esc(p.q.slice(0, 140))}" placeholder="Write your answer like you would in the exam… or tap 🎙️ Speak">${esc(m.text[k] || "")}</textarea></div>`).join("")}
       <p class="muted" style="font-size:14px">Model answers appear after you submit.</p>`;
     } else {
       const s = it.set ? setOf(it.set) : null;
@@ -832,13 +833,16 @@ let wTab = "short";
 function vWritten(v, p) {
   if (p && p.startsWith("s:")) return vShortQ(v, p.slice(2));
   if (p && p.startsWith("l:")) return vLongQ(v, p.slice(2));
-  if (p === "long" || p === "solved" || p === "short") wTab = p;
+  if (p && p.startsWith("q:")) return vLongAns(v, p.slice(2));
+  if (p === "long" || p === "solved" || p === "short" || p === "longq") wTab = p;
   const topic = p && p.startsWith("t:") ? p.slice(2) : null; if (topic) wTab = "short";
-  const tabs = [["short", `Short answers (${SHORT.length})`], ["long", `Case studies (${LONG.length})`], ["solved", `Solved cases (${CASES.length})`]];
+  const tabs = [["short", `Short answers (${SHORT.length})`], ...(LONGQ.length ? [["longq", `Long answers (${LONGQ.length})`]] : []), ["long", `Case studies (${LONG.length})`], ["solved", `Solved cases (${CASES.length})`]];
   let body = "";
   if (wTab === "short") {
     const list = SHORT.filter(x => !topic || x.t === topic);
     body = UNITS.map(u => { const qs = list.filter(x => unitOf(x.t) === u.id); return qs.length ? `<section class="unit-block ${u.id}"><h3><span class="pill">${u.name}</span>${esc(u.title)}</h3><div class="topic-list">${qs.map(x => { const done = S.casesDone[x.id]; return `<a class="topic ${done ? "done" : ""}" href="#written/s:${x.id}"><span class="lec">${x.marks}m</span><span><span class="tt">${esc(x.q.replace(/\s*\(\d+ marks\)\s*$/, ""))}</span><span class="ts">${esc(NOTE[x.t]?.title || "")}</span></span><span class="chk">${done ? "✓" : ""}</span></a>`; }).join("")}</div></section>` : ""; }).join("") || `<div class="empty">No short-answer questions for this subject yet.</div>`;
+  } else if (wTab === "longq") {
+    body = UNITS.map(u => { const qs = LONGQ.filter(x => unitOf(x.t) === u.id); return qs.length ? `<section class="unit-block ${u.id}"><h3><span class="pill">${u.name}</span>${esc(u.title)}</h3><div class="topic-list">${qs.map(x => { const done = S.casesDone[x.id]; return `<a class="topic ${done ? "done" : ""}" href="#written/q:${x.id}"><span class="lec">${x.marks}m</span><span><span class="tt">${esc(qNoMarks(x.q))}</span><span class="ts">${esc(NOTE[x.t]?.title || "")} · max 500 words</span></span><span class="chk">${done ? "✓" : ""}</span></a>`; }).join("")}</div></section>` : ""; }).join("");
   } else if (wTab === "long") {
     body = `<div class="topic-list">${LONG.map(c => { const k = SUBJ.id + "_" + c.id, done = S.casesDone[k]; return `<a class="topic ${done ? "done" : ""}" href="#written/l:${c.id}"><span class="lec">${c.parts.reduce((a, x) => a + x[1], 0)}m</span><span><span class="tt">${esc(c.title)}</span><span class="ts">${c.parts.length} parts · ${c.topics.map(t => esc(shortTitle(NOTE[t] || { title: t }))).join(", ")}</span></span><span class="chk">${done ? "✓" : ""}</span></a>`; }).join("")}</div>` || `<div class="empty">No case studies yet.</div>`;
   } else {
@@ -848,7 +852,7 @@ function vWritten(v, p) {
   <a class="guide-card" href="#guide"><span style="font-size:30px">🗝️</span><div><b>How to write case answers</b><span class="muted">Problem → framework → analysis → recommendations</span></div></a>
   <div class="chips" style="margin-bottom:18px">${tabs.map(([k, l]) => `<a class="chip ${wTab === k ? "on" : ""}" href="#written/${k}" style="text-decoration:none">${l}</a>`).join("")}${topic ? `<a class="chip on" href="#written/short" style="text-decoration:none">✕ ${esc(shortTitle(NOTE[topic]))}</a>` : ""}</div>${body}`;
 }
-function answerAndMark(v, { key, crumb, title, caseText, parts, doneKey, xpLabel }) {
+function answerAndMark(v, { key, crumb, title, caseText, parts, doneKey, xpLabel, topic }) {
   // parts: [{q, marks, pts}]
   const state = LS.get("cr_wstate", {}); const st = state[key] || { marked: false, ticks: {} };
   const draw = () => {
@@ -869,25 +873,52 @@ function answerAndMark(v, { key, crumb, title, caseText, parts, doneKey, xpLabel
 }
 function vShortQ(v, id) {
   const x = SHORT.find(s => s.id === id); if (!x) return vWritten(v);
-  answerAndMark(v, { key: "s" + id, crumb: `<a href="#written/short">Written practice</a> / ${esc(NOTE[x.t]?.title || "")}`, title: "Short answer", parts: [{ q: x.q, marks: x.marks, pts: x.pts }], doneKey: x.id, xpLabel: "answer marked" });
+  answerAndMark(v, { key: "s" + id, crumb: `<a href="#written/short">Written practice</a> / ${esc(NOTE[x.t]?.title || "")}`, title: "Short answer", parts: [{ q: x.q, marks: x.marks, pts: x.pts }], doneKey: x.id, xpLabel: "answer marked", topic: x.t });
+}
+function vLongAns(v, id) {
+  const x = LONGQ.find(s => s.id === id); if (!x) return vWritten(v, "longq");
+  answerAndMark(v, { key: "lq" + id, crumb: `<a href="#written/longq">Written practice</a> / ${esc(NOTE[x.t]?.title || "")}`, title: "Long answer", parts: [{ q: x.q, marks: x.marks, pts: x.pts }], doneKey: x.id, xpLabel: "answer marked", topic: x.t });
 }
 function vLongQ(v, id) {
   const c = LONG.find(s => s.id === id); if (!c) return vWritten(v, "long");
-  answerAndMark(v, { key: SUBJ.id + "_" + c.id, crumb: `<a href="#written/long">Written practice</a> / Case study`, title: c.title, caseText: c.text, parts: c.parts.map(p => ({ q: p[0], marks: p[1], pts: p[2] })), doneKey: SUBJ.id + "_" + c.id, xpLabel: "case marked" });
+  answerAndMark(v, { key: SUBJ.id + "_" + c.id, crumb: `<a href="#written/long">Written practice</a> / Case study`, title: c.title, caseText: c.text, parts: c.parts.map(p => ({ q: p[0], marks: p[1], pts: p[2] })), doneKey: SUBJ.id + "_" + c.id, xpLabel: "case marked", topic: (c.topics || [])[0] });
 }
 
-/* ================= exam paper (70 marks) ================= */
+/* ================= exam paper (end-term format: A MCQs · B short · C long · D case) ================= */
 const paperKey = () => "cr_paper_" + SUBJ.id;
-function buildExam() {
-  const mcq = pickMCQs(EXAM.mcq).map(q => ({ ...prepOpts(q), sec: "A" }));
-  shuffle(CASESETS).slice(0, EXAM.mcqCaseSets).forEach(cs => cs.qs.forEach(q => mcq.push({ ...prepOpts(q), sec: "A", set: cs.id })));
-  const byUnit = UNITS.map(u => shuffle(SHORT.filter(x => unitOf(x.t) === u.id))).filter(p => p.length);
-  const B = [], used = new Set(); let i = 0, guard = 0;
-  while (B.length < Math.min(EXAM.shortShow, SHORT.length) && guard++ < 500) { const pool = byUnit[i++ % byUnit.length]; const q = pool.find(x => !used.has(x.t) && !B.includes(x)) || pool.find(x => !B.includes(x)); if (q) { B.push(q); used.add(q.t); } }
-  const C = LONG.length ? LONG[Math.floor(Math.random() * LONG.length)].id : null;
-  return { mcq, B: B.map(x => x.id), C, ans: {}, startedAt: Date.now(), endsAt: Date.now() + EXAM.minutes * 60000, phase: "write", ticks: {} };
+const PAPER_V = 2;
+function scalePts(pts, target) {
+  const sum = pts.reduce((a, p) => a + p[1], 0) || 1; if (Math.abs(sum - target) < 1e-9) return pts;
+  const out = pts.map(p => [p[0], Math.round(p[1] * target / sum * 2) / 2, p[2]]);
+  const diff = Math.round((target - out.reduce((a, p) => a + p[1], 0)) * 2) / 2; if (diff) out[out.length - 1][1] = Math.round((out[out.length - 1][1] + diff) * 2) / 2;
+  return out;
 }
-const examTotals = () => ({ A: EXAM.mcq + EXAM.mcqCaseSets * 5, B: EXAM.shortAttempt * EXAM.shortMarks, C: EXAM.longMarks });
+const E4 = () => Object.assign({ mcqModes: [[10, 2], [20, 1]], shortShow: 6, shortAttempt: 5, shortMarks: 6, shortWords: 100, longShow: 4, longAttempt: 3, longMarks: 10, longWords: 500, caseQs: 2, caseMarks: 10, minutes: 180, total: 100 }, EXAM);
+function pickSpread(list, n, keyFn) {
+  const byUnit = UNITS.map(u => shuffle(list.filter(x => unitOf(keyFn(x)) === u.id))).filter(p => p.length);
+  const out = [], used = new Set(); let i = 0, guard = 0;
+  while (out.length < Math.min(n, list.length) && guard++ < 500) { const pool = byUnit[i++ % byUnit.length]; const q = pool.find(x => !used.has(keyFn(x)) && !out.includes(x)) || pool.find(x => !out.includes(x)); if (q) { out.push(q); used.add(keyFn(q)); } }
+  return out;
+}
+function buildExam() {
+  const X = E4(), mode = X.mcqModes[Math.floor(Math.random() * X.mcqModes.length)];
+  const mcq = pickMCQs(mode[0]).map(q => ({ ...prepOpts(q), sec: "A" }));
+  const B = pickSpread(SHORT, X.shortShow, x => x.t).map(x => x.id);
+  const C = pickSpread(LONGQ, X.longShow, x => x.t).map(x => x.id);
+  let D = null;
+  if (LONG.length) { const c = LONG[Math.floor(Math.random() * LONG.length)]; const idx = shuffle(c.parts.map((p, i) => i)).slice(0, X.caseQs).sort((a, b) => a - b); D = { id: c.id, parts: idx }; }
+  return { v: PAPER_V, mode, mcq, B, C, D, ans: {}, startedAt: Date.now(), endsAt: Date.now() + X.minutes * 60000, phase: "write", ticks: {} };
+}
+const examTotals = m => { const X = E4(), mode = (m && m.mode) || X.mcqModes[0]; return { A: mode[0] * mode[1], B: X.shortAttempt * X.shortMarks, C: X.longAttempt * X.longMarks, D: X.caseQs * X.caseMarks }; };
+function paperParts(m) {
+  const X = E4();
+  const B = (m.B || []).map(id => SHORT.find(s => s.id === id)).filter(Boolean);
+  const C = (m.C || []).map(id => LONGQ.find(s => s.id === id)).filter(Boolean).map(x => ({ ...x, pts: scalePts(x.pts, X.longMarks), marks: X.longMarks }));
+  const long = m.D ? LONG.find(l => l.id === m.D.id) : null;
+  const D = long ? m.D.parts.map(i => ({ q: long.parts[i][0], pts: scalePts(long.parts[i][2], X.caseMarks), marks: X.caseMarks })) : [];
+  return { B, C, long, D };
+}
+const qNoMarks = q => q.replace(/\s*\(\d+(\.\d+)? marks\)\s*$/, "");
 function vExam(v) {
   if (!BANK.length) { v.innerHTML = `<h2>Exam</h2>${examBanner()}` + comingSoon("Exam practice"); return; }
   if (isMcqExam()) {
@@ -897,25 +928,27 @@ function vExam(v) {
     <div class="actions" style="margin-top:14px"><a class="action c1" href="#q/quick"><span class="ic">⚡</span><b>Quick 10</b><span>Warm up</span></a><a class="action c2" href="#q/weak"><span class="ic">🎯</span><b>Fix mistakes</b><span>${inBank(S.wrong)} to retry</span></a></div>`;
     return;
   }
-  const m = LS.get(paperKey(), null), last = LS.get("cr_paper_last_" + SUBJ.id, null), T = examTotals();
-  const canPaper = SHORT.length && LONG.length;
-  v.innerHTML = `<h2>Exam</h2>${examBanner()}<p class="muted">${esc(SUBJ.name)} · practise under real exam conditions.</p>
+  const X = E4(), m0 = LS.get(paperKey(), null), m = m0 && m0.v === PAPER_V ? m0 : null, last = LS.get("cr_paper_last_" + SUBJ.id, null), T = examTotals();
+  const canPaper = SHORT.length && LONGQ.length && LONG.length;
+  v.innerHTML = `<h2>Exam</h2>${examBanner()}<p class="muted">${esc(SUBJ.name)} · the official end-term format.</p>
   <div class="exam-card">
-    <div class="row"><span class="badge-big">📝</span><div><h3 style="margin:0">${esc(EXAM.title)}</h3><span class="muted">${EXAM.total} marks · ${EXAM.minutes} minutes · fresh paper every time</span></div></div>
+    <div class="row"><span class="badge-big">📝</span><div><h3 style="margin:0">${esc(EXAM.title)}</h3><span class="muted">${X.total} marks · ${X.minutes / 60} hours · fresh paper every time</span></div></div>
     <div class="structure" style="margin:16px 0">
-      <div><span class="sec">A</span><span><b>Section A · ${T.A} marks</b><span>${EXAM.mcq} scenario MCQs${EXAM.mcqCaseSets ? ` + ${EXAM.mcqCaseSets} short case with 5 MCQs` : ""} (1 mark each, auto-marked)</span></span></div>
-      <div><span class="sec">B</span><span><b>Section B · ${T.B} marks</b><span>Answer any ${EXAM.shortAttempt} of ${EXAM.shortShow} scenario questions (${EXAM.shortMarks} marks each, written)</span></span></div>
-      <div><span class="sec">C</span><span><b>Section C · ${T.C} marks</b><span>One compulsory case study with parts (written)</span></span></div>
+      <div><span class="sec">A</span><span><b>Section A · 20 marks</b><span>Multiple choice: 10 × 2 marks or 20 × 1 mark (auto-marked)</span></span></div>
+      <div><span class="sec">B</span><span><b>Section B · ${T.B} marks</b><span>Short answers, max ${X.shortWords} words. Attempt any ${X.shortAttempt} of ${X.shortShow} (${X.shortMarks} marks each)</span></span></div>
+      <div><span class="sec">C</span><span><b>Section C · ${T.C} marks</b><span>Long answers, max ${X.longWords} words. Attempt any ${X.longAttempt} of ${X.longShow} (${X.longMarks} marks each)</span></span></div>
+      <div><span class="sec">D</span><span><b>Section D · ${T.D} marks</b><span>Case study, compulsory: ${X.caseQs} questions × ${X.caseMarks} marks</span></span></div>
     </div>
-    <p class="muted" style="font-size:13.5px">After you submit, Section A is marked automatically. For B and C you get the official-style marking scheme. The site pre-ticks points it finds in your answer; you confirm honestly.${EXAM.note ? " " + esc(EXAM.note) : ""}</p>
-    ${!canPaper ? `<div class="empty">Written questions for this subject are coming soon.</div>` : m && m.phase !== "done" ? `<a class="btn primary block" href="#paper">Continue your paper (${m.phase === "write" ? clock((m.endsAt - Date.now()) / 1000) + " left" : "marking"})</a><button class="btn ghost block" style="margin-top:8px" id="discard">Discard and start new</button>` : `<button class="btn primary block" id="startPaper">Start the ${EXAM.minutes}-minute paper</button>`}
+    <p class="muted" style="font-size:13.5px">Section A is marked automatically. For B, C and D you get the marking scheme: the site pre-ticks the points it finds in your answer and you confirm honestly. Tap 🎙️ beside any answer box to speak your answer instead of typing.</p>
+    ${!canPaper ? `<div class="empty">Written questions for this subject are coming soon.</div>` : m && m.phase !== "done" ? `<a class="btn primary block" href="#paper">Continue your paper (${m.phase === "write" ? clock((m.endsAt - Date.now()) / 1000) + " left" : "marking"})</a><button class="btn ghost block" style="margin-top:8px" id="discard">Discard and start new</button>` : `<button class="btn primary block" id="startPaper">Start the ${X.minutes / 60}-hour paper</button>`}
     ${canPaper ? `<div class="row" style="margin-top:10px"><button class="btn small" id="printPaper">🖨️ Print a paper</button><button class="btn small ghost" id="printKey">🖨️ Paper + answer key</button></div>` : ""}
-    ${last ? `<p class="muted" style="margin:14px 0 0">Last paper: <b>${last.score}/${last.total}</b> (${last.pct}%) · A ${last.a} · B ${last.b} · C ${last.c}</p>` : ""}
+    ${last && last.d !== undefined ? `<p class="muted" style="margin:14px 0 0">Last paper: <b>${last.score}/${last.total}</b> (${last.pct}%) · A ${last.a} · B ${last.b} · C ${last.c} · D ${last.d}</p>` : ""}
   </div>
   <div class="actions" style="margin-top:14px">
-    <a class="action c2" href="#mock"><span class="ic">⏱️</span><b>MCQ mock</b><span>40 MCQs · 90 min</span></a>
-    <a class="action c4" href="#written/short"><span class="ic">✍️</span><b>Short answers</b><span>${SHORT.length} questions</span></a>
-    <a class="action c5" href="#written/long"><span class="ic">🧠</span><b>Case studies</b><span>${LONG.length} × ${EXAM.longMarks} marks</span></a>
+    <a class="action c2" href="#mock"><span class="ic">⏱️</span><b>MCQ mock</b><span>Section A practice</span></a>
+    <a class="action c4" href="#written/short"><span class="ic">✍️</span><b>Short answers</b><span>${SHORT.length} × ${X.shortMarks} marks</span></a>
+    <a class="action c1" href="#written/longq"><span class="ic">📄</span><b>Long answers</b><span>${LONGQ.length} × ${X.longMarks} marks</span></a>
+    <a class="action c5" href="#written/long"><span class="ic">🧠</span><b>Case studies</b><span>${LONG.length} cases</span></a>
     <a class="action c3" href="#guide"><span class="ic">🗝️</span><b>Answer method</b><span>Structure that scores</span></a>
   </div>`;
   const sp = $("#startPaper"); if (sp) sp.onclick = () => { LS.set(paperKey(), buildExam()); location.hash = "#paper"; };
@@ -924,97 +957,176 @@ function vExam(v) {
   const pk = $("#printKey"); if (pk) pk.onclick = () => printHTML(paperPrint(buildExam(), true));
 }
 function paperPrint(m, key) {
-  const T = examTotals(), sets = {}; let n = 0;
-  const A = m.mcq.map(it => { let pre = ""; if (it.set && !sets[it.set]) { sets[it.set] = 1; const cs = CASESETS.find(c => c.id === it.set); pre = `<div class="p-case"><b>Read the case and answer the questions that follow:</b> ${esc(cs.title)}<br>${esc(cs.text)}</div>`; } n++; return `${pre}<div class="p-q"><b>${n}.</b> ${qf(it.q)}<ol type="a">${it.opts.map(o => `<li>${esc(o)}</li>`).join("")}</ol>${key ? `<div class="p-key">Answer: (${"abcd"[it.ans]}) ${esc(it.c)}</div>` : ""}</div>`; }).join("");
-  const B = m.B.map((id, i) => { const x = SHORT.find(s => s.id === id); return `<div class="p-q"><b>${i + 1}.</b> ${esc(x.q)}${key ? `<div class="p-key"><b>Marking scheme:</b><ul>${x.pts.map(p => `<li>${esc(p[0])} (${p[1]})</li>`).join("")}</ul></div>` : ""}</div>`; }).join("");
-  const c = LONG.find(l => l.id === m.C);
-  const C = c ? `<div class="p-case"><b>${esc(c.title)}</b><br>${esc(c.text)}</div>${c.parts.map((p, i) => `<div class="p-q"><b>(${String.fromCharCode(97 + i)})</b> ${esc(p[0])} <i>[${p[1]} marks]</i>${key ? `<div class="p-key"><b>Marking scheme:</b><ul>${p[2].map(x => `<li>${esc(x[0])} (${x[1]})</li>`).join("")}</ul></div>` : ""}</div>`).join("")}` : "";
-  return `<h1>${esc(EXAM.title)}</h1><p><b>${esc(SUBJ.name)}</b> · ${esc(PROGRAM.short || "")} · Max. marks: ${EXAM.total} · Time: ${EXAM.minutes} minutes</p>
-  <p class="p-ins">Instructions: Attempt all questions in Section A. Attempt any ${EXAM.shortAttempt} questions from Section B. Section C is compulsory. Write in a structured manner, using relevant concepts and examples.</p>
-  <h2>Section A (${T.A} × 1 = ${T.A} marks)</h2>${A}<h2>Section B (${EXAM.shortAttempt} × ${EXAM.shortMarks} = ${T.B} marks)</h2>${B}<h2>Section C (${T.C} marks)</h2>${C}${key ? "" : `<p class="p-ins" style="margin-top:30px">Practice paper generated by Boardroom (student-made, not an official university paper).</p>`}`;
+  const X = E4(), T = examTotals(m), P = paperParts(m); let n = 1;
+  const scheme = pts => key ? `<div class="p-key"><b>Marking scheme:</b><ul>${pts.map(p => `<li>${esc(p[0])} (${p[1]})</li>`).join("")}</ul></div>` : "";
+  const A = `<div class="p-q"><b>Question 1.</b> Please choose the correct option:</div>` + m.mcq.map((it, i) => `<div class="p-q"><b>${String.fromCharCode(97 + (i % 26))}${i >= 26 ? i : ""}.</b> ${qf(it.q)}<ol type="i">${it.opts.map(o => `<li>${esc(o)}</li>`).join("")}</ol>${key ? `<div class="p-key">Answer: (${["i", "ii", "iii", "iv"][it.ans]}) ${esc(it.c)}</div>` : ""}</div>`).join("");
+  const B = P.B.map(x => `<div class="p-q"><b>${++n}.</b> ${esc(qNoMarks(x.q))}${scheme(x.pts)}</div>`).join("");
+  const C = P.C.map(x => `<div class="p-q"><b>${++n}.</b> ${esc(qNoMarks(x.q))}${scheme(x.pts)}</div>`).join("");
+  const D = P.long ? `<div class="p-case"><b>${esc(P.long.title)}</b><br>${esc(P.long.text)}</div>${P.D.map(x => `<div class="p-q"><b>${++n}.</b> ${esc(x.q)}${scheme(x.pts)}</div>`).join("")}` : "";
+  return `<h1>End Term Examination</h1><p><b>${esc(SUBJ.name)}</b> · ${esc(PROGRAM.short || "")} · Max. marks: ${X.total} · Time: ${X.minutes / 60} hours</p>
+  <h2>Section A (${m.mode[0]} × ${m.mode[1]} marks = ${T.A} marks)<br><small>Multiple choice questions</small></h2>${A}
+  <h2>Section B (${X.shortAttempt} × ${X.shortMarks} marks = ${T.B} marks)<br><small>Short answers. Max. ${X.shortWords} words. (Attempt any ${X.shortAttempt} questions)</small></h2>${B}
+  <h2>Section C (${X.longAttempt} × ${X.longMarks} marks = ${T.C} marks)<br><small>Long answers, each answer may have max. ${X.longWords} words. (Attempt any ${X.longAttempt} questions)</small></h2>${C}
+  <h2>Section D (${X.caseQs} × ${X.caseMarks} marks = ${T.D} marks)<br><small>All questions are compulsory (Case Study, compulsory)</small></h2>${D}
+  ${key ? "" : `<p class="p-ins" style="margin-top:30px">Practice paper generated by Boardroom (student-made, not an official university paper).</p>`}`;
 }
 function vPaper(v) {
-  const m = LS.get(paperKey(), null);
-  if (!m) { location.replace("#exam"); return; }
-  const persist = () => LS.set(paperKey(), m), T = examTotals();
-  const shortQs = m.B.map(id => SHORT.find(s => s.id === id)).filter(Boolean), long = LONG.find(l => l.id === m.C);
-  const kB = i => `pB_${m.startedAt}_${i}`, kC = i => `pC_${m.startedAt}_${i}`;
+  const m0 = LS.get(paperKey(), null);
+  if (!m0 || m0.v !== PAPER_V) { if (m0) LS.del(paperKey()); location.replace("#exam"); return; }
+  const m = m0, X = E4(), persist = () => LS.set(paperKey(), m), T = examTotals(m), P = paperParts(m);
+  const kB = i => `pB_${m.startedAt}_${i}`, kC = i => `pC_${m.startedAt}_${i}`, kD = i => `pD_${m.startedAt}_${i}`;
   let tick;
-  const scoreA = () => m.mcq.reduce((a, it, i) => a + (m.ans[i] === it.ans ? 1 : 0), 0);
-  const bMarks = () => shortQs.map((x, i) => wGet(kB(i)).trim() ? marksOf(x.pts, m.ticks["B" + i]) : null);
-  const scoreB = () => bMarks().filter(x => x !== null).sort((a, b) => b - a).slice(0, EXAM.shortAttempt).reduce((a, b) => a + b, 0);
-  const scoreC = () => long ? long.parts.reduce((a, p, i) => a + marksOf(p[2], m.ticks["C" + i]), 0) : 0;
-  const total = () => scoreA() + scoreB() + scoreC();
+  const scoreA = () => m.mcq.reduce((a, it, i) => a + (m.ans[i] === it.ans ? m.mode[1] : 0), 0);
+  const best = (list, kf, sec, n) => list.map((x, i) => wGet(kf(i)).trim() ? marksOf(x.pts, m.ticks[sec + i]) : null).filter(x => x !== null).sort((a, b) => b - a).slice(0, n).reduce((a, b) => a + b, 0);
+  const scoreB = () => best(P.B, kB, "B", X.shortAttempt), scoreC = () => best(P.C, kC, "C", X.longAttempt);
+  const scoreD = () => P.D.reduce((a, x, i) => a + marksOf(x.pts, m.ticks["D" + i]), 0);
+  const total = () => Math.round((scoreA() + scoreB() + scoreC() + scoreD()) * 10) / 10;
+  const answered = (list, kf) => list.filter((x, i) => wGet(kf(i)).trim()).length;
+  const cnt = (list, kf, n) => { const a = answered(list, kf); return `${a} answered${a > n ? `. Your best ${n} will count` : ""}`; };
+  const wq = (label, q, marks, k, topic, limit, tall) => `<div class="pq"><div class="row" style="align-items:flex-start"><div class="pq-t" style="flex:1"><b>${label}</b> ${esc(q)}</div><span class="mk">${marks} marks</span></div><textarea data-w="${k}" data-topic="${esc(topic || "")}" data-q="${esc(q.slice(0, 140))}" ${tall ? 'class="tall"' : ""} placeholder="Your answer (max ${limit} words)… or tap 🎙️ Speak">${esc(wGet(k))}</textarea><div class="wc dim" data-wc="${k}" data-lim="${limit}">${words(wGet(k))} / ${limit} words</div></div>`;
+  const wcText = (t, lim) => { const n = words(t); return `${n} / ${lim} words${n > lim ? " · over the limit" : ""}`; };
 
   const writeView = () => {
-    const answeredB = shortQs.filter((x, i) => wGet(kB(i)).trim()).length; const sets = {}; let n = 0;
+    let qn = 1;
     v.innerHTML = `<div class="paper">
-    <div class="mock-bar"><span class="timer num" id="timer">--:--</span><span class="chips" style="gap:6px"><a class="chip" href="#secA">A</a><a class="chip" href="#secB">B</a><a class="chip" href="#secC">C</a></span><span class="spacer"></span><button class="btn small primary" id="submitPaper">Submit</button></div>
-    <header class="paper-head"><div class="dim" style="font-size:13px">${esc(PROGRAM.short || "")} · ${esc(SUBJ.name)}</div><h2 style="margin:4px 0">${esc(EXAM.title)}</h2><div class="row muted" style="font-size:14px"><span>Max. marks: <b>${EXAM.total}</b></span><span>Time: <b>${EXAM.minutes} min</b></span></div>
-    <p class="p-ins">Attempt all of Section A. Attempt any <b>${EXAM.shortAttempt}</b> of Section B. Section C is compulsory. Use concepts, frameworks and examples from the case.</p></header>
-    <section id="secA" class="psec"><h3>Section A <small>${T.A} marks · 1 mark each</small></h3>
-    ${m.mcq.map((it, i) => { let pre = ""; if (it.set && !sets[it.set]) { sets[it.set] = 1; const cs = CASESETS.find(c => c.id === it.set); pre = `<div class="casebox"><h4>Case: ${esc(cs.title)}</h4>${esc(cs.text)}<p class="dim" style="margin:8px 0 0;font-size:13px">Answer the next ${cs.qs.length} questions based on this case.</p></div>`; } n++;
-      return `${pre}<div class="pq"><div class="pq-t"><b>${n}.</b> ${qf(it.q)}</div><div class="opts">${it.opts.map((o, k) => `<button class="opt ${m.ans[i] === k ? "sel" : ""}" data-i="${i}" data-k="${k}"><span class="k">${"abcd"[k]}</span><span>${esc(o)}</span></button>`).join("")}</div></div>`; }).join("")}</section>
-    <section id="secB" class="psec"><h3>Section B <small>Answer any ${EXAM.shortAttempt} of ${shortQs.length} · ${EXAM.shortMarks} marks each</small></h3><p class="dim" id="bCount" style="font-size:13.5px">${answeredB} answered${answeredB > EXAM.shortAttempt ? `. Your best ${EXAM.shortAttempt} will count` : ""}</p>
-    ${shortQs.map((x, i) => `<div class="pq"><div class="row" style="align-items:flex-start"><div class="pq-t" style="flex:1"><b>Q${i + 1}.</b> ${esc(x.q.replace(/\s*\(\d+ marks\)\s*$/, ""))}</div><span class="mk">${x.marks} marks</span></div><textarea data-w="${kB(i)}" placeholder="Your answer (aim for 120–200 words, in points)…">${esc(wGet(kB(i)))}</textarea><div class="wc dim" data-wc="${kB(i)}">${words(wGet(kB(i)))} words</div></div>`).join("")}</section>
-    <section id="secC" class="psec"><h3>Section C <small>Compulsory · ${T.C} marks</small></h3>
-    ${long ? `<div class="casebox"><h4>${esc(long.title)}</h4>${esc(long.text)}</div>${long.parts.map((p, i) => `<div class="pq"><div class="row" style="align-items:flex-start"><div class="pq-t" style="flex:1"><b>(${String.fromCharCode(97 + i)})</b> ${esc(p[0])}</div><span class="mk">${p[1]} marks</span></div><textarea data-w="${kC(i)}" class="tall" placeholder="Your answer…">${esc(wGet(kC(i)))}</textarea><div class="wc dim" data-wc="${kC(i)}">${words(wGet(kC(i)))} words</div></div>`).join("")}` : ""}</section>
+    <div class="mock-bar"><span class="timer num" id="timer">--:--</span><span class="chips" style="gap:6px"><a class="chip" href="#secA">A</a><a class="chip" href="#secB">B</a><a class="chip" href="#secC">C</a><a class="chip" href="#secD">D</a></span><span class="spacer"></span><button class="btn small primary" id="submitPaper">Submit</button></div>
+    <header class="paper-head"><div class="dim" style="font-size:13px">${esc(PROGRAM.short || "")} · ${esc(SUBJ.name)}</div><h2 style="margin:4px 0">End Term Exam</h2><div class="row muted" style="font-size:14px"><span>Max. marks: <b>${X.total}</b></span><span>Time: <b>${X.minutes / 60} hours</b></span></div>
+    <p class="p-ins">Section A: all questions. Section B: any <b>${X.shortAttempt}</b> (max ${X.shortWords} words). Section C: any <b>${X.longAttempt}</b> (max ${X.longWords} words). Section D: compulsory case study.</p></header>
+    <section id="secA" class="psec"><h3>Section A <small>${m.mode[0]} × ${m.mode[1]} marks = ${T.A} marks · Multiple choice</small></h3><p class="dim" style="font-size:13.5px;margin-top:-4px">Question 1. Please choose the correct option:</p>
+    ${m.mcq.map((it, i) => `<div class="pq"><div class="pq-t"><b>${String.fromCharCode(97 + (i % 26))}${i >= 26 ? i : ""}.</b> ${qf(it.q)}</div><div class="opts">${it.opts.map((o, k) => `<button class="opt ${m.ans[i] === k ? "sel" : ""}" data-i="${i}" data-k="${k}"><span class="k">${["i", "ii", "iii", "iv"][k]}</span><span>${esc(o)}</span></button>`).join("")}</div></div>`).join("")}</section>
+    <section id="secB" class="psec"><h3>Section B <small>${X.shortAttempt} × ${X.shortMarks} = ${T.B} marks · Short answers, max ${X.shortWords} words · attempt any ${X.shortAttempt}</small></h3><p class="dim" id="bCount" style="font-size:13.5px">${cnt(P.B, kB, X.shortAttempt)}</p>
+    ${P.B.map((x, i) => wq(`Q${++qn}.`, qNoMarks(x.q), X.shortMarks, kB(i), x.t, X.shortWords)).join("")}</section>
+    <section id="secC" class="psec"><h3>Section C <small>${X.longAttempt} × ${X.longMarks} = ${T.C} marks · Long answers, max ${X.longWords} words · attempt any ${X.longAttempt}</small></h3><p class="dim" id="cCount" style="font-size:13.5px">${cnt(P.C, kC, X.longAttempt)}</p>
+    ${P.C.map((x, i) => wq(`Q${++qn}.`, qNoMarks(x.q), X.longMarks, kC(i), x.t, X.longWords, true)).join("")}</section>
+    <section id="secD" class="psec"><h3>Section D <small>${X.caseQs} × ${X.caseMarks} = ${T.D} marks · Case study, all compulsory</small></h3>
+    ${P.long ? `<div class="casebox"><h4>${esc(P.long.title)}</h4>${esc(P.long.text)}</div>${P.D.map((x, i) => wq(`Q${++qn}.`, x.q, X.caseMarks, kD(i), (P.long.topics || [])[0], X.longWords, true)).join("")}` : ""}</section>
     <button class="btn primary block" id="submitPaper2">Submit paper</button></div>`;
     $$(".opt[data-i]", v).forEach(b => b.onclick = () => { const i = +b.dataset.i; m.ans[i] = +b.dataset.k; persist(); $$(`.opt[data-i="${i}"]`, v).forEach(x => x.classList.toggle("sel", x === b)); });
-    $$("textarea[data-w]", v).forEach(t => t.oninput = () => { wSet(t.dataset.w, t.value); $(`[data-wc="${t.dataset.w}"]`, v).textContent = words(t.value) + " words"; const a = shortQs.filter((x, i) => wGet(kB(i)).trim()).length; $("#bCount").textContent = `${a} answered${a > EXAM.shortAttempt ? `. Your best ${EXAM.shortAttempt} will count` : ""}`; });
+    $$("textarea[data-w]", v).forEach(t => t.oninput = () => { wSet(t.dataset.w, t.value); const wc = $(`[data-wc="${t.dataset.w}"]`, v); wc.textContent = wcText(t.value, +wc.dataset.lim); wc.classList.toggle("over", words(t.value) > +wc.dataset.lim); $("#bCount").textContent = cnt(P.B, kB, X.shortAttempt); $("#cCount").textContent = cnt(P.C, kC, X.longAttempt); });
     $$('a.chip[href^="#sec"]', v).forEach(a => a.onclick = e => { e.preventDefault(); $(a.getAttribute("href")).scrollIntoView({ behavior: "smooth", block: "start" }); });
-    const sub = () => { const left = m.mcq.length - Object.keys(m.ans).length, b = shortQs.filter((x, i) => wGet(kB(i)).trim()).length; if (!confirm(`Submit your paper?${left ? `\n• ${left} MCQ${left > 1 ? "s" : ""} unanswered` : ""}${b < EXAM.shortAttempt ? `\n• Only ${b} of ${EXAM.shortAttempt} Section B answers written` : ""}`)) return; toMark(); };
+    const sub = () => { const left = m.mcq.length - Object.keys(m.ans).length, b = answered(P.B, kB), c = answered(P.C, kC), d = answered(P.D, kD); if (!confirm(`Submit your paper?${left ? `\n• ${left} MCQ${left > 1 ? "s" : ""} unanswered` : ""}${b < X.shortAttempt ? `\n• Only ${b} of ${X.shortAttempt} Section B answers written` : ""}${c < X.longAttempt ? `\n• Only ${c} of ${X.longAttempt} Section C answers written` : ""}${d < P.D.length ? `\n• Section D (compulsory) is incomplete` : ""}`)) return; toMark(); };
     $("#submitPaper").onclick = sub; $("#submitPaper2").onclick = sub;
     clearInterval(tick); tick = setInterval(updTimer, 1000); updTimer();
   };
-  const updTimer = () => { const t = $("#timer"); if (!t) return; const rem = (m.endsAt - Date.now()) / 1000; t.textContent = clock(rem); t.classList.toggle("warn", rem < 600); if (rem <= 0) { toast("Time's up. Paper submitted."); toMark(); } };
+  const updTimer = () => { const t = $("#timer"); if (!t) return; const rem = (m.endsAt - Date.now()) / 1000; t.textContent = clock(rem); t.classList.toggle("warn", rem < 900); if (rem <= 0) { toast("Time's up. Paper submitted."); toMark(); } };
   const toMark = () => {
-    clearInterval(tick); m.phase = "mark"; m.submittedAt = Date.now();
-    shortQs.forEach((x, i) => m.ticks["B" + i] = suggest(x.pts, wGet(kB(i))));
-    if (long) long.parts.forEach((p, i) => m.ticks["C" + i] = suggest(p[2], wGet(kC(i))));
+    clearInterval(tick); stopAllMics(); m.phase = "mark"; m.submittedAt = Date.now();
+    P.B.forEach((x, i) => m.ticks["B" + i] = suggest(x.pts, wGet(kB(i))));
+    P.C.forEach((x, i) => m.ticks["C" + i] = suggest(x.pts, wGet(kC(i))));
+    P.D.forEach((x, i) => m.ticks["D" + i] = suggest(x.pts, wGet(kD(i))));
     persist(); markView(); scrollTo(0, 0);
   };
+  const markSec = (sec, list, kf, labelFn) => list.map((x, i) => { const txt = wGet(kf(i)); return `<div class="pq"><div class="pq-t"><b>${labelFn(i)}</b> ${esc(qNoMarks(x.q))} <span class="mk">${x.marks} marks</span></div>${txt.trim() ? `<div class="your">${esc(txt)}</div>${rubricHTML(sec + i, x.pts, m.ticks[sec + i] || [], suggest(x.pts, txt))}` : `<p class="dim">Not attempted</p>`}${modelHTML(x.pts)}</div>`; }).join("");
   const markView = () => {
-    const a = scoreA(), bm = bMarks();
+    const a = scoreA(), nB = 2, nC = 2 + P.B.length, nD = 2 + P.B.length + P.C.length;
     v.innerHTML = `<div class="paper">
-    <div class="mock-bar"><span class="score-pill">Score <b class="num" id="liveTotal">${total()}</b>/${EXAM.total}</span><span class="spacer"></span><button class="btn small primary" id="finishMark">Finish marking</button></div>
-    <h2>Mark your paper</h2><p class="muted">Section A is marked. For B and C, tick each point your answer actually covers. Points found in your answer are pre-ticked; untick anything you didn't really explain. Be honest: this is how the examiner reads it.</p>
+    <div class="mock-bar"><span class="score-pill">Score <b class="num" id="liveTotal">${total()}</b>/${X.total}</span><span class="spacer"></span><button class="btn small primary" id="finishMark">Finish marking</button></div>
+    <h2>Mark your paper</h2><p class="muted">Section A is marked. For B, C and D, tick each point your answer actually covers. Points found in your answer are pre-ticked; untick anything you didn't really explain. Be honest: this is how the examiner reads it.</p>
     <section class="psec"><h3>Section A <small>${a}/${T.A}</small></h3><details><summary class="btn small">Review MCQs</summary>${m.mcq.map((it, i) => `<div class="review-item"><div class="q">${i + 1}. ${qf(it.q)}</div>${m.ans[i] === it.ans ? `<div class="a ok">✓ ${esc(it.c)}</div>` : `<div class="a no">✗ ${m.ans[i] === undefined ? "Not answered" : esc(it.opts[m.ans[i]])}</div><div class="a ok">Correct: ${esc(it.c)}</div>`}<div class="a muted">${esc(it.e)}</div></div>`).join("")}</details></section>
-    <section class="psec"><h3>Section B <small id="bScore">${scoreB()}/${T.B} · best ${EXAM.shortAttempt} count</small></h3>
-    ${shortQs.map((x, i) => { const txt = wGet(kB(i)); return `<div class="pq"><div class="pq-t"><b>Q${i + 1}.</b> ${esc(x.q)}</div>${txt.trim() ? `<div class="your">${esc(txt)}</div>${rubricHTML("B" + i, x.pts, m.ticks["B" + i] || [], suggest(x.pts, txt))}` : `<p class="dim">Not attempted</p>`}${modelHTML(x.pts)}</div>`; }).join("")}</section>
-    ${long ? `<section class="psec"><h3>Section C <small id="cScore">${scoreC()}/${T.C}</small></h3><div class="casebox"><details><summary>Case: ${esc(long.title)} (tap to reread)</summary><div style="margin-top:8px">${esc(long.text)}</div></details></div>
-    ${long.parts.map((p, i) => { const txt = wGet(kC(i)); return `<div class="pq"><div class="pq-t"><b>(${String.fromCharCode(97 + i)})</b> ${esc(p[0])} <span class="mk">${p[1]} marks</span></div>${txt.trim() ? `<div class="your">${esc(txt)}</div>${rubricHTML("C" + i, p[2], m.ticks["C" + i] || [], suggest(p[2], txt))}` : `<p class="dim">Not attempted</p>`}${modelHTML(p[2])}</div>`; }).join("")}</section>` : ""}
+    <section class="psec"><h3>Section B <small id="bScore">${scoreB()}/${T.B} · best ${X.shortAttempt} count</small></h3>${markSec("B", P.B, kB, i => `Q${nB + i}.`)}</section>
+    <section class="psec"><h3>Section C <small id="cScore">${scoreC()}/${T.C} · best ${X.longAttempt} count</small></h3>${markSec("C", P.C, kC, i => `Q${nC + i}.`)}</section>
+    ${P.long ? `<section class="psec"><h3>Section D <small id="dScore">${scoreD()}/${T.D}</small></h3><div class="casebox"><details><summary>Case: ${esc(P.long.title)} (tap to reread)</summary><div style="margin-top:8px">${esc(P.long.text)}</div></details></div>${markSec("D", P.D, kD, i => `Q${nD + i}.`)}</section>` : ""}
     <button class="btn primary block" id="finishMark2">Finish marking and save result</button></div>`;
     bindRubric(v, m.ticks, k => {
-      persist(); $("#liveTotal").textContent = total(); $("#bScore").textContent = `${scoreB()}/${T.B} · best ${EXAM.shortAttempt} count`; const cs = $("#cScore"); if (cs) cs.textContent = `${scoreC()}/${T.C}`;
-      const [sec, i] = [k[0], +k.slice(1)], pts = sec === "B" ? shortQs[i].pts : long.parts[i][2];
+      persist(); $("#liveTotal").textContent = total(); $("#bScore").textContent = `${scoreB()}/${T.B} · best ${X.shortAttempt} count`; $("#cScore").textContent = `${scoreC()}/${T.C} · best ${X.longAttempt} count`; const ds = $("#dScore"); if (ds) ds.textContent = `${scoreD()}/${T.D}`;
+      const sec = k[0], i = +k.slice(1), pts = (sec === "B" ? P.B : sec === "C" ? P.C : P.D)[i].pts;
       const el = $(`[data-rtot="${k}"]`); if (el) el.textContent = `${marksOf(pts, m.ticks[k])}/${pts.reduce((x, p) => x + p[1], 0)}`;
     });
     $("#finishMark").onclick = $("#finishMark2").onclick = finish;
   };
   const finish = () => {
-    const a = scoreA(), b = scoreB(), c = scoreC(), sc = Math.round((a + b + c) * 10) / 10, pct = Math.round(sc / EXAM.total * 100);
-    const dur = Math.min(EXAM.minutes * 60, Math.round(((m.submittedAt || Date.now()) - m.startedAt) / 1000));
-    m.mcq.forEach((it, i) => recordAnswer(it, m.ans[i] === it.ans, { unique: !it.set }));
+    const r1 = x => Math.round(x * 10) / 10;
+    const a = scoreA(), b = r1(scoreB()), c = r1(scoreC()), d = r1(scoreD()), sc = r1(a + b + c + d), pct = Math.round(sc / X.total * 100);
+    const dur = Math.min(X.minutes * 60, Math.round(((m.submittedAt || Date.now()) - m.startedAt) / 1000));
+    m.mcq.forEach((it, i) => recordAnswer(it, m.ans[i] === it.ans, { unique: true }));
     S.mockCount++; S.papers = (S.papers || 0) + 1; S.mockXp += pct; const newBest = pct > S.mockBest; S.mockBest = Math.max(S.mockBest, pct);
-    const res = { score: sc, total: EXAM.total, pct, a, b, c, dur, ts: Date.now() };
+    const res = { score: sc, total: X.total, pct, a, b, c, d, dur, ts: Date.now() };
     LS.set("cr_paper_last_" + SUBJ.id, res); m.phase = "done"; m.result = res; persist();
-    fbUpdate({ [`attempts/${uid}/${Date.now().toString(36)}`]: { type: "exam", subj: SUBJ.id, score: sc, total: EXAM.total, pct, a, b, c, dur, ts: serverTimestamp() }, [`users/${uid}/mockCount`]: increment(1), [`users/${uid}/papers`]: increment(1), [`users/${uid}/mockXp`]: increment(pct), [`users/${uid}/mockBest`]: S.mockBest });
+    fbUpdate({ [`attempts/${uid}/${Date.now().toString(36)}`]: { type: "exam", subj: SUBJ.id, score: sc, total: X.total, pct, a, b, c, d, dur, ts: serverTimestamp() }, [`users/${uid}/mockCount`]: increment(1), [`users/${uid}/papers`]: increment(1), [`users/${uid}/mockXp`]: increment(pct), [`users/${uid}/mockBest`]: S.mockBest });
     syncLB(true); toast(newBest ? `New best: ${pct}%!` : `Saved · +${pct} XP`);
     doneView(); scrollTo(0, 0);
   };
   const doneView = () => {
-    const r = m.result, T2 = examTotals(), band = r.pct >= 80 ? "Distinction level. Keep revising the weak parts." : r.pct >= 60 ? "First-division level. Push your written answers with more frameworks and case facts." : r.pct >= 40 ? "Pass level. Revise notes for weak topics and practise structured answers." : "Needs work. Start with notes and short answers, then retry.";
-    v.innerHTML = `<div class="qwrap"><div class="qcard" style="text-align:center"><div class="muted">${esc(EXAM.title)}</div><div class="result-big num">${r.score}<small>/${r.total}</small></div><p style="margin:8px 0 4px;font-weight:700">${r.pct}% · ${fmtTime(r.dur)} used</p><p class="muted">${band}</p>
+    const r = m.result, band = r.pct >= 80 ? "Distinction level. Keep revising the weak parts." : r.pct >= 60 ? "First-division level. Push your written answers with more frameworks and case facts." : r.pct >= 40 ? "Pass level. Revise notes for weak topics and practise structured answers." : "Needs work. Start with notes and short answers, then retry.";
+    v.innerHTML = `<div class="qwrap"><div class="qcard" style="text-align:center"><div class="muted">End Term practice paper</div><div class="result-big num">${r.score}<small>/${r.total}</small></div><p style="margin:8px 0 4px;font-weight:700">${r.pct}% · ${fmtTime(r.dur)} used</p><p class="muted">${band}</p>
     <div class="row" style="justify-content:center"><button class="btn primary" id="newPaper">New paper</button><a class="btn" href="#ranks">Leaderboard</a></div></div>
-    <div class="panel" style="margin-top:14px"><h3>By section</h3><div class="breakdown">${[["Section A · MCQs", r.a, T2.A], ["Section B · short answers", r.b, T2.B], ["Section C · case study", r.c, T2.C]].map(([l, x, t]) => `<div class="bd-row"><span>${l}</span><span class="num" style="text-align:right">${x}/${t}</span><div class="bar"><i style="width:${x / t * 100}%"></i></div></div>`).join("")}</div></div>
+    <div class="panel" style="margin-top:14px"><h3>By section</h3><div class="breakdown">${[["Section A · MCQs", r.a, T.A], ["Section B · short answers", r.b, T.B], ["Section C · long answers", r.c, T.C], ["Section D · case study", r.d, T.D]].map(([l, x, t]) => `<div class="bd-row"><span>${l}</span><span class="num" style="text-align:right">${x}/${t}</span><div class="bar"><i style="width:${x / t * 100}%"></i></div></div>`).join("")}</div></div>
     <p class="muted" style="text-align:center"><a href="#" id="reviewPaper">Review your marked paper</a></p></div>`;
     $("#newPaper").onclick = () => { LS.set(paperKey(), buildExam()); vPaper(v); scrollTo(0, 0); };
     $("#reviewPaper").onclick = e => { e.preventDefault(); markView(); $$("[data-rk]", v).forEach(x => x.disabled = true); $("#finishMark").remove(); $("#finishMark2").remove(); };
   };
-  cleanup = () => clearInterval(tick);
+  cleanup = () => { clearInterval(tick); stopAllMics(); };
   if (m.phase === "write") { if (Date.now() >= m.endsAt) toMark(); else writeView(); } else if (m.phase === "mark") markView(); else doneView();
 }
+
+/* ================= voice answers: speak → text in the box + recording saved ================= */
+const VDB = (() => { let p; return () => p ||= new Promise((res, rej) => { try { const r = indexedDB.open("br_voice", 1); r.onupgradeneeded = () => r.result.createObjectStore("rec", { keyPath: "id" }); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); } catch (e) { rej(e); } }); })();
+const vdbDo = async (mode, fn) => { const db = await VDB(); return new Promise((res, rej) => { const tx = db.transaction("rec", mode), st = tx.objectStore("rec"); const r = fn(st); tx.oncomplete = () => res(r && r.result); tx.onerror = () => rej(tx.error); }); };
+const vdbPut = rec => vdbDo("readwrite", st => st.put(rec));
+const vdbDel = id => vdbDo("readwrite", st => st.delete(id));
+const vdbFor = async key => { const db = await VDB(); return new Promise(res => { const out = [], tx = db.transaction("rec"), cur = tx.objectStore("rec").openCursor(); cur.onsuccess = () => { const c = cur.result; if (!c) return res(out.sort((a, b) => a.ts - b.ts)); if (c.value.key === key) out.push(c.value); c.continue(); }; cur.onerror = () => res(out); }); };
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+let micActive = null;
+const mmss = sec => `${Math.floor(sec / 60)}:${String(Math.floor(sec % 60)).padStart(2, "0")}`;
+function stopAllMics() { if (micActive) micActive.stop(); }
+function saveVoiceNote(topic, q, text) {
+  text = (text || "").trim(); if (!text) return;
+  const id = topic && NOTE[topic] ? topic : "Voice notes";
+  const stamp = new Date().toLocaleString("en-IN", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+  const add = `🎙️ ${stamp}${q ? ` · ${q.slice(0, 80)}${q.length > 80 ? "…" : ""}` : ""}\n${text}`;
+  S.mynotes[id] = (S.mynotes[id] ? S.mynotes[id] + "\n\n" : "") + add; save();
+  fbUpdate({ [`users/${uid}/mynotes/${id}`]: S.mynotes[id] });
+}
+async function renderVoiceList(box, key) {
+  if (!box || !key) return; let recs = []; try { recs = await vdbFor(key); } catch { }
+  box.innerHTML = recs.map((r, i) => `<div class="vrec"><span class="dim">🎙️ ${i + 1} · ${mmss(r.sec || 0)}</span><audio controls preload="none" src="${URL.createObjectURL(r.blob)}"></audio><button class="btn ghost small" data-vdel="${r.id}" aria-label="Delete recording">✕</button></div>`).join("");
+  $$("[data-vdel]", box).forEach(b => b.onclick = async () => { if (!confirm("Delete this recording?")) return; await vdbDel(b.dataset.vdel).catch(() => { }); renderVoiceList(box, key); });
+}
+function attachMic(ta) {
+  if (ta.dataset.mic || ta.dataset.nomic !== undefined || ta.readOnly) return; ta.dataset.mic = "1";
+  const bar = document.createElement("div"); bar.className = "mic-bar";
+  bar.innerHTML = `<button type="button" class="mic-btn" aria-label="Speak your answer"><span class="mic-ic">🎙️</span><span class="mic-l">Speak</span></button><span class="mic-st dim"></span>`;
+  const list = document.createElement("div"); list.className = "voice-list";
+  ta.after(bar); bar.after(list);
+  const key = ta.dataset.w || (ta.dataset.mynote ? "mynote:" + location.hash : ""); if (key) renderVoiceList(list, key);
+  const btn = $(".mic-btn", bar), st = $(".mic-st", bar);
+  btn.onclick = () => micActive && micActive.ta === ta ? micActive.stop() : startMic(ta, btn, st, list, key);
+}
+async function startMic(ta, btn, st, list, key) {
+  stopAllMics();
+  if (!SR && !(navigator.mediaDevices && window.MediaRecorder)) { toast("Voice input isn't supported in this browser. Try Chrome or Safari."); return; }
+  const base = ta.value && !/\s$/.test(ta.value) ? ta.value + " " : ta.value; let finals = "", stopped = false, rec = null, stream = null, chunks = [], t0 = Date.now(), timer;
+  const put = interim => { ta.value = base + finals + (interim || ""); ta.dispatchEvent(new Event("input", { bubbles: true })); ta.scrollTop = ta.scrollHeight; };
+  const ctl = { ta, stop: () => { if (stopped) return; stopped = true; try { rec && rec.stop(); } catch { } try { mr && mr.state !== "inactive" && mr.stop(); } catch { } finishUI(); } };
+  let mr = null;
+  if (SR) {
+    rec = new SR(); rec.lang = "en-IN"; rec.continuous = true; rec.interimResults = true;
+    rec.onresult = e => { let interim = ""; for (let i = e.resultIndex; i < e.results.length; i++) { const r = e.results[i]; if (r.isFinal) finals += r[0].transcript.trim() + ". "; else interim += r[0].transcript; } put(interim); };
+    rec.onerror = e => { if (e.error === "not-allowed" || e.error === "service-not-allowed") { toast("Allow microphone access to speak your answer"); ctl.stop(); } };
+    rec.onend = () => { if (!stopped) { try { rec.start(); } catch { ctl.stop(); } } };
+    try { rec.start(); } catch { }
+  }
+  if (navigator.mediaDevices && window.MediaRecorder) {
+    try {
+      if (!key) throw 0;
+      stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      if (stopped) { stream.getTracks().forEach(t => t.stop()); return; }
+      mr = new MediaRecorder(stream); mr.ondataavailable = e => e.data.size && chunks.push(e.data);
+      mr.onstop = async () => { stream.getTracks().forEach(t => t.stop()); if (!chunks.length) return; const blob = new Blob(chunks, { type: mr.mimeType || "audio/webm" }); const sec = (Date.now() - t0) / 1000; if (sec < 1) return; try { await vdbPut({ id: key + ":" + Date.now(), key, ts: Date.now(), sec, blob, subj: SUBJ.id }); renderVoiceList(list, key); } catch { } };
+      mr.start(1000);
+    } catch (e) { if (!SR) { toast("Allow microphone access to record your answer"); ctl.stop(); return; } }
+  }
+  micActive = ctl; btn.classList.add("on"); $(".mic-l", btn).textContent = "Stop";
+  timer = setInterval(() => { st.textContent = `● Listening ${mmss((Date.now() - t0) / 1000)}${SR ? "" : " · recording only (no dictation in this browser)"}`; }, 500);
+  function finishUI() {
+    clearInterval(timer); btn.classList.remove("on"); $(".mic-l", btn).textContent = "Speak"; if (micActive === ctl) micActive = null;
+    put(""); const said = finals.trim();
+    if (said && ta.dataset.w) { saveVoiceNote(ta.dataset.topic, ta.dataset.q, said); st.textContent = "✓ Added to your answer and saved in My notes"; } else if (said) st.textContent = "✓ Added"; else st.textContent = mr ? "✓ Recording saved" : "Didn't catch that. Try again closer to the mic";
+    setTimeout(() => { if (!micActive) st.textContent = ""; }, 5000);
+  }
+}
+new MutationObserver(() => $$("#view textarea:not([data-mic])").forEach(attachMic)).observe(document.body, { childList: true, subtree: true });
+window.addEventListener("hashchange", stopAllMics);
 
 /* ================= seeded randomness (same questions for everyone) ================= */
 function rngFrom(seed) { let a = typeof seed === "number" ? seed : [...String(seed)].reduce((h, c) => (Math.imul(h ^ c.charCodeAt(0), 2654435761) >>> 0), 2166136261); return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
@@ -1695,74 +1807,3 @@ if ("serviceWorker" in navigator && location.protocol === "https:") addEventList
   // if Firebase never connects, still ask for the name locally
   setTimeout(() => { if (!S.name && !$(".modal")) askName(); else if (S.name && !LS.get("cr_subject_chosen", false)) pickSubject(true); }, online ? 0 : 6000);
 })();
-
-
-/* ========== BOARDROOM V7: QUIZ GAME WORLD ========== */
-const G7_MODES = [
- {id:'race',icon:'🏁',name:'Quiz Race',sub:'Outrun the course by answering correctly', color:'#64e4ff'},
- {id:'survival',icon:'💛',name:'Survival Quiz',sub:'Protect your hearts; last player standing wins',color:'#ffb866'},
- {id:'treasure',icon:'💎',name:'Treasure Hunt',sub:'Collect gems and discover bonus chests',color:'#d0a3ff'},
- {id:'boss',icon:'🐲',name:'Boss Battle',sub:'Cooperate to defeat the knowledge guardian',color:'#ff84b1'},
- {id:'story',icon:'🏙️',name:'Case Study Adventure',sub:'Make smart business decisions and build your empire',color:'#9cf1b9'}
-];
-const G7_SKINS=['#8c72ff','#49d2cf','#fb9a66','#ff74aa','#98cc73','#ffd66a'];
-const G7_HAIR=['none','cap','spike','bun'];
-const G7_PICK=(arr,n)=>arr[(Math.abs(n)||0)%arr.length];
-function g7Avatar(color=0,hair=0,label='') {return `<div class="g7-person" style="--skin:${G7_SKINS[color]||G7_SKINS[0]}"><span class="g7-hair ${G7_HAIR[hair]||'none'}"></span><span class="g7-head"><i></i><i></i><b></b></span><span class="g7-torso"></span><span class="g7-arm left"></span><span class="g7-arm right"></span><span class="g7-leg left"></span><span class="g7-leg right"></span></div>${label?`<small>${esc(label)}</small>`:''}`;}
-function g7Profile(){let a=LS.get('br_v7_avatar',null);return a&&Number.isInteger(a.color)&&Number.isInteger(a.hair)?a:{color:0,hair:0};}
-function g7Qs(mode,seed,n){
- const rnd=rngFrom('g7:'+mode+':'+seed), all=(mode==='story'&&CASESETS.length)?CASESETS.flatMap(c=>c.qs):BANK;
- return sshuffle(all.length?all:BANK,rnd).slice(0,Math.min(n,all.length||BANK.length)).map(q=>{let opts=sshuffle([q.c,...q.w],rnd);return {...q,opts,ans:opts.indexOf(q.c)};});
-}
-function vGames7(v,p){
- if(p){const bits=p.split('-');if(bits[0]==='solo')return g7Solo(v,bits[1]);if(bits[0]==='room')return g7Room(v,bits[1]);}
- const a=g7Profile();
- v.innerHTML=`<div class="g7-wrap"><section class="g7-hero"><div class="g7-kicker">BOARDROOM · GAME WORLD / V7</div><div class="g7-hero-grid"><div><h1>Knowledge is<br><em>your superpower.</em></h1><p>Five mini-games. Real study questions. Unlock your own champion avatar and play solo or with up to four friends.</p><div class="g7-actions"><a class="btn primary" href="#games/solo-race">⚡ Quick play</a><a class="btn" href="#games">Explore modes ↓</a></div></div><div class="g7-hero-avatar">${g7Avatar(a.color,a.hair)}<span>YOUR RUNNER</span></div></div></section><section class="g7-custom panel"><div><h2>🎨 Customize your runner</h2><p class="muted">Lightweight 3D-style character · saved on this device</p></div><div class="g7-look"><label>Suit color <select id="g7Color" class="field">${G7_SKINS.map((c,i)=>`<option value="${i}" ${a.color===i?'selected':''}>${['Violet','Aqua','Sunset','Rose','Mint','Gold'][i]}</option>`).join('')}</select></label><label>Headwear <select id="g7Hair" class="field">${G7_HAIR.map((h,i)=>`<option value="${i}" ${a.hair===i?'selected':''}>${['Classic','Cap','Spikes','Bun'][i]}</option>`).join('')}</select></label><div id="g7Preview">${g7Avatar(a.color,a.hair)}</div></div></section><h2 class="g7-section-title">Choose your playground <span>5 MODES</span></h2><div class="g7-cards">${G7_MODES.map(m=>`<article class="g7-card" style="--accent:${m.color}"><div class="g7-icon">${m.icon}</div><h3>${m.name}</h3><p>${m.sub}</p><div class="g7-card-actions"><a class="btn primary small" href="#games/solo-${m.id}">Solo play</a><button class="btn ghost small" data-host="${m.id}">Play with friends</button></div></article>`).join('')}</div><p class="g7-footnote">Free-tier game mode. Competitive rewards are for fun and are not authoritative exam scores. Multiplayer needs your Firebase Realtime Database rules updated.</p></div>`;
- const change=()=>{const av={color:Number($('#g7Color',v).value),hair:Number($('#g7Hair',v).value)};LS.set('br_v7_avatar',av);$('#g7Preview',v).innerHTML=g7Avatar(av.color,av.hair);$('.g7-hero-avatar',v).innerHTML=g7Avatar(av.color,av.hair)+'<span>YOUR RUNNER</span>';};$('#g7Color',v).onchange=change;$('#g7Hair',v).onchange=change;
- $$('[data-host]',v).forEach(btn=>btn.onclick=()=>g7Setup(v,btn.dataset.host));
-}
-function g7Setup(v,mode){const m=G7_MODES.find(x=>x.id===mode);if(!m)return vGames7(v);v.innerHTML=`<div class="g7-wrap"><section class="panel g7-setup"><h2>${m.icon} ${m.name} · Create room</h2><p>Invite up to 3 friends. The host starts after everyone joins.</p><div class="g7-form"><label>Questions<select class="field" id="g7Count"><option>5</option><option selected>10</option><option>15</option></select></label><label>Players<select class="field" id="g7Max"><option>2</option><option>3</option><option selected>4</option></select></label><label>Time per question<select class="field" id="g7Time"><option>10</option><option selected>15</option><option>20</option></select></label></div><div class="g7-actions"><button class="btn primary" id="g7Create">Create party</button><a class="btn" href="#games">Back to modes</a></div></section></div>`;
- $('#g7Create',v).onclick=async()=>{if(!online||!uid)return toast('Internet and Firebase sign-in required for multiplayer');const btn=$('#g7Create',v);btn.disabled=true;const code=code5();try{await set(fbPath('gameRooms/'+code),{mode,host:uid,subj:SUBJ.id,seed:Math.floor(Math.random()*1e9),state:'waiting',created:serverTimestamp(),count:Number($('#g7Count',v).value),maxPlayers:Number($('#g7Max',v).value),duration:Number($('#g7Time',v).value)*1000,round:1,seats:{0:uid},players:{[uid]:{name:S.name||'Player',avatar:g7Profile()}}});location.hash='#games/room-'+code;}catch(e){toast('Room error: '+(e.code||e.message));btn.disabled=false;}};
-}
-function g7Score(mode,good,ms,duration,idx){if(!good)return 0;if(mode==='race')return 120+Math.round(80*(1-ms/duration));if(mode==='treasure')return 100+(idx%3===2?100:40);if(mode==='boss')return 120;if(mode==='story')return 100;return 100;}
-function g7Tally(mode,qs,answers,dur){let score=0,hearts=3,correct=0;for(let i=0;i<qs.length;i++){const a=answers?.[i];if(!a)continue;const ok=a.k===qs[i].ans;correct+=Number(ok);if(!ok&&mode==='survival')hearts=Math.max(0,hearts-1);if(mode==='survival'&&hearts===0)continue;score+=g7Score(mode,ok,Math.min(dur,Math.max(0,a.ms||dur)),dur,i);}return {score,hearts,correct};}
-function g7Scene(mode,players,qs,idx,duration){const max=Math.max(1,qs.length), boss=mode==='boss',mean=players.reduce((a,p)=>a+p.tally.correct,0);return `<div class="g7-world ${mode}"><div class="g7-sun"></div><div class="g7-cloud c1"></div><div class="g7-cloud c2"></div><div class="g7-track">${[0,1,2,3,4].map(i=>`<i style="--i:${i}"></i>`).join('')}<span class="g7-finish">FINISH</span></div>${boss?`<div class="g7-boss">🐲<strong>${Math.max(0,qs.length*players.length-mean)} HP</strong></div>`:''}<div class="g7-runners">${players.map((p,i)=>`<div class="g7-runner" style="--lane:${i};--progress:${Math.min(88,5+((mode==='race'?p.tally.score/200:mode==='treasure'?p.tally.score/140:mode==='survival'?p.tally.correct:mode==='story'?p.tally.correct:p.tally.correct)/max)*79)}%">${g7Avatar(p.avatar.color,p.avatar.hair)}<span>${esc(p.name)}</span></div>`).join('')}</div></div>`;}
-function g7Play(v,ctx){
- let stopped=false,last='',timer=null,selectedLane=1,previousQuestion=-1,slideStart=null,submitting=false;const {mode,seed,count,duration,players,me,round}=ctx,qs=g7Qs(mode,seed,count);let selfAnswers=ctx.solo?{}:null;let info=null;
- const result=()=>{const roster=ctx.solo?[{id:'solo',name:S.name||'You',avatar:g7Profile(),ans:selfAnswers}]:Object.entries(info?.players||{}).map(([id,p])=>({id,name:p.name||'Player',avatar:p.avatar||{color:0,hair:0},ans:p.answers||{}}));return roster.map(p=>({...p,tally:g7Tally(mode,qs,p.ans,duration)}));};
- const render=()=>{if(stopped)return;const elapsed=Math.max(0,sNow()-ctx.startAt),span=duration+3500,idx=Math.floor(elapsed/span),phase=elapsed%span,active=Math.min(idx,qs.length-1),show=phase>=duration||idx>=qs.length;if(idx!==previousQuestion){previousQuestion=idx;selectedLane=1;}let roster=result(),own=roster.find(p=>p.id===me)||roster[0];const meta=G7_MODES.find(m=>m.id===mode),done=idx>=qs.length||(mode==='survival'&&own.tally.hearts<=0&&show);
- const key=[idx,show,done,selectedLane,JSON.stringify(own.ans?.[idx]),roster.map(x=>x.tally.score).join(',')].join(':');if(last===key){const el=$('#g7Clock',v);if(el)el.textContent=String(Math.ceil(Math.max(0,duration-phase)/1000));return;}last=key;
- if(done){let ranking=roster.slice().sort((a,b)=>b.tally.score-a.tally.score);const best=ranking[0]?.tally.score||0;const earned=Math.round((own.tally.correct*6)+(own.tally.score===best?20:0));const rewardKey=`br_v7_reward_${ctx.solo?'solo':ctx.code}_${round}_${seed}_${me}`;if(!LS.get(rewardKey,false)){LS.set(rewardKey,true);if(ctx.solo){bonus(earned); }else{bonus(earned,{battles:1,wins:own.tally.score===best?1:0});}}v.innerHTML=`<div class="g7-wrap g7-results"><div class="g7-trophy">${mode==='boss'?'🐲':'🏆'}</div><h1>${mode==='boss'?'Boss encounter complete!':own.tally.score===best?'Champion!':'Great game!'}</h1><p>${meta.name} · ${own.tally.correct}/${qs.length} correct · +${earned} XP</p><div class="g7-podium">${ranking.map((p,i)=>`<div class="g7-result"><span>${['🥇','🥈','🥉','🎖️'][Math.min(i,3)]}</span>${g7Avatar(p.avatar.color,p.avatar.hair)}<strong>${esc(p.name)}</strong><small>${p.tally.score} pts · ${p.tally.correct} correct</small></div>`).join('')}</div><div class="g7-actions"><a href="#games" class="btn primary">All game modes</a>${ctx.solo?`<a class="btn" href="#games/solo-${mode}">Play again</a>`:`<button class="btn" id="g7Again">Rematch (host)</button>`}</div></div>`;
- if(!ctx.solo){const b=$('#g7Again',v);if(b){b.disabled=ctx.host!==me;b.onclick=async()=>{b.disabled=true;try{await update(fbPath('gameRooms/'+ctx.code),{state:'waiting',round:round+1,seed:Math.floor(Math.random()*1e9),startAt:null,players:Object.fromEntries(Object.entries(info.players).map(([id,p])=>[id,{name:p.name,avatar:p.avatar||{color:0,hair:0}}]))});}catch(e){toast(e.code||e.message);b.disabled=false;}};}}
- return;}
- const q=qs[active];if(!q){v.innerHTML='<p>No questions available for this subject.</p>';return;}const mine=own.ans?.[active],locked=Boolean(mine)||show;
- v.innerHTML=`<div class="g7-wrap g7-match"><div class="g7-match-top"><a href="#games" class="btn ghost small">← Exit</a><strong>${meta.icon} ${meta.name}</strong><span>QUESTION ${active+1} / ${qs.length}</span></div><div class="g7-doorworld" id="g7Doorworld" tabindex="0" aria-label="Four answer lanes. Swipe left or right to move your runner, then enter the selected door."><div class="g7-door-sky"><span>🏁 QUESTION GATES</span><span>${mode==='boss'?'🐲':mode==='treasure'?'💎':mode==='story'?'🏙️':'🏆'}</span></div><div class="g7-door-lanes">${q.opts.map((opt,i)=>`<button type="button" class="g7-door ${selectedLane===i?'is-active':''} ${show?(i===q.ans?'is-correct':mine?.k===i?'is-wrong':''):''}" data-lane="${i}" ${locked?'disabled':''} aria-label="Door ${'ABCD'[i]}: ${esc(opt)}"><span class="g7-door-label">DOOR ${'ABCD'[i]}</span><span class="g7-door-frame"><span class="g7-door-icon">${show?(i===q.ans?'✓':mine?.k===i?'✕':''):'?'}</span></span><span class="g7-door-text">${esc(opt)}</span></button>`).join('')}</div><div class="g7-running-avatar" style="--current-lane:${selectedLane}">${g7Avatar(own.avatar.color,own.avatar.hair)}<span>${esc(own.name)}</span></div><div class="g7-runway"><i></i><i></i><i></i><i></i></div></div><div class="g7-hud"><span>⭐ ${own.tally.score} pts</span><span>${mode==='survival'?'❤️'.repeat(own.tally.hearts):mode==='treasure'?'💎 Gems':mode==='boss'?'🤝 Team attack':mode==='story'?'🏙️ Business choices':'🏁 Race to finish'}</span><span>⏳ <b id="g7Clock">${Math.ceil(Math.max(0,duration-phase)/1000)}</b>s</span></div><section class="g7-question panel"><div class="g7-kicker">${esc(q.t||SUBJ.short)}</div><h2>${esc(q.q)}</h2>${!locked?`<p class="g7-swipe-help">👈 Swipe left/right to change lanes · Tap a door to select · Press Enter Door to lock</p><div class="g7-drive"><button class="btn g7-steer" id="g7Left" aria-label="Move left">◀</button><button class="btn primary" id="g7Enter">ENTER DOOR ${'ABCD'[selectedLane]} ↗</button><button class="btn g7-steer" id="g7Right" aria-label="Move right">▶</button></div>`:''}${show?`<div class="g7-feedback"><b>${mine?.k===q.ans?'✅ Correct!':'💡 '+(mine?'Wrong door!':'Time up!')}</b><p>Correct door: ${'ABCD'[q.ans]} — ${esc(q.c)}</p><p>${esc(q.e||'Keep practicing this topic.')}</p><small>${roster.map(p=>`${esc(p.name)}: ${p.ans?.[active] ? 'Door '+ 'ABCD'[p.ans[active].k]+ (p.ans[active].k===q.ans?' ✓':' ✕'):'—'}`).join(' · ')}</small></div>`:mine?'<p class="g7-locked">🔒 Door entered! Waiting for everyone and the reveal…</p>':'<p class="g7-locked">Move your runner into the correct answer lane before the timer ends.</p>'}</section></div>`;
- const chooseLane=(lane)=>{if(locked||submitting)return;const next=Math.max(0,Math.min(3,lane));if(next!==selectedLane){selectedLane=next;last='';render();}};
- const submitLane=async(lane)=>{if(locked||submitting||sNow()>=ctx.startAt+(active*span)+duration)return;submitting=true;const answer={k:lane,ms:Math.min(duration,Math.max(0,sNow()-ctx.startAt-active*span))};if(ctx.solo){selfAnswers[active]=answer;recordAnswer(q,answer.k===q.ans);submitting=false;last='';render();return;}
- try{const r=await runTransaction(fbPath(`gameRooms/${ctx.code}/players/${me}/answers/${active}`),a=>a===null?answer:undefined,{applyLocally:false});if(r.committed)recordAnswer(q,answer.k===q.ans);}catch(e){toast('Answer failed: '+(e.code||e.message));}finally{submitting=false;last='';render();}};
- $$('[data-lane]',v).forEach(b=>b.onclick=()=>{const lane=Number(b.dataset.lane);if(selectedLane===lane)submitLane(lane);else chooseLane(lane);});
- const left=$('#g7Left',v),right=$('#g7Right',v),enter=$('#g7Enter',v);
- if(left)left.onclick=()=>chooseLane(selectedLane-1);if(right)right.onclick=()=>chooseLane(selectedLane+1);if(enter)enter.onclick=()=>submitLane(selectedLane);
- const field=$('#g7Doorworld',v);if(field&&!locked){field.ontouchstart=e=>{slideStart=e.touches[0]?.clientX??null;};field.ontouchend=e=>{if(slideStart===null)return;const dx=(e.changedTouches[0]?.clientX??slideStart)-slideStart;slideStart=null;if(Math.abs(dx)>28){e.preventDefault();chooseLane(selectedLane+(dx>0?-1:1));}};field.onkeydown=e=>{if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();chooseLane(selectedLane+(e.key==='ArrowLeft'?-1:1));}if(e.key==='Enter'||e.key===' '){e.preventDefault();submitLane(selectedLane);}};}
-
- };
- if(ctx.solo){info={players:{solo:{name:S.name||'You',avatar:g7Profile(),answers:selfAnswers}}};}
- else {const off=onValue(fbPath('gameRooms/'+ctx.code),snap=>{const r=snap.val();if(!r||r.round!==round||r.state!=='playing'){stopped=true;clearInterval(timer);off();if(location.hash==='#games/room-'+ctx.code)g7Room(v,ctx.code);return;}info=r;last='';render();},e=>toast('Sync error: '+(e.code||e.message)));cleanup=()=>{stopped=true;clearInterval(timer);off();};}
- timer=setInterval(render,150);render();if(ctx.solo)cleanup=()=>{stopped=true;clearInterval(timer);};
-}
-function g7Solo(v,mode){if(!G7_MODES.some(m=>m.id===mode))return vGames7(v);if(!BANK.length&&!(mode==='story'&&CASESETS.length)){v.innerHTML='<div class="empty">Select a subject with questions first.</div>';return;}g7Play(v,{solo:true,mode,seed:Math.floor(Math.random()*1e9),count:mode==='story'?5:10,duration:15000,players:{},startAt:sNow()+2500,round:1,me:'solo'});}
-async function g7Room(v,code){if(!/^[A-Z2-9]{5}$/.test(code||'')){v.innerHTML='<div class="empty">Invalid room code. <a href="#games">Go back</a></div>';return;}if(!online||!uid){v.innerHTML='<div class="empty">Firebase connection required for live games. <a href="#games">Try solo instead</a></div>';return;}
- let off=null,room=null,closed=false,last='',starting=false;v.innerHTML='<div class="g7-wrap panel">Connecting to the game room…</div>';
- const snap=await get(fbPath('gameRooms/'+code)).catch(()=>null);if(!snap?.exists()){v.innerHTML='<div class="empty">Room not found or unavailable. <a href="#games">All game modes</a></div>';return;}room=snap.val();if(room.subj!==SUBJ.id){await loadSubject(room.subj);}if(!room.players?.[uid]){
- if(room.state!=='waiting'){v.innerHTML='<div class="empty">This game has already started. <a href="#games">Back</a></div>';return;}
- let seat=-1;for(let i=1;i<Math.min(4,room.maxPlayers);i++){try{const r=await runTransaction(fbPath(`gameRooms/${code}/seats/${i}`),cur=>cur===null?uid:undefined,{applyLocally:false});if(r.committed){seat=i;break;}}catch(e){toast('Joining: '+(e.code||e.message));break;}}if(seat<0){v.innerHTML='<div class="empty">Room full or Firebase rules not yet published. <a href="#games">Back</a></div>';return;}
- try{await set(fbPath(`gameRooms/${code}/players/${uid}`),{name:S.name||'Player',avatar:g7Profile()});}catch(e){v.innerHTML=`<div class="empty">Couldn't join: ${esc(e.code||e.message)}</div>`;return;}
- }
- const draw=()=>{if(closed||!room)return;const ids=Object.values(room.seats||{}).filter(id=>room.players?.[id]);const host=room.host===uid;const key=JSON.stringify([room.state,room.round,ids,room.seed,room.startAt]);if(key===last)return;last=key;
- if(room.state==='playing'&&room.startAt){if(starting)return;starting=true;if(off)off();off=null;g7Play(v,{mode:room.mode,seed:room.seed,count:room.count,duration:room.duration,code,round:room.round,startAt:room.startAt,me:uid,host:room.host,solo:false});return;}
- const m=G7_MODES.find(x=>x.id===room.mode)||G7_MODES[0];v.innerHTML=`<div class="g7-wrap"><div class="g7-lobby panel"><div class="g7-kicker">PRIVATE GAME ROOM · ${esc(code)}</div><h1>${m.icon} ${m.name}</h1><p>Host starts after everyone joins. Backgrounding your browser will not start the match.</p><div class="g7-seats">${Array.from({length:room.maxPlayers},(_,i)=>{const id=room.seats?.[i],person=room.players?.[id];return `<div class="g7-seat">${person?g7Avatar(person.avatar?.color||0,person.avatar?.hair||0):'<div class="g7-seat-empty">+</div>'}<strong>${person?esc(person.name):'Open seat'}</strong><small>${i===0?'👑 HOST':id===uid?'YOU':person?'READY':'INVITE'}</small></div>`}).join('')}</div><div class="g7-meta">${ids.length}/${room.maxPlayers} players · ${room.count} questions · ${room.duration/1000}s each</div><div class="g7-actions"><button class="btn primary" id="g7Share">Share invitation</button><button class="btn" id="g7Copy">Copy link</button>${host?`<button class="btn primary" id="g7Start" ${ids.length<2?'disabled':''}>Start game</button>`:''}<a class="btn ghost" href="#games">Leave</a></div></div></div>`;
- const link=shareLink('#games/room-'+code);$('#g7Share',v).onclick=()=>shareText('🎮 Join my Boardroom game! Code '+code,link);$('#g7Copy',v).onclick=()=>navigator.clipboard?.writeText(link).then(()=>toast('Invite copied')).catch(()=>window.prompt('Copy link',link))||window.prompt('Copy link',link);
- if(host)$('#g7Start',v).onclick=async()=>{if(ids.length<2)return;const b=$('#g7Start',v);b.disabled=true;try{await update(fbPath('gameRooms/'+code),{state:'playing',startAt:sNow()+4000});}catch(e){toast('Cannot start: '+(e.code||e.message));b.disabled=false;}};
- };
- off=onValue(fbPath('gameRooms/'+code),snap=>{if(closed)return;room=snap.val();if(!room){v.innerHTML='<div class="empty">Room closed.</div>';return;}draw();},e=>{v.innerHTML=`<div class="empty">Firebase: ${esc(e.code||e.message)}</div>`;});cleanup=()=>{closed=true;if(off)off();};
-}

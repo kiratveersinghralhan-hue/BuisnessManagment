@@ -580,3 +580,18 @@ pre.qcode{font-size:14px;font-weight:500}
 .arena62-unseen{display:flex;flex-wrap:wrap;gap:10px}.arena62-unseen a{padding:10px 13px;border-radius:12px;background:var(--card,rgba(120,120,180,.1));color:inherit}
 @media(max-width:720px){.arena62-cards{grid-template-columns:1fr}.arena62-topic-name{align-items:flex-start;flex-direction:column}.arena62-badges{grid-template-columns:repeat(2,minmax(0,1fr))}.arena62-card{padding:18px}.arena62-heading h2{font-size:30px}}
 @media(prefers-reduced-motion:reduce){.arena62-card,.arena62-badge{transition:none!important;animation:none!important}}
+/* v5 voice answers + 4-section paper */
+.mic-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:8px 0 2px}
+.mic-btn{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:rgba(255,255,255,.07);color:inherit;font:inherit;font-weight:700;font-size:14px;padding:8px 14px;border-radius:999px;cursor:pointer;transition:background .2s,transform .15s}
+.mic-btn:hover{background:rgba(255,255,255,.13)}
+.mic-btn:active{transform:scale(.96)}
+.mic-btn.on{background:linear-gradient(135deg,#EF4444,#EC4899);border-color:transparent;color:#fff;animation:micPulse 1.4s ease-in-out infinite}
+@keyframes micPulse{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.55)}50%{box-shadow:0 0 0 9px rgba(239,68,68,0)}}
+.mic-st{font-size:13px}
+.voice-list{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+.vrec{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13px}
+.vrec audio{height:34px;max-width:100%;flex:1;min-width:180px}
+.wc.over{color:#F87171;font-weight:700}
+@media print{.mic-bar,.voice-list{display:none}}
+.paper .mock-bar .chips{flex-wrap:nowrap}
+.paper .mock-bar .chips .chip{padding:6px 11px;min-width:0;font-size:13px}
