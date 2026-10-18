@@ -1,4 +1,4 @@
-/* Principles of Business Management (Sem 1) — Dr. Sulochna Syal. Content written from Lectures 1–25 and the course handout. */
+/* Principles of Business Management (Sem 1) — Dr. Sulochna Syal. Content written from Lectures 1–30 and the course handout. */
 window.SUBJECT_DATA = window.SUBJECT_DATA || {};
 window.SUBJECT_DATA.pbm = {
  "units": [
@@ -18,7 +18,13 @@ window.SUBJECT_DATA.pbm = {
    "id": "u3",
    "name": "Unit 3",
    "title": "Operations, finance, HR & marketing",
-   "lectures": "Lectures 11–25"
+   "lectures": "Lectures 11–26"
+  },
+  {
+   "id": "u4",
+   "name": "Unit 4",
+   "title": "Ethics, governance, digital transformation & entrepreneurship",
+   "lectures": "Lectures 27–30"
   }
  ],
  "notes": [
@@ -237,6 +243,62 @@ window.SUBJECT_DATA.pbm = {
    "title": "Segmentation, targeting & customer value proposition",
    "sum": "Market segment, mass vs target marketing, geographic/demographic/psychographic (VALS)/behavioural bases, B2B segmentation, effective segmentation criteria, five targeting patterns, undifferentiated/differentiated/concentrated marketing, CVP vs USP.",
    "html": "\n<div class=\"tip\">From Lecture 25 (Marketing Management, Kuldeep C Rojhe). This completes STP from Lecture 24.</div>\n<h3>Market segment</h3><p>A <b>market segment</b> is a group of customers who share a similar set of needs and wants. <b>Mass marketing</b> offers one product to everyone; <b>target marketing</b> picks segments and designs offers for them.</p>\n<h3>Bases for segmenting consumer markets</h3><table><tr><th>Basis</th><th>Divides by</th><th>Example</th></tr>\n<tr><td><b>Geographic</b></td><td>Nations, states, regions, cities, neighbourhoods; can operate in one area or all but adapt to local variation</td><td>Spicier menu in South India</td></tr>\n<tr><td><b>Demographic</b></td><td>Age & life cycle, life stage, gender, income, generation, social class, race & culture</td><td>Kids' toothpaste, luxury cars for high income</td></tr>\n<tr><td><b>Psychographic</b></td><td>Psychology + demographics: values, attitudes, lifestyle, personality (VALS)</td><td>Adventure travel for thrill-seekers</td></tr>\n<tr><td><b>Behavioural</b></td><td>Needs & benefits, decision roles, user & usage, occasions, loyalty, readiness, attitude</td><td>Festival-season gift packs</td></tr></table>\n<h3>VALS framework (Values, Attitudes and Lifestyles)</h3><p>By Strategic Business Insights (SBI). Classifies US adults into <b>8 types</b> using two dimensions: <b>primary motivation</b> and <b>resources</b> (income, education, self-confidence, energy, innovativeness, impulsiveness, leadership, vanity…).</p>\n<ul><li><b>Motivations:</b> <b>Ideals</b> (guided by knowledge and principles) · <b>Achievement</b> (demonstrate success to peers) · <b>Self-expression</b> (social or physical activity, variety, risk)</li></ul>\n<table><tr><th>Type</th><th>Profile</th></tr>\n<tr><td>Innovators</td><td>Successful, sophisticated, take-charge, high self-esteem; highest resources</td></tr>\n<tr><td>Thinkers</td><td>Mature, satisfied, reflective; ideals; value order, knowledge; seek durability, functionality, value</td></tr>\n<tr><td>Achievers</td><td>Goal-oriented, career and family; premium products that show success</td></tr>\n<tr><td>Experiencers</td><td>Young, enthusiastic, impulsive; spend on fashion, entertainment, socialising</td></tr>\n<tr><td>Believers</td><td>Conservative, conventional, traditional, concrete beliefs (ideals, low resources)</td></tr>\n<tr><td>Strivers</td><td>Trendy, fun-loving, resource-constrained; stylish products that copy the wealthy</td></tr>\n<tr><td>Makers</td><td>Practical, down-to-earth, self-sufficient; like working with their hands</td></tr>\n<tr><td>Survivors</td><td>Elderly, passive, worried about change, loyal to favourite brands; lowest resources</td></tr></table>\n<h3>Behavioural segmentation variables</h3><ul><li><b>Decision roles:</b> initiator → influencer → decider → buyer → user</li><li><b>User status:</b> non-user, potential, ex-user, first-time, regular</li><li><b>Usage rate:</b> light, medium, heavy</li><li><b>Buyer-readiness:</b> unaware → aware → informed → interested → desire → intend to buy</li><li><b>Loyalty status:</b> hard-core, split loyal, shifting loyal, switchers</li><li><b>Attitude:</b> enthusiastic, positive, indifferent, negative, hostile</li><li>Also occasions and benefits sought</li></ul>\n<h3>Segmenting business (B2B) markets</h3><table><tr><th>Variable</th><th>Questions</th></tr>\n<tr><td>Demographic</td><td>Which industry, company size, location to serve</td></tr>\n<tr><td>Operating variables</td><td>Technology; user status (heavy/medium/light/non-user); customer capabilities</td></tr>\n<tr><td>Purchasing approaches</td><td>Centralised vs decentralised buying; engineering vs finance-dominated power; existing relationships; policies (leasing, service, bidding); criteria (quality, service, price)</td></tr>\n<tr><td>Situational factors</td><td>Urgency, specific application, order size</td></tr>\n<tr><td>Personal characteristics</td><td>Buyer–seller similarity, attitude towards risk, loyalty</td></tr></table>\n<p>Flexible market offering: a <b>naked solution</b> (same for all) plus <b>discretionary options</b> that add value.</p>\n<h3>Target market and targeting</h3><p>A <b>target market</b> is the group within the serviceable available market at which a firm aims its marketing efforts; a subset of the total market. <b>Market targeting</b> = deciding how many and which segments to serve. Segment attractiveness can be judged with <b>Porter's Five Forces</b>.</p>\n<h3>Effective segmentation criteria</h3><ul><li><b>Measurable</b>: size, purchasing power can be measured</li><li><b>Substantial</b>: large and profitable enough</li><li><b>Accessible</b>: can be reached and served</li><li><b>Differentiable</b>: distinguishable, respond differently to marketing programmes</li><li><b>Actionable</b>: a programme can be developed to serve it</li></ul>\n<h3>Levels of segmentation</h3><p>No segmentation (mass) → segments → <b>niche</b> (a narrowly defined group seeking a distinctive mix of benefits) → <b>individuals (customerization)</b>.</p>\n<h3>Five patterns of target market selection</h3><ol><li><b>Single-segment concentration</b>: one product, one market</li><li><b>Selective specialisation</b>: a few attractive segments, unrelated</li><li><b>Product specialisation</b>: one product sold to several markets</li><li><b>Market specialisation</b>: many products for one market</li><li><b>Full market coverage</b>: all customers with all products</li></ol>\n<h3>Full-coverage strategies</h3><table><tr><th>Strategy</th><th>Meaning</th></tr><tr><td><b>Undifferentiated</b></td><td>One offer for the whole market (one marketing mix)</td></tr><tr><td><b>Differentiated</b></td><td>Different products/mixes for different segments</td></tr><tr><td><b>Concentrated</b></td><td>Focus on a smaller group (niche)</td></tr></table>\n<h3>Customer value proposition (CVP)</h3><p>A clear, concise statement of <b>why a specific customer should choose your offering over competitors</b>, by showing how it solves their problem.</p>\n<ul><li><b>CVP</b>: broad: total value, relevance and outcomes; converts attention into a buying decision</li><li><b>USP</b>: narrow: one distinct feature; captures initial attention</li><li>Three parts: <b>target customer</b> (who, what job) · <b>customer need</b> (problem/desire) · <b>unique value</b> (benefit delivered better or differently)</li><li><b>Perceived value = customer benefits (functional, emotional, social, convenience) − customer sacrifices (money, time, effort, risk)</b>. Value is more than a low price (e.g. IKEA: stylish furniture at accessible prices via self-service and flat-pack)</li></ul>\n<p><b>CVP formula:</b> For [target customer], our [offering] helps them [achieve an outcome] by [distinctive benefit / reason to believe].<br><i>Campus café: For students between classes, our café provides fresh, affordable meals in under five minutes, so they can eat well without missing class.</i></p>\n<p>A strong CVP is customer-specific, focused on outcomes not features, differentiated, and credible/deliverable. Key test: would the target customer understand the benefit, and why choose you?</p>\n"
+  },
+  {
+   "id": "brand",
+   "unit": "u3",
+   "lec": "L26",
+   "title": "Branding & brand equity",
+   "sum": "AMA definition of a brand, brand elements, 5 levels of product, why brands matter to consumers and firms, perceived risks, what can be branded, brand equity, strategic brand management process.",
+   "html": "<div class=\"tip\">From Lecture 26 (Branding vs Digital Marketing, Kuldeep C Rojhe). \"Brand\" comes from the Old Norse <i>brandr</i>, \"to burn\": owners burned marks on livestock to identify them.</div>\n<h3>What is a brand?</h3><p><b>AMA:</b> a brand is a \"name, term, sign, symbol, or design, or a combination of them, intended to identify the goods and services of one seller or group of sellers and to differentiate them from those of competition.\" These identifying parts are <b>brand elements</b>; choosing them is <b>branding</b>.</p><p>Practising managers see a brand as more: something that has created <b>awareness, reputation and prominence</b> in the market. A brand is the <b>overall experience</b> that distinguishes an organisation or product from rivals in the customer's eyes.</p>\n<h3>Brand vs product</h3><p>A <b>product</b> is anything offered to a market for attention, acquisition, use or consumption that satisfies a need: a physical good, service, retail outlet, person, organisation, place or idea. A <b>brand</b> is more than a product: it adds dimensions that differentiate it from other products meeting the same need.</p>\n<h3>Five levels of product</h3><table><tr><th>Level</th><th>Meaning</th><th>Hotel example</th></tr>\n<tr><td>1. Core benefit</td><td>The fundamental need or want</td><td>Rest and sleep</td></tr>\n<tr><td>2. Generic product</td><td>Basic no-frills version with only necessary attributes</td><td>A room with a bed</td></tr>\n<tr><td>3. Expected product</td><td>Attributes buyers normally expect</td><td>Clean sheets, towels, Wi-Fi</td></tr>\n<tr><td>4. Augmented product</td><td>Extra benefits/services that beat competitors</td><td>Free breakfast, airport pickup</td></tr>\n<tr><td>5. Potential product</td><td>All possible future augmentations and transformations</td><td>App check-in, personalised AI concierge</td></tr></table>\n<h3>Why brands matter</h3><table><tr><th>To consumers</th><th>To firms</th></tr><tr><td>Identify the source of the product · assign responsibility to the maker · <b>risk reducer</b> · <b>search-cost reducer</b> · promise/bond/pact with the maker · symbolic device · signal of quality</td><td>Identification to simplify handling/tracing · <b>legal protection</b> of unique features · signal of quality level · unique associations · <b>source of competitive advantage</b> · source of financial returns</td></tr></table>\n<p><b>Perceived risks brands reduce:</b> functional, physical, financial, social, psychological and time risk.</p>\n<h3>What can be branded?</h3><p>A brand lives in the <b>minds of consumers</b>; branding works whenever consumers face a choice. Physical goods, services, retailers and distributors, online products and services, people and organisations, sports/arts/entertainment, geographic locations, ideas and causes.</p>\n<h3>Branding challenges and opportunities</h3><ul><li>Savvy customers</li><li>Brand proliferation</li><li>Media fragmentation</li><li>Increased competition</li><li>Increased costs</li><li>Greater accountability</li></ul>\n<h3>Brand equity</h3><ul><li>The marketing effects <b>uniquely attributable to the brand</b>: different outcomes happen because of the brand name compared with the same product without it</li><li>The <b>value premium</b> a company earns from a recognisable name over a generic equivalent</li><li>Built by being memorable, recognisable, superior in quality and reliability, and through mass campaigns</li><li><b>Negative brand equity:</b> consumers would pay more for the generic than the branded product, e.g. after a major recall or scandal (Volkswagen emissions scandal, 2015)</li></ul>\n<h3>Strategic brand management process</h3><table><tr><th>Step</th><th>Key concepts</th></tr>\n<tr><td>1. Identify and establish brand positioning and values</td><td>Mental maps, competitive frame of reference, points-of-parity and points-of-difference, core brand values, brand mantra</td></tr>\n<tr><td>2. Plan and implement brand marketing programmes</td><td>Mixing and matching brand elements, integrating brand marketing activities, leveraging secondary associations</td></tr>\n<tr><td>3. Measure and interpret brand performance</td><td>Brand value chain, brand audits, brand tracking, brand equity management system</td></tr>\n<tr><td>4. Grow and sustain brand equity</td><td>Brand-product matrix, brand portfolios and hierarchies, brand expansion, reinforcement and revitalisation</td></tr></table>"
+  },
+  {
+   "id": "digimkt",
+   "unit": "u3",
+   "lec": "L26",
+   "title": "Digital marketing: website, SEO, PPC, email, social & payments",
+   "sum": "Digital vs traditional marketing, levels of customers, website building steps, domain names and DNS, hosting types, how search engines work, SEO (white/black hat), PPC/SEM, email metrics, social media forms, digital payments, shopping carts.",
+   "html": "<h3>Digital marketing</h3><p>The <b>targeted, measurable and interactive</b> marketing of products or services using digital technologies (internet, mobile, social media, search, email, apps) to reach and convert leads into customers. Goals: promote brands, build preference, increase sales. It enables real-time communication, data-driven decisions and personalised experiences across the buyer journey.</p>\n<h3>Traditional vs modern (digital) marketing</h3><table><tr><th>Area</th><th>Traditional</th><th>Modern/digital</th></tr>\n<tr><td>Interactivity</td><td>One-way; customers can't choose messages</td><td>All channels interactive</td></tr>\n<tr><td>Engagement</td><td>Hard to track results</td><td>Customer satisfaction and relationship building</td></tr>\n<tr><td>Agility</td><td>Physical channels, slow fulfilment</td><td>Fast, agile delivery</td></tr>\n<tr><td>Conversions</td><td>End-of-funnel, linked to consumption</td><td>Closer to awareness and interest stages</td></tr>\n<tr><td>Personalisation</td><td>Mass marketing, low personal touch</td><td>Customise for each customer</td></tr>\n<tr><td>Brand imagery</td><td>Limited by platform</td><td>Rich media and video</td></tr>\n<tr><td>Social involvement</td><td>Little or none</td><td>Builds trust through social networks</td></tr></table>\n<p><b>How digital scores:</b> multi-channel reach, instant customer interaction, location-based messaging, quicker funnel fulfilment, actionable reporting, cost leverage, audience targeting.</p>\n<p><b>Levels of customers:</b> Suspect → Prospect → Consumer → Client → Advocate.</p>\n<h3>Website</h3><p>Your \"face\", final touch point and <b>conversion engine</b> (purchase, query, online PR, support, information). Focus: business goals + needs of the target market. Usability ideal: anything in <b>3 clicks</b>.</p>\n<p><b>Steps:</b> Planning (why and for whom: goals, audience, user needs, competitor analysis, content strategy) → Design (look and feel, site architecture, navigation, mobile responsiveness, accessibility) → Development (CMS like WordPress/Shopify/Webflow, pages, content, forms, plugins) → Testing (alpha internal, beta users, speed, mobile, browser) → Deployment (domain, hosting, SSL, final checks) → Post-launch (SEO, Google Analytics/Search Console, content updates, security patches, performance, conversion optimisation).</p>\n<h3>Domain name</h3><ul><li>Your unique ID/address on the web. Parts: top-level domain (.com, .in) · second level (chitkara) · third level/subdomain (www)</li><li>Computers use <b>IP addresses</b>; <b>DNS</b> translates a domain name into an IP address (\"GPS for the internet\")</li><li>Choosing: easy to type, memorable, short, avoid numbers and hyphens, use keywords, target your area, right extension, check trademarks, register before someone else does</li><li>A <b>registrar</b> manages domain reservations (e.g. GoDaddy)</li></ul>\n<h3>Web hosting</h3><p>\"If a domain name is the address, web hosting is the house where the website lives.\" A web server permanently connected to the internet stores the site's files and serves pages. Types: <b>shared, virtual dedicated (VPS), dedicated server, co-location</b>. Providers: Bluehost, Hostinger, GoDaddy, SiteGround, AWS, Google Cloud.</p>\n<h3>Search engines</h3><p>Software that searches the web; results appear on <b>SERPs</b>. Unlike human-edited directories, they use algorithms and crawlers. Work in three stages: <b>Crawling</b> (bots/spiders follow links; guided by robots.txt and sitemaps) → <b>Indexing</b> (content analysed, categorised; duplicates filtered) → <b>Ranking</b> (keyword relevance, content quality, authority/backlinks, speed, mobile-friendliness, UX, location and intent). Result types: organic, paid ads, featured snippets, local results.</p>\n<h3>SEO</h3><p>Maximising visitors by appearing high in organic results; an <b>ongoing effort</b>. Controllable factors: topic, links, programming, mobile-friendliness. Uncontrollable: user location, trending/current topics.</p><table><tr><th>White hat SEO</th><th>Black hat SEO</th></tr><tr><td>Legitimate, easy to index, long-term gains</td><td>Unethical, exploits loopholes (spamdexing), short-term gains, sites get banned</td></tr></table>\n<h3>Pay per click (PPC)</h3><ul><li>Advertiser pays the publisher <b>only when the ad is clicked</b> (cost per click); the main way search engines earn revenue</li><li>Keywords are bid in an <b>auction</b>; higher bid → higher placement. Players: Google Ads (AdWords), Yahoo, Microsoft</li><li>Flow: keywords → ad → click → landing page → payment per click</li><li>Why: traffic while SEO takes months, highly targeted (pre-qualified searchers), geo-targeting, pay only for clicks, full financial and editorial control, test and tweak on the fly</li><li><b>SEM</b> is the broader term covering SEO + PPC</li></ul>\n<h3>Email marketing</h3><p>An email to a customer list with a sales pitch and a <b>call to action</b>. Why: cost savings, quick response, revenue, measurable, builds relationships. Models: promotions, transaction confirmations, newsletters, reminders, rewards, product updates, viral recommendations. Tools: Mailchimp, MailerLite, Brevo, HubSpot, Klaviyo, etc. <b>CRM</b> helps segment lists and align offers with purchase history.</p><p><b>Metrics:</b> bounce rate, unsubscribe rate, unique and total open rate, click-through rate, conversion rate.</p>\n<h3>Social media marketing</h3><p>Web-based services that let people come together to create, share, rate and discuss content (eWOM). Why: attention economy, trust and engagement, influence on buying decisions; find out what people are interested in, talk and <b>listen</b> to them.</p><p><b>Forms:</b> social bookmarking · social submission sites (voting) · forums · media sharing · reviews and ratings · social networks · messaging/private platforms (WhatsApp, Telegram: \"conversion happens quietly\") · blogs · podcasts · microblogging (X) · wikis.</p><p>Platform fit: Instagram visual branding · LinkedIn B2B and recruitment · YouTube education and demos · Facebook communities and ads · Reddit honest feedback · Quora authority · Pinterest high-intent discovery.</p><p><b>Rules of engagement:</b> plan from what you know, have a clear plan, know each site, be relevant/interesting, engage on the community's terms, no spam, respect site rules, be open and honest, listen and respond positively.</p>\n<h3>Digital payments and shopping carts</h3><p>Cashless transfers between bank accounts or wallets via digital channels: <b>UPI</b>, cards, net banking, mobile wallets, NEFT/RTGS/IMPS, USSD, AEPS, PoS/contactless, FASTag, QR codes, P2P, crypto.</p><p>A <b>shopping cart</b> is e-commerce software that lets visitors collect items before purchase; it calculates prices, applies discounts and passes to payment. Good carts are secure, fast, mobile-friendly, offer many payment options and currencies, and auto-save the cart.</p>"
+  },
+  {
+   "id": "ethics",
+   "unit": "u4",
+   "lec": "L27",
+   "title": "Business ethics & ethical frameworks",
+   "sum": "Ethics and business ethics, ethical behaviour by stakeholder, five ethical frameworks (utilitarian, rights, justice, virtue, common good), the ethical decision-making process, consequences of unethical behaviour.",
+   "html": "<div class=\"tip\">From Lecture 27 (Unit 4: Ethics, Governance and Digital Transformation, Dr. Sulochna Syal).</div>\n<h3>Ethics and business ethics</h3><p><b>Ethics</b> = principles that help decide what is right or wrong, fair or unfair, acceptable or unacceptable. <b>Business ethics</b> = applying those principles to business decisions, activities and relationships: doing business in a <b>fair, honest, responsible and transparent</b> way.</p>\n<table><tr><th>Area</th><th>Ethical behaviour</th></tr><tr><td>Advertising</td><td>No false claims</td></tr><tr><td>Employees</td><td>Fair wages, safe workplace</td></tr><tr><td>Customers</td><td>Safe, quality products</td></tr><tr><td>Suppliers</td><td>Fair, on-time payment</td></tr><tr><td>Financial reporting</td><td>Accurate information</td></tr><tr><td>Environment</td><td>Reduce pollution and waste</td></tr><tr><td>Data</td><td>Protect customer information</td></tr><tr><td>Competition</td><td>No unfair or deceptive practices</td></tr></table>\n<h3>Ethical frameworks</h3><p>A systematic set of principles or questions that helps a manager decide the right thing in a dilemma, looking at consequences, rights, fairness, responsibilities and long-term impact.</p>\n<table><tr><th>Framework</th><th>Key question</th><th>Example</th></tr>\n<tr><td><b>Utilitarian</b> (\"greatest good\")</td><td>Which decision gives the greatest benefit to the greatest number?</td><td>Weigh overall consequences of closing a polluting plant</td></tr>\n<tr><td><b>Rights</b></td><td>Does it respect individual rights, privacy, freedom, dignity?</td><td>Don't sell customers' personal data without consent</td></tr>\n<tr><td><b>Justice / fairness</b></td><td>Is it fair and equitable to everyone affected?</td><td>Equal pay for two employees doing the same job equally well</td></tr>\n<tr><td><b>Virtue ethics</b></td><td>What would a good person do? (honesty, integrity, courage, responsibility, fairness, compassion)</td><td>Report an accounting mistake even if it benefits the company</td></tr>\n<tr><td><b>Common good</b></td><td>What benefits the wider community and society?</td><td>Not dumping waste into a river to raise profit</td></tr></table>\n<h3>Ethical decision-making process</h3><ol><li>Identify the ethical problem</li><li>Identify stakeholders</li><li>List possible alternatives</li><li>Apply ethical principles (frameworks)</li><li>Make the decision</li><li>Evaluate the outcome</li></ol>\n<h3>Consequences of unethical behaviour</h3><p>Loss of reputation · financial loss · loss of customer trust · employee problems · damage to stakeholders · management and leadership consequences · long-term business failure. A successful business creates value while acting honestly, fairly and responsibly, not just making profits.</p>"
+  },
+  {
+   "id": "csr",
+   "unit": "u4",
+   "lec": "L27",
+   "title": "CSR, corporate governance, the Board & ESG",
+   "sum": "CSR meaning, activities and benefits; corporate governance and its importance; CSR vs governance; role and responsibilities of the Board (Section 135, Companies Act 2013); ESG pillars, global frameworks, SEBI BRSR, MCA, RBI, challenges and outlook.",
+   "html": "<h3>Corporate Social Responsibility (CSR)</h3><p>A business's responsibility towards <b>society and the environment</b> in addition to earning profit: think about people, society and the planet, not only profit.</p><p><b>Activities:</b> education for disadvantaged children, healthcare, rural development, skill development, women empowerment, tree plantation, sanitation and clean water, disaster relief, community housing.</p><p><b>Benefits:</b> builds reputation and customer trust, improves employee engagement, strengthens stakeholder relationships, supports sustainable development and long-term business sustainability.</p>\n<h3>Corporate governance</h3><p>The system of <b>rules, processes, practices and relationships</b> through which a company is <b>directed and controlled</b>: how it is managed, controlled and held accountable. It answers: who makes important decisions, who supervises management, how shareholders are protected, how financial information is disclosed, how conflicts of interest are handled, how ethical conduct is ensured.</p><p><b>Importance:</b> transparency · accountability · protection of shareholders · prevention of fraud · investor confidence · better decision-making · stakeholder protection. SEBI emphasises independent directors, related-party transactions, accounting and auditing, Board evaluation and investor protection.</p>\n<table><tr><th>CSR</th><th>Corporate governance</th></tr><tr><td>Social and environmental responsibility</td><td>How the company is directed and controlled</td></tr><tr><td>Society and stakeholders</td><td>Accountability, transparency, control</td></tr><tr><td>Education, health, environment</td><td>Board oversight, audits, disclosures</td></tr><tr><td>\"What responsibility do we have to society?\"</td><td>\"How should the company be managed responsibly?\"</td></tr><tr><td>External and internal impact</td><td>Mainly internal governance and oversight</td></tr></table>\n<p><b>In one line:</b> CSR = what the company does for society; governance = how the company is managed responsibly.</p>\n<h3>Role of the Board of Directors</h3><p>Chain: shareholders → <b>Board</b> → CEO and senior management → employees and operations. The Board doesn't run daily activity; it <b>guides, supervises and holds management accountable</b>.</p><ul><li><b>CSR responsibilities</b> (Section 135, Companies Act 2013; the CSR Committee and Board monitor CSR activities and use of funds): approve the CSR policy, monitor activities, ensure appropriate spending, review performance, consider social and environmental impact, ensure transparency, disclosure and legal compliance</li><li><b>Governance responsibilities:</b> ensure transparency, protect shareholder interests, monitor management and financial reporting, ensure ethical conduct, manage risk, prevent conflicts of interest, ensure regulatory compliance</li></ul>\n<h3>ESG</h3><p><b>ESG compliance</b> = adhering to laws and standards on a company's Environmental, Social and Governance impact.</p><table><tr><th>Environmental</th><th>Social</th><th>Governance</th></tr><tr><td>Carbon/GHG reduction targets, waste disposal, energy efficiency, water and biodiversity</td><td>Labour laws, fair wages, health and safety, diversity, supply-chain ethics</td><td>Board independence and diversity, anti-corruption, transparent reporting, ethical leadership</td></tr></table>\n<p><b>Global frameworks:</b> GRI (Global Reporting Initiative), SASB, TCFD (climate-related financial disclosures), UN PRI (Principles for Responsible Investment), CDP (Carbon Disclosure Project).</p>\n<p><b>Regulators in India:</b></p><ul><li><b>SEBI: BRSR</b> (Business Responsibility and Sustainability Reporting), mandatory for the <b>top 1,000 listed entities by market capitalisation</b>; voluntary for others</li><li><b>MCA:</b> enforces CSR under the Companies Act 2013 (a share of annual profits spent on social/environmental causes)</li><li><b>RBI:</b> Green Deposit Framework to fund sustainable projects; banks assess climate-related financial risk</li></ul>\n<p><b>Achieving ESG compliance:</b> assess current policies → enforce compliance → regular reporting → periodic optimisation. <b>Challenges in India:</b> lack of standardisation across agencies, data availability and quality, low awareness among SMEs, aligning internal teams. <b>Outlook:</b> more disclosures, ESG in lending and investment, tech-driven monitoring (blockchain, AI, IoT); ESG builds credibility, sustainable investment and loyalty.</p>"
+  },
+  {
+   "id": "digitrans",
+   "unit": "u4",
+   "lec": "L28",
+   "title": "Digital transformation & management functions",
+   "sum": "Meaning of digital transformation, key technologies, how AI/IoT/cloud/robotics change planning, organising, leading and controlling, digital twins (BMW), AI agents (DHL), the changing role of managers, ethical challenges.",
+   "html": "<div class=\"tip\">From Lecture 28 (Digital Transformation, Dr. Sulochna Syal).</div>\n<h3>Digital transformation</h3><p>Using digital technologies to improve how an organisation <b>operates, makes decisions, manages people and creates value</b> for customers. Key technologies: <b>AI, cloud computing, big data analytics, IoT, robotics, digital twins</b>, which help managers decide faster and better.</p>\n<h3>Effect on the management functions (POLC)</h3><table><tr><th>Function</th><th>Digital change</th><th>Example</th><th>Benefit</th></tr>\n<tr><td><b>Planning</b></td><td>AI and predictive analytics forecast demand, costs, risks and resources (instead of past records and judgment)</td><td>Car maker forecasts next month's sales from history, trends and dealer orders</td><td>Better forecasts, less waste</td></tr>\n<tr><td><b>Organising</b></td><td>Cloud, enterprise software, robotics coordinate departments and workflows</td><td>Connected production lines reveal bottlenecks</td><td>Coordination, resource use, fewer delays</td></tr>\n<tr><td><b>Leading</b></td><td>Digital communication, workforce analytics, AI-assisted training, feedback</td><td>DHL warehouse systems guide picking; dashboards show training needs</td><td>Communication and support (must protect privacy, avoid over-surveillance)</td></tr>\n<tr><td><b>Controlling</b></td><td>IoT sensors, real-time dashboards, computer vision, automated alerts detect deviations as they happen</td><td>Sensors on machine vibration/temperature warn before breakdown (predictive maintenance)</td><td>Less downtime, better quality, faster correction</td></tr></table>\n<h3>Digital twins</h3><p>A <b>virtual representation of a real object, machine, process or system</b> that uses real-world data to mirror its condition and behaviour, so you can understand, monitor, test and improve it without experimenting physically.</p><p><b>BMW (June 2025):</b> expanded its Virtual Factory digital twins to <b>30+ production sites</b>, simulating changes before applying them; projected <b>up to 30%</b> lower production-planning costs. Functions: planning, organising, controlling.</p>\n<h3>AI agents</h3><p><b>DHL Supply Chain (Nov 2025):</b> AI agents automate routine communication (appointment scheduling, driver follow-ups, warehouse coordination), freeing employees for exceptions and complex problems. Managers still handle unusual cases, supervise outcomes and support staff. Functions: organising, leading, controlling.</p>\n<h3>How the manager's role changes</h3><table><tr><th>Traditional</th><th>Digitally enabled</th></tr><tr><td>Past reports</td><td>Real-time data and predictive analysis</td></tr><tr><td>Manual plans</td><td>AI forecasts and simulations</td></tr><tr><td>Calls and paperwork</td><td>Integrated digital platforms</td></tr><tr><td>Periodic checks</td><td>Live dashboards</td></tr><tr><td>Fix problems after they occur</td><td>Predict and prevent some problems</td></tr><tr><td>Judgment with limited data</td><td>Data-driven insight + human judgment</td></tr></table>\n<h3>Ethical challenges</h3><ul><li><b>Privacy:</b> protect employee and customer data</li><li><b>Fairness:</b> AI must not discriminate</li><li><b>Accountability:</b> managers stay responsible, not blindly following AI</li><li><b>Employment and skills:</b> reskill employees when automation changes jobs</li><li><b>Cybersecurity:</b> protect systems from attacks</li></ul>\n<p><b>Ethical digital transformation:</b> establish ethical policies, keep humans involved, train employees, conduct regular audits, ensure accountability.</p>\n<table><tr><th>Function</th><th>Ethical action</th></tr><tr><td>Planning</td><td>Assess ethical risks before introducing technology</td></tr><tr><td>Organising</td><td>Assign responsibility for data protection and AI governance</td></tr><tr><td>Leading</td><td>Promote ethical behaviour, train employees</td></tr><tr><td>Controlling</td><td>Audit systems, monitor risks, correct unethical outcomes</td></tr></table>"
+  },
+  {
+   "id": "entre",
+   "unit": "u4",
+   "lec": "L29",
+   "title": "Entrepreneurship, mindset & opportunity recognition",
+   "sum": "Entrepreneurship definition, traditional vs digital entrepreneurship, entrepreneurial mindset traits, intrapreneurship, calculated risk (risk, uncertainty, ambiguity), data-driven thinking, sources of opportunity, 9-step recognition framework, opportunity evaluation.",
+   "html": "<div class=\"tip\">From Lecture 29 (Unit 4: Entrepreneurship Introduction, Dr. Sulochna Syal).</div>\n<h3>Entrepreneurship</h3><p>The process of <b>identifying an opportunity, developing an innovative solution, mobilising resources, taking calculated risks and creating value</b> for customers and stakeholders. A modern entrepreneur identifies unmet needs, understands customer problems, uses technology, experiments with business models, handles uncertainty, mobilises money and people, builds scalable solutions, learns from failure and keeps adapting.</p>\n<table><tr><th>Traditional</th><th>Digital entrepreneurship</th></tr><tr><td>Physical business, local market</td><td>Technology-enabled, global market possible</td></tr><tr><td>Large initial investment</td><td>MVP with low initial investment</td></tr><tr><td>Product developed first</td><td>Customer validation before scaling</td></tr><tr><td>Fixed business model</td><td>Business model evolves</td></tr><tr><td>Limited customer data, slow experiments</td><td>Data-driven, rapid experimentation</td></tr><tr><td>Physical distribution; employees central</td><td>Digital distribution; technology + people + platforms</td></tr></table>\n<h3>The entrepreneurial mindset</h3><p>A way of thinking that lets a person identify opportunities, solve problems creatively, handle uncertainty and turn ideas into value. It isn't limited to founders: employees at Amazon, Infosys, a family business or government can show it. Entrepreneurial behaviour <b>inside an existing organisation</b> is <b>intrapreneurship</b>.</p>\n<ul><li><b>Opportunity orientation:</b> \"What opportunity does this problem create?\"</li><li><b>Customer centricity:</b> start with the customer's problem, not \"how do I sell my product?\" (core of Lean Startup)</li><li><b>Comfort with uncertainty</b> about customers, competitors, technology, regulation, funding, pricing, market size and demand; manage it through experimentation and evidence</li><li><b>Calculated risk-taking</b> (not blind risk)</li><li><b>Resilience and learning from failure:</b> a failed experiment yields information; \"validated learning\"</li><li><b>Growth mindset:</b> abilities develop through learning, practice, feedback, persistence</li><li><b>Data-driven decisions:</b> Opinion → Hypothesis → Experiment → Data → Learning → Decision</li></ul>\n<h3>Three types of risk</h3><table><tr><th>Type</th><th>Meaning</th></tr><tr><td>Known risk</td><td>Probability can reasonably be estimated</td></tr><tr><td>Uncertainty</td><td>Future outcomes are hard to predict</td></tr><tr><td>Ambiguity</td><td>Even the nature of the problem or opportunity isn't clear</td></tr></table><p>Calculated risk example: instead of investing ₹5 crore, spend <b>₹2 lakh</b> on an MVP, test with <b>500 customers</b>, then decide. This is risk reduction through experimentation.</p>\n<p>Useful startup data: website visits, conversion rate, CAC, retention, churn, average order value, engagement, customer lifetime value, revenue, profitability. New tech (AI, GenAI, cloud, blockchain, IoT, cybersecurity, robotics, digital payments) creates new possibilities.</p>\n<h3>Opportunity recognition</h3><p>Identifying a <b>problem, unmet need, market gap or emerging trend</b> that can become a viable business. E.g. \"Small restaurants in Tier-2 cities struggle to manage digital orders across platforms; a unified low-cost order-management platform could help.\"</p>\n<p><b>Sources:</b></p><ul><li><b>Customer problems:</b> what frustrates, takes too long, is expensive, inconvenient, inaccessible or unreliable?</li><li><b>Technological change:</b> AI → assistants; GenAI → content; blockchain → verification; IoT → smart devices; cloud → SaaS; analytics → decision support; robotics → automation; cybersecurity → security</li><li><b>Demographic change:</b> age, urbanisation, income, education, lifestyle</li><li><b>Regulatory change:</b> compliance, fintech, data protection, sustainability, healthcare</li><li><b>Social problems:</b> education inequality, healthcare access, agricultural inefficiency, waste, financial inclusion, accessibility</li></ul>\n<h3>Opportunity recognition framework (9 steps)</h3><ol><li>Identify the problem</li><li>Identify the customer who has it</li><li>Frequency: how often does it occur?</li><li>Intensity: how painful is it?</li><li>Existing solutions</li><li>The gap in current solutions</li><li>Create the solution</li><li>Test willingness to pay</li><li>Determine scalability</li></ol>\n<h3>Opportunity evaluation</h3><table><tr><th>Criterion</th><th>Questions</th></tr><tr><td>Market attractiveness</td><td>Market size, growth rate, demand, competition</td></tr><tr><td>Feasibility</td><td>Technology, skills, capital, regulatory restrictions</td></tr><tr><td>Profitability</td><td>Revenue potential, cost structure, margins, customer acquisition cost</td></tr><tr><td>Scalability</td><td>Can it grow without costs rising at the same rate?</td></tr></table>"
+  },
+  {
+   "id": "lean",
+   "unit": "u4",
+   "lec": "L30",
+   "title": "Lean Startup, MVP, startup ecosystem & business plan",
+   "sum": "Eric Ries' Lean Startup, Build–Measure–Learn, persevere vs pivot, MVP types, validated learning, CAC/CLV/conversion/churn/retention, India's startup ecosystem (NASSCOM 2024), business plan components, revenue models, business plan vs Lean Startup.",
+   "html": "<div class=\"tip\">From Lecture 30 (Entrepreneurship, Dr. Sulochna Syal).</div>\n<h3>Lean Startup</h3><p>A methodology by <b>Eric Ries</b> for building businesses and products under <b>uncertainty</b>. Core loop: <b>Build → Measure → Learn</b>. Build a basic version, test with customers, measure, learn, then decide to <b>persevere</b> (continue) or <b>pivot</b> (change an important element of the model).</p>\n<table><tr><th>Traditional development</th><th>Lean Startup</th></tr><tr><td>Detailed planning</td><td>Experimentation</td></tr><tr><td>Build the complete product, launch later</td><td>Build an MVP, test early</td></tr><tr><td>Product assumptions</td><td>Customer evidence</td></tr><tr><td>Large investment</td><td>Small experiments</td></tr><tr><td>Failure discovered late</td><td>Failure discovered early</td></tr><tr><td>Fixed plan</td><td>Adaptable plan</td></tr></table>\n<h3>Minimum Viable Product (MVP)</h3><p>The <b>simplest version</b> of a product that lets you test important assumptions with real customers. Not a poor-quality product, but the minimum needed for <b>meaningful learning</b>.</p><table><tr><th>MVP type</th><th>How it works</th></tr><tr><td>Concierge</td><td>The service is delivered manually</td></tr><tr><td>Wizard-of-Oz</td><td>Customer sees technology, but humans do much of the work behind the scenes</td></tr><tr><td>Landing page</td><td>A website tests demand (sign-ups)</td></tr><tr><td>Prototype</td><td>A basic working model</td></tr><tr><td>Pre-order</td><td>Customers pay before full development</td></tr></table>\n<h3>Pivot</h3><p>A <b>structured change in strategy</b> to test a new fundamental hypothesis while keeping what was learned. Types: customer segment, customer need, technology, platform, revenue model, channel, business architecture. E.g. targeting consumers but finding businesses pay more → <b>B2C to B2B</b>.</p>\n<h3>Validated learning</h3><p>Getting <b>evidence</b> on whether an assumption is true. Hypothesis: \"College students will pay ₹199/month for an AI study assistant.\" Build an MVP, test with students, measure sign-ups and paid conversions, interview users, analyse retention.</p>\n<h3>Key metrics</h3><ul><li><b>CAC</b> = total customer acquisition cost ÷ number of new customers</li><li><b>CLV</b> = approximate value a customer generates over the relationship</li><li><b>Conversion rate</b> = conversions ÷ visitors × 100</li><li><b>Churn rate</b> = % of customers who stop using the service</li><li><b>Retention rate</b> = % who continue</li></ul><p>e.g. ₹50,000 spent to win 250 customers → CAC = ₹200. 40 buyers from 2,000 visitors → 2% conversion.</p>\n<h3>India's startup ecosystem</h3><p>The network of institutions, people, capital, infrastructure and policies supporting entrepreneurship: entrepreneurs + investors + incubators + accelerators + universities + corporates + government + customers + technology + talent.</p><ul><li><b>Venture capital:</b> funds high-growth startups · <b>Angel investors:</b> individuals investing their own money early</li><li><b>Incubators:</b> support early-stage founders (mentoring, infrastructure, networking, training, technical support) · <b>Accelerators:</b> rapid growth through structured programmes, mentors, investor and market access</li><li><b>Universities:</b> research, incubation, education, IP, student startups · <b>Corporates:</b> CVC, partnerships, acquisitions, pilots · <b>Government:</b> policies, funding schemes, incubation, digital infrastructure, regulation, procurement</li></ul>\n<p><b>NASSCOM–Zinnov 2024:</b> about <b>32,000–35,000</b> tech startups; tech funding <b>$7.4 billion</b> (+23%), deals +27%; new startups 2.1× vs 2023; <b>DeepTech funding $1.6 billion (+78%)</b>; <b>6 new unicorns</b>; unicorns worth $220B+; <b>800+ incubators and accelerators</b> (~1.5× since 2019). Tier-2/3 cities are rising (lower costs, talent, internet, remote work, government support) beyond Bengaluru, Delhi NCR, Mumbai and Hyderabad.</p><p><b>NASSCOM's six pillars</b> (towards Viksit Bharat 2047): innovation hubs, capital access, market access, infrastructure access (esp. DeepTech), talent availability, regulation.</p>\n<h3>Business plan</h3><p>A structured document explaining what the business will do, whom it serves, how it creates value, operates and earns, what resources it needs and how it will reach its objectives. <b>Why:</b> clarify the idea, understand customers and competition, estimate finance, communicate with investors, identify risks, develop strategy.</p><p><b>Components:</b> executive summary · problem statement (customer + problem + context + impact) · solution · target market · value proposition · business model · revenue model · competitive analysis (SWOT, Porter's Five Forces) · marketing plan (acquisition, pricing, promotion, distribution, branding, digital channels) · operations plan (technology, suppliers, employees, infrastructure, production, logistics, service) · technology plan (architecture, cloud, cybersecurity, data, AI/ML, APIs, scalability) · financial plan (revenue, costs, profit, cash flow, funding, projections, break-even). <i>Revenue is not profit; profit is not cash flow.</i></p>\n<p><b>Business models:</b> subscription, transaction fee, commission, advertising, freemium, marketplace, SaaS, licensing. <b>Revenue model</b> example: AI learning platform, free basic + ₹299/month premium (freemium).</p>\n<table><tr><th>Business plan</th><th>Lean Startup</th></tr><tr><td>Planning-oriented</td><td>Experimentation-oriented</td></tr><tr><td>Assumptions documented</td><td>Assumptions tested</td></tr><tr><td>Detailed projections</td><td>Evidence-based iteration</td></tr><tr><td>Useful for investors, long term</td><td>Useful under uncertainty, short cycles</td></tr><tr><td>\"What will happen?\"</td><td>\"Let's test what happens.\"</td></tr></table>\n<p><b>Best modern approach:</b> Lean Startup → validate the business model → build evidence → write the business plan → scale.</p>"
   }
  ],
  "guide": "\n<h3>How to crack scenario & case questions</h3>\n<p>Ma'am's course objective is \"case-method discipline: <b>read, identify, analyse, recommend</b>\". Use that exact sequence.</p>\n<ol>\n<li><b>Read the question first</b>, then the case. Underline numbers, names, complaints and quotes.</li>\n<li><b>Identify the concept</b> the case is testing. Clue words: \"two bosses\" → organising/unity of command; \"observed\", \"attention\" → Hawthorne; \"suppliers few\" → supplier power; \"sell the loss-making division\" → divestment; \"rated everyone average\" → central tendency.</li>\n<li><b>Analyse</b> using a named framework: POLC, Mintzberg, PESTEL, Five Forces, SWOT/TOWS, generic strategy, VRIO, ratios, recruitment sources, appraisal methods.</li>\n<li><b>Recommend</b> 2–4 specific actions, each justified by the framework and the case facts.</li>\n<li><b>Conclude</b> with one line linking back to the goal (growth, profit, customer value, ethics).</li>\n</ol>\n<h3>For MCQ-style scenarios</h3>\n<ul><li>Eliminate options that are true statements but don't answer <i>this</i> scenario.</li>\n<li>Watch for internal vs external (SWOT), backward vs forward (integration), efficiency vs effectiveness, recruitment vs selection, incentives vs fringe benefits.</li>\n<li>If two options look right, pick the one that matches the <b>specific detail</b> in the case.</li></ul>\n<h3>Answer template for a 10-mark case</h3>\n<div class=\"flow\">Problem (2 lines) → Concept/framework named → Analysis using 3–4 case facts → Recommendations with reasons → Conclusion</div>",
@@ -4200,6 +4262,1623 @@ window.SUBJECT_DATA.pbm = {
     "Luxury is the only value"
    ],
    "Self-service and flat-pack keep costs down."
+  ],
+  [
+   "brand",
+   "According to the AMA, a brand is a name, term, sign, symbol or design intended to:",
+   "Identify a seller's goods and differentiate them from competitors",
+   [
+    "Increase the product's price",
+    "Register a company",
+    "Replace advertising"
+   ],
+   "AMA definition from Lecture 26."
+  ],
+  [
+   "brand",
+   "The word 'brand' comes from 'brandr', which means:",
+   "To burn",
+   [
+    "To sell",
+    "To name",
+    "To shine"
+   ],
+   "Livestock were burned with marks to identify owners."
+  ],
+  [
+   "brand",
+   "The components of a brand that identify and differentiate it (name, logo, symbol) are called:",
+   "Brand elements",
+   [
+    "Brand equity",
+    "Brand mantra",
+    "Product levels"
+   ],
+   "Choosing them is branding."
+  ],
+  [
+   "brand",
+   "A hotel guest's fundamental need for rest and sleep is the:",
+   "Core benefit level",
+   [
+    "Generic product level",
+    "Expected product level",
+    "Augmented product level"
+   ],
+   "Level 1 of the five product levels."
+  ],
+  [
+   "brand",
+   "Free airport pickup that makes a hotel stand out from competitors belongs to the:",
+   "Augmented product level",
+   [
+    "Expected product level",
+    "Core benefit level",
+    "Generic product level"
+   ],
+   "Augmented = extra benefits that distinguish from competitors."
+  ],
+  [
+   "brand",
+   "Attributes buyers normally expect, like clean sheets and Wi-Fi in a hotel, form the:",
+   "Expected product level",
+   [
+    "Potential product level",
+    "Core benefit level",
+    "Augmented product level"
+   ],
+   "Level 3."
+  ],
+  [
+   "brand",
+   "All the future augmentations and transformations a product might undergo is the:",
+   "Potential product level",
+   [
+    "Generic product level",
+    "Augmented product level",
+    "Core benefit level"
+   ],
+   "Level 5."
+  ],
+  [
+   "brand",
+   "Which is a benefit of brands to CONSUMERS?",
+   "Reducing search cost and risk",
+   [
+    "Legal protection of unique features",
+    "Simplifying inventory tracing",
+    "Source of financial returns"
+   ],
+   "The other three are benefits to firms."
+  ],
+  [
+   "brand",
+   "Which is a benefit of brands to FIRMS?",
+   "Legally protecting unique features",
+   [
+    "Assigning responsibility to the maker",
+    "Search-cost reduction",
+    "Acting as a symbolic device for the buyer"
+   ],
+   "Firms gain legal protection, competitive advantage and returns."
+  ],
+  [
+   "brand",
+   "A customer worried about looking foolish in front of friends faces which perceived risk?",
+   "Social risk",
+   [
+    "Physical risk",
+    "Time risk",
+    "Functional risk"
+   ],
+   "Six risks: functional, physical, financial, social, psychological, time."
+  ],
+  [
+   "brand",
+   "Ultimately, a brand resides in:",
+   "The minds of consumers",
+   [
+    "The company's balance sheet",
+    "The trademark office",
+    "The factory"
+   ],
+   "Branding works whenever consumers perceive differences in a choice."
+  ],
+  [
+   "brand",
+   "Brand equity refers to:",
+   "Marketing effects uniquely attributable to the brand name",
+   [
+    "The company's share capital",
+    "The total cost of advertising",
+    "The number of products in the range"
+   ],
+   "Different outcomes because of the brand vs the same unbranded product."
+  ],
+  [
+   "brand",
+   "If consumers would pay MORE for a generic product than the branded one, the brand has:",
+   "Negative brand equity",
+   [
+    "Positive brand equity",
+    "Brand proliferation",
+    "Augmented value"
+   ],
+   "Can follow recalls or scandals, e.g. Volkswagen 2015."
+  ],
+  [
+   "brand",
+   "Which example was used in class to show brand equity being damaged?",
+   "Volkswagen emissions scandal (2015)",
+   [
+    "Kodak's digital camera",
+    "IKEA's flat-pack",
+    "BMW's Virtual Factory"
+   ],
+   "Your actions influence your brand."
+  ],
+  [
+   "brand",
+   "Points-of-parity, points-of-difference and a brand mantra belong to which step of strategic brand management?",
+   "Identifying and establishing brand positioning and values",
+   [
+    "Measuring brand performance",
+    "Growing and sustaining brand equity",
+    "Planning brand marketing programmes"
+   ],
+   "Step 1."
+  ],
+  [
+   "brand",
+   "Brand audits, brand tracking and the brand value chain belong to:",
+   "Measuring and interpreting brand performance",
+   [
+    "Establishing positioning",
+    "Planning marketing programmes",
+    "Brand expansion"
+   ],
+   "Step 3."
+  ],
+  [
+   "brand",
+   "Brand portfolios, hierarchies and brand revitalisation belong to:",
+   "Growing and sustaining brand equity",
+   [
+    "Establishing positioning",
+    "Measuring brand performance",
+    "Choosing brand elements"
+   ],
+   "Step 4."
+  ],
+  [
+   "brand",
+   "Which is a branding CHALLENGE listed in Lecture 26?",
+   "Media fragmentation",
+   [
+    "Falling competition",
+    "Lower costs",
+    "Less accountability"
+   ],
+   "Also: savvy customers, brand proliferation, rising costs, greater accountability."
+  ],
+  [
+   "digimkt",
+   "Digital marketing is best described as:",
+   "Targeted, measurable and interactive marketing using digital technologies",
+   [
+    "One-way mass communication through print",
+    "Door-to-door selling",
+    "Only TV advertising"
+   ],
+   "Definition from Lecture 26."
+  ],
+  [
+   "digimkt",
+   "Traditional marketing tools were mainly:",
+   "One-way communication tools",
+   [
+    "Fully interactive",
+    "Personalised for each customer",
+    "Based on real-time data"
+   ],
+   "Modern channels add interactivity."
+  ],
+  [
+   "digimkt",
+   "The correct order of customer levels is:",
+   "Suspect → Prospect → Consumer → Client → Advocate",
+   [
+    "Prospect → Suspect → Client → Consumer → Advocate",
+    "Consumer → Client → Prospect → Suspect → Advocate",
+    "Advocate → Client → Consumer → Prospect → Suspect"
+   ],
+   "An advocate recommends you to others."
+  ],
+  [
+   "digimkt",
+   "Which is an advantage of digital over traditional marketing?",
+   "Actionable reporting with real data",
+   [
+    "Higher printing costs",
+    "No targeting",
+    "Slower funnel"
+   ],
+   "Also multi-channel reach, location-based messaging, cost leverage."
+  ],
+  [
+   "digimkt",
+   "The usability guideline for a website is that users should find anything in about:",
+   "3 clicks",
+   [
+    "10 clicks",
+    "1 hour",
+    "5 pages"
+   ],
+   "From the 'before starting' slide."
+  ],
+  [
+   "digimkt",
+   "Alpha testing of a website is done by:",
+   "Internal team members",
+   [
+    "Real outside users",
+    "Search engines",
+    "The domain registrar"
+   ],
+   "Beta testing uses real users."
+  ],
+  [
+   "digimkt",
+   "Which system translates a domain name into an IP address?",
+   "DNS",
+   [
+    "SSL",
+    "CMS",
+    "SERP"
+   ],
+   "DNS works like GPS for the internet."
+  ],
+  [
+   "digimkt",
+   "In www.chitkara.edu.in, 'www' is the:",
+   "Third-level domain (subdomain)",
+   [
+    "Top-level domain",
+    "Second-level domain",
+    "IP address"
+   ],
+   "TLD .in, second level chitkara(.edu)."
+  ],
+  [
+   "digimkt",
+   "An organisation that manages the reservation of domain names is a:",
+   "Domain name registrar",
+   [
+    "Web host",
+    "Search engine",
+    "CMS"
+   ],
+   "e.g. GoDaddy."
+  ],
+  [
+   "digimkt",
+   "'If a domain name is the address, web hosting is…'",
+   "The house where the website lives",
+   [
+    "The search engine",
+    "The payment gateway",
+    "The browser"
+   ],
+   "Hosting stores the site's files on a server."
+  ],
+  [
+   "digimkt",
+   "Which is NOT a type of web hosting from the lecture?",
+   "Search hosting",
+   [
+    "Shared hosting",
+    "Dedicated server hosting",
+    "Co-location"
+   ],
+   "Plus virtual dedicated (VPS)."
+  ],
+  [
+   "digimkt",
+   "The three stages of how a search engine works, in order, are:",
+   "Crawling → Indexing → Ranking",
+   [
+    "Ranking → Crawling → Indexing",
+    "Indexing → Ranking → Crawling",
+    "Bidding → Clicking → Paying"
+   ],
+   "Bots crawl, content is indexed, then ranked on the SERP."
+  ],
+  [
+   "digimkt",
+   "Programs that follow links to discover new web pages are called:",
+   "Crawlers or spiders",
+   [
+    "Registrars",
+    "Cookies",
+    "Plugins"
+   ],
+   "Guided by robots.txt and sitemaps."
+  ],
+  [
+   "digimkt",
+   "SERP stands for:",
+   "Search Engine Results Page",
+   [
+    "Search Engine Ranking Protocol",
+    "Secure Email Response Page",
+    "Site Engagement Rate Percentage"
+   ],
+   "Where organic and paid results appear."
+  ],
+  [
+   "digimkt",
+   "SEO aims to:",
+   "Rank higher in organic (unpaid) search results",
+   [
+    "Pay for every click on an ad",
+    "Register a domain",
+    "Send bulk emails"
+   ],
+   "An ongoing effort."
+  ],
+  [
+   "digimkt",
+   "Which is a NON-controllable search ranking variable?",
+   "User location",
+   [
+    "Topic covered",
+    "Page links",
+    "Mobile-friendliness"
+   ],
+   "Trending and current topics are also uncontrollable."
+  ],
+  [
+   "digimkt",
+   "Black hat SEO is characterised by:",
+   "Exploiting loopholes for short-term gains; sites can be banned",
+   [
+    "Legitimate long-term optimisation",
+    "Paying per click",
+    "Using white text on websites"
+   ],
+   "Spamdexing. White hat = ethical, long-term."
+  ],
+  [
+   "digimkt",
+   "In pay-per-click advertising, the advertiser pays:",
+   "Only when the ad is clicked",
+   [
+    "For every impression",
+    "A fixed yearly fee",
+    "Only when a sale happens"
+   ],
+   "Also called cost per click."
+  ],
+  [
+   "digimkt",
+   "PPC ad positions on the SERP are decided mainly by:",
+   "An auction where higher bids win higher placement",
+   [
+    "Alphabetical order",
+    "The age of the website",
+    "Random choice"
+   ],
+   "Advertisers bid on keywords."
+  ],
+  [
+   "digimkt",
+   "Search engine marketing (SEM) includes:",
+   "Both SEO and PPC",
+   [
+    "Only SEO",
+    "Only email",
+    "Only social media"
+   ],
+   "SEM is the broader term."
+  ],
+  [
+   "digimkt",
+   "A key reason to use PPC is that:",
+   "It brings traffic immediately while SEO takes months",
+   [
+    "It is always free",
+    "It needs no keywords",
+    "It works without a website"
+   ],
+   "Plus targeting and pay-only-for-clicks."
+  ],
+  [
+   "digimkt",
+   "Email marketing typically contains a sales pitch and a:",
+   "Call to action",
+   [
+    "Domain name",
+    "Crawler",
+    "Shopping cart"
+   ],
+   "e.g. click this link."
+  ],
+  [
+   "digimkt",
+   "The percentage of emails that could not be delivered is the:",
+   "Bounce rate",
+   [
+    "Open rate",
+    "Click-through rate",
+    "Conversion rate"
+   ],
+   "Other metrics: unsubscribe, open, CTR, conversion."
+  ],
+  [
+   "digimkt",
+   "CRM in email marketing helps to:",
+   "Segment the list and match offers to purchase history",
+   [
+    "Register domains",
+    "Crawl web pages",
+    "Host websites"
+   ],
+   "CRM = customer relationship management."
+  ],
+  [
+   "digimkt",
+   "Sites where users vote on submitted content and popular items rise to the home page are:",
+   "Social media submission sites",
+   [
+    "Wikis",
+    "Podcasts",
+    "Domain registrars"
+   ],
+   "Different from personal social bookmarking."
+  ],
+  [
+   "digimkt",
+   "Online pages anyone can create, edit and discuss, policed by the community, are:",
+   "Wikis",
+   [
+    "Blogs",
+    "Microblogs",
+    "Forums only"
+   ],
+   "Ultimate mass collaboration; can contain inaccuracies."
+  ],
+  [
+   "digimkt",
+   "Short broadcast posts (traditionally under ~160 characters) are called:",
+   "Microblogging",
+   [
+    "Podcasting",
+    "Wikis",
+    "Social bookmarking"
+   ],
+   "e.g. X (Twitter), status updates."
+  ],
+  [
+   "digimkt",
+   "Which platform did the lecture link mainly to B2B marketing and recruitment?",
+   "LinkedIn",
+   [
+    "Snapchat",
+    "Pinterest",
+    "TikTok"
+   ],
+   "Professional networking."
+  ],
+  [
+   "digimkt",
+   "Messaging platforms like WhatsApp are described as where:",
+   "Conversion happens quietly: high trust, low noise",
+   [
+    "Mass anonymous voting happens",
+    "SEO crawling happens",
+    "Domain names are bought"
+   ],
+   "Private social platforms."
+  ],
+  [
+   "digimkt",
+   "Which is a rule of social media engagement?",
+   "Listen to customers and respond positively; don't spam",
+   [
+    "Post the same sales message everywhere",
+    "Ignore the site's rules",
+    "Hide your identity"
+   ],
+   "Be open, honest, relevant."
+  ],
+  [
+   "digimkt",
+   "UPI, IMPS, AEPS and FASTag are examples of:",
+   "Digital payment methods",
+   [
+    "Search engines",
+    "Hosting types",
+    "Email tools"
+   ],
+   "Cashless electronic transfers."
+  ],
+  [
+   "digimkt",
+   "Shopping cart software lets online visitors:",
+   "Collect items, see prices and discounts before paying",
+   [
+    "Register a domain",
+    "Write blog posts",
+    "Crawl competitors"
+   ],
+   "Temporary digital space before checkout."
+  ],
+  [
+   "ethics",
+   "Business ethics means:",
+   "Doing business in a fair, honest, responsible and transparent way",
+   [
+    "Maximising profit by any means",
+    "Following only the CEO's orders",
+    "Avoiding all taxes legally"
+   ],
+   "Applying ethical principles to business."
+  ],
+  [
+   "ethics",
+   "Paying fair wages and providing a safe workplace is ethical behaviour towards:",
+   "Employees",
+   [
+    "Suppliers",
+    "Competitors",
+    "Investors only"
+   ],
+   "From the ethical behaviour table."
+  ],
+  [
+   "ethics",
+   "Which framework asks 'Which decision gives the greatest good for the greatest number?'",
+   "Utilitarian approach",
+   [
+    "Rights approach",
+    "Virtue ethics",
+    "Justice approach"
+   ],
+   "Looks at overall consequences."
+  ],
+  [
+   "ethics",
+   "Not selling customers' personal data without consent reflects the:",
+   "Rights approach",
+   [
+    "Utilitarian approach",
+    "Common good approach",
+    "Justice approach"
+   ],
+   "Respects privacy, freedom and dignity."
+  ],
+  [
+   "ethics",
+   "Two employees with the same job and performance being paid very differently raises an issue under the:",
+   "Justice/fairness approach",
+   [
+    "Virtue approach",
+    "Utilitarian approach",
+    "Rights approach"
+   ],
+   "Treat people fairly and equitably."
+  ],
+  [
+   "ethics",
+   "'What would a good person do?' is the key question of:",
+   "Virtue ethics",
+   [
+    "Utilitarianism",
+    "Common good approach",
+    "Rights approach"
+   ],
+   "Focuses on character: honesty, integrity, courage…"
+  ],
+  [
+   "ethics",
+   "A manager reports an accounting error that actually benefits the company. This shows:",
+   "Virtue ethics (honesty and integrity)",
+   [
+    "Utilitarian cost-saving",
+    "Black hat practice",
+    "Rights approach to privacy"
+   ],
+   "Example from Lecture 27."
+  ],
+  [
+   "ethics",
+   "A factory refuses to dump waste into a river despite the profit. Which framework fits best?",
+   "Common good approach",
+   [
+    "Rights approach",
+    "Justice approach",
+    "Virtue of courage only"
+   ],
+   "Considers the wider community."
+  ],
+  [
+   "ethics",
+   "The first step in the ethical decision-making process is to:",
+   "Identify the ethical problem",
+   [
+    "Make the decision",
+    "Evaluate the outcome",
+    "Apply ethical principles"
+   ],
+   "Problem → stakeholders → alternatives → principles → decide → evaluate."
+  ],
+  [
+   "ethics",
+   "In the ethical decision process, which step comes right after identifying the problem?",
+   "Identify stakeholders",
+   [
+    "Make the decision",
+    "Evaluate the outcome",
+    "Apply ethical principles"
+   ],
+   "Then list alternatives."
+  ],
+  [
+   "ethics",
+   "The LAST step of the ethical decision-making process is:",
+   "Evaluate the outcome",
+   [
+    "Identify stakeholders",
+    "Apply principles",
+    "Identify the problem"
+   ],
+   "Learning from the result."
+  ],
+  [
+   "ethics",
+   "Which is a consequence of unethical behaviour listed in class?",
+   "Long-term business failure",
+   [
+    "Higher investor confidence",
+    "Better reputation",
+    "Stronger customer trust"
+   ],
+   "Also loss of reputation, trust, financial loss."
+  ],
+  [
+   "ethics",
+   "An ethical framework is:",
+   "A systematic set of principles or questions to decide what is right in a dilemma",
+   [
+    "A government law",
+    "A marketing plan",
+    "A financial ratio"
+   ],
+   "Helps examine consequences, rights, fairness, impact."
+  ],
+  [
+   "ethics",
+   "Reporting accurate financial information is ethical behaviour in:",
+   "Financial reporting",
+   [
+    "Advertising",
+    "Data protection",
+    "Competition"
+   ],
+   "Ethical behaviour table."
+  ],
+  [
+   "csr",
+   "CSR means:",
+   "A company's responsibility towards society and the environment in addition to profit",
+   [
+    "Corporate Sales Revenue",
+    "Compulsory share redistribution",
+    "The company's tax payment"
+   ],
+   "People, society and planet, not just profit."
+  ],
+  [
+   "csr",
+   "Which is a typical CSR activity?",
+   "Providing education to disadvantaged children",
+   [
+    "Paying dividends",
+    "Filing tax returns",
+    "Raising prices"
+   ],
+   "Also healthcare, sanitation, tree planting, skill development."
+  ],
+  [
+   "csr",
+   "Corporate governance is the system by which a company is:",
+   "Directed and controlled",
+   [
+    "Advertised",
+    "Taxed",
+    "Liquidated"
+   ],
+   "Rules, processes, practices and relationships."
+  ],
+  [
+   "csr",
+   "'How should the company be managed responsibly?' is the central question of:",
+   "Corporate governance",
+   [
+    "CSR",
+    "Marketing",
+    "Branding"
+   ],
+   "CSR asks what responsibility the company has to society."
+  ],
+  [
+   "csr",
+   "CSR = what the company does for society; corporate governance =",
+   "How the company is managed responsibly",
+   [
+    "How much profit it makes",
+    "How it advertises",
+    "How it hires"
+   ],
+   "The one-line distinction from Lecture 27."
+  ],
+  [
+   "csr",
+   "Which is an importance of corporate governance?",
+   "Prevention of fraud and investor confidence",
+   [
+    "Higher advertising spend",
+    "Less disclosure",
+    "Fewer independent directors"
+   ],
+   "Also transparency, accountability, shareholder protection."
+  ],
+  [
+   "csr",
+   "In the governance chain, the Board of Directors sits between:",
+   "Shareholders and the CEO/senior management",
+   [
+    "Employees and customers",
+    "Suppliers and banks",
+    "Government and competitors"
+   ],
+   "Shareholders → Board → CEO → employees."
+  ],
+  [
+   "csr",
+   "The Board of Directors usually:",
+   "Guides, supervises and holds management accountable",
+   [
+    "Runs every daily activity",
+    "Works on the shop floor",
+    "Only handles marketing"
+   ],
+   "It provides oversight, not day-to-day running."
+  ],
+  [
+   "csr",
+   "In India, CSR responsibilities are linked to:",
+   "Section 135 of the Companies Act, 2013",
+   [
+    "Section 80C of the Income Tax Act",
+    "The Factories Act, 1948",
+    "The RBI Act, 1934"
+   ],
+   "MCA says the CSR Committee and Board monitor CSR."
+  ],
+  [
+   "csr",
+   "Which is a Board responsibility regarding CSR?",
+   "Approving the CSR policy and monitoring CSR spending",
+   [
+    "Approving every employee's leave",
+    "Designing the logo",
+    "Setting product prices"
+   ],
+   "Plus reviewing performance and ensuring compliance."
+  ],
+  [
+   "csr",
+   "ESG stands for:",
+   "Environmental, Social and Governance",
+   [
+    "Economic, Strategic and Global",
+    "Equity, Sales and Growth",
+    "Ethical, Social and Green"
+   ],
+   "Three pillars of responsible business."
+  ],
+  [
+   "csr",
+   "Board independence, anti-corruption and transparent reporting fall under which ESG pillar?",
+   "Governance",
+   [
+    "Environmental",
+    "Social",
+    "Economic"
+   ],
+   "Environmental = carbon, waste; Social = labour, safety, diversity."
+  ],
+  [
+   "csr",
+   "Fair wages, workplace safety and diversity fall under which ESG pillar?",
+   "Social",
+   [
+    "Environmental",
+    "Governance",
+    "Financial"
+   ],
+   "Includes supply-chain ethics."
+  ],
+  [
+   "csr",
+   "Reducing greenhouse gas emissions and managing waste falls under:",
+   "Environmental",
+   [
+    "Social",
+    "Governance",
+    "Ethical"
+   ],
+   "Also energy efficiency, water and biodiversity."
+  ],
+  [
+   "csr",
+   "SEBI's ESG reporting format for listed companies is called:",
+   "BRSR (Business Responsibility and Sustainability Reporting)",
+   [
+    "GRI",
+    "GST",
+    "CSR-1"
+   ],
+   "Mandatory for the top 1,000 listed entities by market cap."
+  ],
+  [
+   "csr",
+   "BRSR is mandatory for:",
+   "The top 1,000 listed entities by market capitalisation",
+   [
+    "All private companies",
+    "All startups",
+    "Only banks"
+   ],
+   "Others may adopt it voluntarily."
+  ],
+  [
+   "csr",
+   "Which Indian regulator introduced a Green Deposit Framework?",
+   "RBI",
+   [
+    "SEBI",
+    "MCA",
+    "NASSCOM"
+   ],
+   "Supports environmentally sustainable projects."
+  ],
+  [
+   "csr",
+   "Which body ensures companies implement CSR under the Companies Act 2013?",
+   "Ministry of Corporate Affairs (MCA)",
+   [
+    "RBI",
+    "SEBI",
+    "NITI Aayog"
+   ],
+   "MCA guidelines."
+  ],
+  [
+   "csr",
+   "GRI, SASB, TCFD, UN PRI and CDP are:",
+   "Global ESG/sustainability reporting frameworks",
+   [
+    "Indian tax laws",
+    "Search engines",
+    "Hosting providers"
+   ],
+   "From the global frameworks slide."
+  ],
+  [
+   "csr",
+   "Which is an ESG compliance challenge in India mentioned in class?",
+   "Low awareness among SMEs",
+   [
+    "Too much standardisation",
+    "Excess data quality",
+    "No regulators"
+   ],
+   "Also lack of standardisation, data quality, aligning teams."
+  ],
+  [
+   "digitrans",
+   "Digital transformation means:",
+   "Using digital technologies to improve how an organisation operates, decides, manages people and creates value",
+   [
+    "Buying new computers only",
+    "Moving the office online",
+    "Replacing all managers with robots"
+   ],
+   "Definition from Lecture 28."
+  ],
+  [
+   "digitrans",
+   "Using AI to forecast next month's car sales from history and dealer orders mainly supports:",
+   "Planning",
+   [
+    "Organising",
+    "Leading",
+    "Controlling"
+   ],
+   "Better forecasts and less waste."
+  ],
+  [
+   "digitrans",
+   "Connected production systems that reveal bottlenecks and coordinate departments support:",
+   "Organising",
+   [
+    "Planning",
+    "Leading",
+    "Controlling"
+   ],
+   "Coordinating people and resources."
+  ],
+  [
+   "digitrans",
+   "DHL warehouse systems guiding employees and dashboards showing training needs mainly support:",
+   "Leading",
+   [
+    "Planning",
+    "Organising",
+    "Controlling"
+   ],
+   "Guiding and motivating employees."
+  ],
+  [
+   "digitrans",
+   "IoT sensors that alert maintenance teams before a machine breaks down support:",
+   "Controlling",
+   [
+    "Planning",
+    "Leading",
+    "Organising"
+   ],
+   "Detect deviations in real time."
+  ],
+  [
+   "digitrans",
+   "A digital twin is:",
+   "A virtual copy of a real object or process that uses real data",
+   [
+    "A backup hard disk",
+    "A second CEO",
+    "A duplicate website"
+   ],
+   "Used to monitor, test and improve without physical experiments."
+  ],
+  [
+   "digitrans",
+   "BMW's Virtual Factory (2025) expanded digital twins across:",
+   "More than 30 production sites",
+   [
+    "3 sites",
+    "Only one plant",
+    "300 dealerships"
+   ],
+   "Projected up to 30% lower planning costs."
+  ],
+  [
+   "digitrans",
+   "BMW projected its digital twins could reduce production-planning costs by up to:",
+   "30%",
+   [
+    "3%",
+    "70%",
+    "100%"
+   ],
+   "From the Lecture 28 case."
+  ],
+  [
+   "digitrans",
+   "DHL's AI agents (2025) were used mainly to:",
+   "Automate routine communication like scheduling and driver follow-ups",
+   [
+    "Replace all warehouse staff",
+    "Design cars",
+    "Set interest rates"
+   ],
+   "Freeing staff for exceptions."
+  ],
+  [
+   "digitrans",
+   "A digitally enabled manager, compared with a traditional one, mainly:",
+   "Uses real-time data and predictive analysis combined with judgment",
+   [
+    "Relies only on past reports",
+    "Checks performance once a year",
+    "Avoids technology"
+   ],
+   "From the comparison table."
+  ],
+  [
+   "digitrans",
+   "'A manager must remain responsible for important decisions rather than blindly following AI' is the ethical issue of:",
+   "Accountability",
+   [
+    "Privacy",
+    "Cybersecurity",
+    "Fairness"
+   ],
+   "Five challenges: privacy, fairness, accountability, skills, cybersecurity."
+  ],
+  [
+   "digitrans",
+   "AI systems that discriminate against certain workers raise the issue of:",
+   "Fairness",
+   [
+    "Cybersecurity",
+    "Privacy",
+    "Employment"
+   ],
+   "AI should not discriminate."
+  ],
+  [
+   "digitrans",
+   "Training employees when automation changes their jobs addresses:",
+   "Employment and skills (reskilling)",
+   [
+    "Cybersecurity",
+    "Accountability",
+    "Privacy"
+   ],
+   "Reskilling is an ethical responsibility."
+  ],
+  [
+   "digitrans",
+   "Assigning responsibility for data protection and AI governance is an ethical action in:",
+   "Organising",
+   [
+    "Planning",
+    "Leading",
+    "Controlling"
+   ],
+   "Planning = assess risks; Leading = train; Controlling = audit."
+  ],
+  [
+   "digitrans",
+   "Auditing AI systems and correcting unethical outcomes is an ethical action in:",
+   "Controlling",
+   [
+    "Planning",
+    "Organising",
+    "Leading"
+   ],
+   "Monitor risks and correct."
+  ],
+  [
+   "entre",
+   "Entrepreneurship is the process of:",
+   "Identifying an opportunity, building an innovative solution, mobilising resources, taking calculated risks and creating value",
+   [
+    "Only starting a shop",
+    "Working for a government job",
+    "Investing in shares"
+   ],
+   "Definition from Lecture 29."
+  ],
+  [
+   "entre",
+   "Entrepreneurial behaviour inside an existing organisation is called:",
+   "Intrapreneurship",
+   [
+    "Franchising",
+    "Outsourcing",
+    "Freelancing"
+   ],
+   "e.g. an Infosys employee launching a new internal product."
+  ],
+  [
+   "entre",
+   "Compared with traditional entrepreneurship, digital entrepreneurship typically:",
+   "Launches an MVP with low investment and validates with customers before scaling",
+   [
+    "Needs large initial investment",
+    "Has a fixed business model",
+    "Serves only local markets"
+   ],
+   "Global, data-driven, rapid experiments."
+  ],
+  [
+   "entre",
+   "'What problem does the customer have, and what solution would they pay for?' reflects:",
+   "Customer centricity",
+   [
+    "Product-first thinking",
+    "Risk avoidance",
+    "Mass marketing"
+   ],
+   "Core of Lean Startup."
+  ],
+  [
+   "entre",
+   "Successful entrepreneurs generally take:",
+   "Calculated risks",
+   [
+    "No risks at all",
+    "Blind risks",
+    "Only financial risks"
+   ],
+   "Reduce risk through experimentation."
+  ],
+  [
+   "entre",
+   "When even the nature of the problem or opportunity is unclear, this is:",
+   "Ambiguity",
+   [
+    "Known risk",
+    "Uncertainty",
+    "Calculated risk"
+   ],
+   "Known risk = probability estimable; uncertainty = outcomes hard to predict."
+  ],
+  [
+   "entre",
+   "When the probability of an outcome can reasonably be estimated, it is a:",
+   "Known risk",
+   [
+    "Ambiguity",
+    "Uncertainty",
+    "Pivot"
+   ],
+   "Three types of risk."
+  ],
+  [
+   "entre",
+   "Spending ₹2 lakh on an MVP tested with 500 customers instead of investing ₹5 crore upfront is an example of:",
+   "Risk reduction through experimentation",
+   [
+    "Blind risk-taking",
+    "Ambiguity",
+    "Market specialisation"
+   ],
+   "Calculated risk."
+  ],
+  [
+   "entre",
+   "The data-driven decision chain taught in class is:",
+   "Opinion → Hypothesis → Experiment → Data → Learning → Decision",
+   [
+    "Decision → Data → Opinion",
+    "Experiment → Opinion → Decision",
+    "Hypothesis → Decision → Data"
+   ],
+   "Important principle slide."
+  ],
+  [
+   "entre",
+   "A growth mindset assumes that capabilities:",
+   "Can be developed through learning, practice and feedback",
+   [
+    "Are fixed at birth",
+    "Depend only on luck",
+    "Cannot be measured"
+   ],
+   "Entrepreneurs keep learning."
+  ],
+  [
+   "entre",
+   "Opportunity recognition is identifying a problem, unmet need, market gap or emerging trend that can become:",
+   "A viable business opportunity",
+   [
+    "A tax benefit",
+    "A legal dispute",
+    "A brand logo"
+   ],
+   "Definition from Lecture 29."
+  ],
+  [
+   "entre",
+   "'What frustrates customers, what is expensive or inconvenient?' points to which source of opportunity?",
+   "Customer problems",
+   [
+    "Regulatory change",
+    "Demographic change",
+    "Technological change"
+   ],
+   "Best opportunities often begin with problems."
+  ],
+  [
+   "entre",
+   "New data protection rules creating demand for compliance software is an opportunity from:",
+   "Regulatory change",
+   [
+    "Demographic change",
+    "Customer problems only",
+    "Social problems"
+   ],
+   "Regulation creates fintech, compliance, cybersecurity opportunities."
+  ],
+  [
+   "entre",
+   "Ageing population and rising urbanisation creating new markets is:",
+   "Demographic change",
+   [
+    "Technological change",
+    "Regulatory change",
+    "Market specialisation"
+   ],
+   "Age, income, education, lifestyle."
+  ],
+  [
+   "entre",
+   "In the 9-step opportunity framework, 'How painful is the problem?' is the step of:",
+   "Determining intensity",
+   [
+    "Determining frequency",
+    "Identifying the gap",
+    "Testing willingness to pay"
+   ],
+   "Frequency = how often."
+  ],
+  [
+   "entre",
+   "The last step of the opportunity recognition framework is:",
+   "Determine scalability",
+   [
+    "Identify the problem",
+    "Create a solution",
+    "Identify existing solutions"
+   ],
+   "Can the solution grow?"
+  ],
+  [
+   "entre",
+   "'Can the business grow without costs rising at the same rate?' evaluates:",
+   "Scalability",
+   [
+    "Feasibility",
+    "Profitability",
+    "Market attractiveness"
+   ],
+   "Four evaluation criteria."
+  ],
+  [
+   "entre",
+   "Checking whether technology, skills, capital and regulation allow the idea is evaluating:",
+   "Feasibility",
+   [
+    "Scalability",
+    "Market attractiveness",
+    "Profitability"
+   ],
+   "Can we actually do it?"
+  ],
+  [
+   "entre",
+   "Market size, growth rate, demand and competition measure:",
+   "Market attractiveness",
+   [
+    "Feasibility",
+    "Profitability",
+    "Scalability"
+   ],
+   "Evaluation criterion 1."
+  ],
+  [
+   "lean",
+   "The Lean Startup methodology is associated with:",
+   "Eric Ries",
+   [
+    "Henri Fayol",
+    "Michael Porter",
+    "Philip Kotler"
+   ],
+   "Developing products under uncertainty."
+  ],
+  [
+   "lean",
+   "The core loop of Lean Startup is:",
+   "Build → Measure → Learn",
+   [
+    "Plan → Do → Check",
+    "Learn → Build → Sell",
+    "Measure → Plan → Launch"
+   ],
+   "Then persevere or pivot."
+  ],
+  [
+   "lean",
+   "After Build–Measure–Learn, continuing with the current strategy is called:",
+   "Persevere",
+   [
+    "Pivot",
+    "Churn",
+    "Scale-down"
+   ],
+   "Pivot = change an important element."
+  ],
+  [
+   "lean",
+   "A Minimum Viable Product is:",
+   "The simplest version that tests key assumptions with real customers",
+   [
+    "A poor-quality product",
+    "The final complete product",
+    "A business plan"
+   ],
+   "Minimum product for meaningful learning."
+  ],
+  [
+   "lean",
+   "An MVP where customers see technology but humans do much of the work behind the scenes is:",
+   "Wizard-of-Oz MVP",
+   [
+    "Concierge MVP",
+    "Landing page MVP",
+    "Pre-order MVP"
+   ],
+   "Concierge = openly manual service."
+  ],
+  [
+   "lean",
+   "An MVP where the service is openly delivered manually is a:",
+   "Concierge MVP",
+   [
+    "Wizard-of-Oz MVP",
+    "Prototype",
+    "Landing page MVP"
+   ],
+   "e.g. personally planning meals for first customers."
+  ],
+  [
+   "lean",
+   "Using a website with a sign-up button to test demand before building the product is a:",
+   "Landing page MVP",
+   [
+    "Concierge MVP",
+    "Pivot",
+    "Prototype"
+   ],
+   "Measures interest."
+  ],
+  [
+   "lean",
+   "Asking customers to pay before the product is fully developed is a:",
+   "Pre-order MVP",
+   [
+    "Wizard-of-Oz MVP",
+    "Concierge MVP",
+    "Pivot"
+   ],
+   "Strong validation of willingness to pay."
+  ],
+  [
+   "lean",
+   "A pivot is:",
+   "A structured change in strategy to test a new hypothesis while keeping past learning",
+   [
+    "Closing the company",
+    "Raising prices randomly",
+    "Copying a competitor"
+   ],
+   "Types: segment, need, technology, platform, revenue, channel."
+  ],
+  [
+   "lean",
+   "A startup that discovers businesses pay more than consumers and switches B2C → B2B has made a:",
+   "Customer segment pivot",
+   [
+    "Technology pivot",
+    "Channel pivot",
+    "Persevere decision"
+   ],
+   "Changing who the customer is."
+  ],
+  [
+   "lean",
+   "Validated learning means:",
+   "Getting evidence about whether an assumption is correct",
+   [
+    "Assuming customers will buy",
+    "Learning from textbooks",
+    "Hiring consultants"
+   ],
+   "Measured with MVP experiments."
+  ],
+  [
+   "lean",
+   "CAC is calculated as:",
+   "Total customer acquisition cost ÷ number of new customers",
+   [
+    "Revenue ÷ customers",
+    "Visitors ÷ conversions",
+    "Profit ÷ cost"
+   ],
+   "Customer Acquisition Cost."
+  ],
+  [
+   "lean",
+   "A startup spends ₹60,000 on marketing and gains 300 new customers. Its CAC is:",
+   "₹200",
+   [
+    "₹300",
+    "₹2,000",
+    "₹180"
+   ],
+   "60,000 ÷ 300 = 200."
+  ],
+  [
+   "lean",
+   "2,000 visitors, 50 purchases. The conversion rate is:",
+   "2.5%",
+   [
+    "25%",
+    "50%",
+    "0.25%"
+   ],
+   "50 ÷ 2,000 × 100 = 2.5%."
+  ],
+  [
+   "lean",
+   "The percentage of customers who stop using a service is the:",
+   "Churn rate",
+   [
+    "Retention rate",
+    "Conversion rate",
+    "CAC"
+   ],
+   "Retention = % who continue."
+  ],
+  [
+   "lean",
+   "CLV (customer lifetime value) is:",
+   "The approximate value a customer generates over the whole relationship",
+   [
+    "The cost of one advertisement",
+    "The customer's salary",
+    "The number of visits"
+   ],
+   "Compare with CAC."
+  ],
+  [
+   "lean",
+   "According to the NASSCOM–Zinnov 2024 report, India has roughly how many tech startups?",
+   "32,000–35,000",
+   [
+    "3,000–5,000",
+    "3.2–3.5 lakh",
+    "1,000"
+   ],
+   "One of the world's largest ecosystems."
+  ],
+  [
+   "lean",
+   "DeepTech funding in India in 2024 grew by about:",
+   "78% to $1.6 billion",
+   [
+    "23% to $7.4 billion",
+    "10% to $16 billion",
+    "5% to $1 billion"
+   ],
+   "Total tech funding was $7.4B (+23%)."
+  ],
+  [
+   "lean",
+   "How many new unicorns did India add in 2024 per the NASSCOM report?",
+   "6",
+   [
+    "60",
+    "1",
+    "25"
+   ],
+   "Combined unicorn value $220B+."
+  ],
+  [
+   "lean",
+   "India has how many incubators and accelerators (NASSCOM 2024)?",
+   "800+",
+   [
+    "80",
+    "8,000",
+    "50"
+   ],
+   "About 1.5× growth since 2019."
+  ],
+  [
+   "lean",
+   "Individuals who invest their OWN money in early-stage startups are:",
+   "Angel investors",
+   [
+    "Venture capitalists",
+    "Incubators",
+    "Accelerators"
+   ],
+   "VCs invest pooled funds in high-growth startups."
+  ],
+  [
+   "lean",
+   "Organisations that support early-stage founders with mentoring, infrastructure and training are:",
+   "Incubators",
+   [
+    "Angel investors",
+    "Credit rating agencies",
+    "Stock exchanges"
+   ],
+   "Accelerators focus on rapid growth via structured programmes."
+  ],
+  [
+   "lean",
+   "Which is one of NASSCOM's six strategic pillars?",
+   "Talent availability",
+   [
+    "Import substitution",
+    "Price control",
+    "Cash reserve ratio"
+   ],
+   "Innovation hubs, capital, market, infrastructure, talent, regulation."
+  ],
+  [
+   "lean",
+   "Free basic version + ₹299/month premium is which revenue model?",
+   "Freemium",
+   [
+    "Licensing",
+    "Commission",
+    "Advertising"
+   ],
+   "Example from Lecture 30."
+  ],
+  [
+   "lean",
+   "Which is NOT a business model listed in Lecture 30?",
+   "Barter",
+   [
+    "Subscription",
+    "Marketplace",
+    "SaaS"
+   ],
+   "Others: transaction fee, commission, advertising, freemium, licensing."
+  ],
+  [
+   "lean",
+   "The business plan section stating customer + problem + context + impact is the:",
+   "Problem statement",
+   [
+    "Executive summary",
+    "Financial plan",
+    "Operations plan"
+   ],
+   "Components slide."
+  ],
+  [
+   "lean",
+   "Compared with Lean Startup, a business plan is more:",
+   "Planning-oriented with documented assumptions",
+   [
+    "Experiment-oriented",
+    "Focused on short learning cycles",
+    "About testing what happens"
+   ],
+   "Lean Startup tests assumptions."
+  ],
+  [
+   "lean",
+   "The 'best modern approach' recommended in class is:",
+   "Lean Startup → validate model → build evidence → business plan → scale",
+   [
+    "Business plan → scale → test",
+    "Scale first, then plan",
+    "Skip planning entirely"
+   ],
+   "Combine both."
+  ],
+  [
+   "lean",
+   "'Revenue is not profit, and profit is not cash flow' is a warning in the:",
+   "Financial plan",
+   [
+    "Marketing plan",
+    "Technology plan",
+    "Problem statement"
+   ],
+   "Financial plan components."
   ]
  ],
  "casesets": [
@@ -4878,6 +6557,68 @@ window.SUBJECT_DATA.pbm = {
       "Product concept"
      ],
      "Balancing profit, customer wants and environmental welfare."
+    ]
+   ]
+  },
+  {
+   "id": "cs12",
+   "title": "KisanKart: digital transformation on the farm",
+   "topics": [
+    "digitrans",
+    "entre",
+    "lean"
+   ],
+   "text": "KisanKart is a Punjab startup that sells farm machinery spare parts. Its founder noticed farmers lose 3–4 days waiting for parts during harvest. He first took orders on WhatsApp and delivered parts himself to 50 farmers before building an app. Today KisanKart uses AI to forecast which parts will be needed each season, IoT sensors on rented harvesters to warn of breakdowns, and a dashboard to track deliveries. Some farmers worry their data is being sold to fertiliser companies.",
+   "qs": [
+    [
+     "Taking orders on WhatsApp and delivering parts himself before building an app was a:",
+     "Concierge MVP",
+     [
+      "Wizard-of-Oz MVP",
+      "Pre-order MVP",
+      "Full product launch"
+     ],
+     "The service was openly delivered manually."
+    ],
+    [
+     "Using AI to forecast which parts will be needed each season supports which management function?",
+     "Planning",
+     [
+      "Leading",
+      "Controlling",
+      "Organising"
+     ],
+     "Predictive forecasting = planning."
+    ],
+    [
+     "IoT sensors warning of harvester breakdowns support:",
+     "Controlling",
+     [
+      "Planning",
+      "Leading",
+      "Staffing"
+     ],
+     "Real-time deviation detection."
+    ],
+    [
+     "Farmers worried their data is sold to fertiliser companies raises which ethical issue?",
+     "Privacy",
+     [
+      "Fairness of pay",
+      "Cybersecurity only",
+      "Employment and skills"
+     ],
+     "Customer data must be protected (rights approach)."
+    ],
+    [
+     "Farmers losing days waiting for parts at harvest is which source of opportunity?",
+     "A customer problem",
+     [
+      "Regulatory change",
+      "Demographic change",
+      "Brand proliferation"
+     ],
+     "Best opportunities begin with problems."
     ]
    ]
   }
@@ -6553,6 +8294,463 @@ window.SUBJECT_DATA.pbm = {
      "innovator|thinker|achiever|experiencer|believer|striver|maker|survivor"
     ]
    ]
+  ],
+  [
+   "brand",
+   "Define a brand as per the AMA. Explain the five levels of product with the example of a smartphone. (5 marks)",
+   [
+    [
+     "AMA definition: name, term, sign, symbol or design to identify and differentiate",
+     1,
+     "name|symbol|identify|different"
+    ],
+    [
+     "Core benefit and generic product explained",
+     1.5,
+     "core|generic"
+    ],
+    [
+     "Expected and augmented product explained",
+     1.5,
+     "expected|augmented"
+    ],
+    [
+     "Potential product with a smartphone example throughout",
+     1,
+     "potential|phone|smartphone"
+    ]
+   ]
+  ],
+  [
+   "brand",
+   "Why do brands matter to consumers and to firms? (5 marks)",
+   [
+    [
+     "Consumers: identify source, assign responsibility",
+     1,
+     "source|responsib"
+    ],
+    [
+     "Consumers: reduce risk and search cost, signal quality, symbolic device",
+     1.5,
+     "risk|search cost|quality|symbol"
+    ],
+    [
+     "Firms: legal protection, simplify handling/tracing",
+     1,
+     "legal|protect|tracing"
+    ],
+    [
+     "Firms: competitive advantage, financial returns, unique associations",
+     1.5,
+     "competitive advantage|financial|association"
+    ]
+   ]
+  ],
+  [
+   "brand",
+   "What is brand equity? How can a brand have negative brand equity? Give an example. (5 marks)",
+   [
+    [
+     "Marketing effects uniquely attributable to the brand / value premium over a generic",
+     2,
+     "attributable|premium|generic|brand name"
+    ],
+    [
+     "Built by memorability, recognition, quality, campaigns",
+     1,
+     "memorable|recogni|quality"
+    ],
+    [
+     "Negative equity: people prefer the generic, e.g. after recall or scandal",
+     1.5,
+     "negative|recall|scandal"
+    ],
+    [
+     "Example such as Volkswagen 2015",
+     0.5,
+     "volkswagen|vw|example"
+    ]
+   ]
+  ],
+  [
+   "digimkt",
+   "Compare traditional and digital marketing on any five points. (5 marks)",
+   [
+    [
+     "Interactivity: one-way vs interactive",
+     1,
+     "one-way|interactiv"
+    ],
+    [
+     "Personalisation: mass vs individual",
+     1,
+     "personal|mass"
+    ],
+    [
+     "Measurement/engagement: hard to track vs actionable reporting",
+     1,
+     "track|measur|report|data"
+    ],
+    [
+     "Cost and targeting",
+     1,
+     "cost|target"
+    ],
+    [
+     "Speed/agility or social involvement",
+     1,
+     "agil|fast|social|real-time"
+    ]
+   ]
+  ],
+  [
+   "digimkt",
+   "Explain how a search engine works and distinguish white hat from black hat SEO. (5 marks)",
+   [
+    [
+     "Crawling by bots/spiders following links",
+     1.5,
+     "crawl|spider|bot"
+    ],
+    [
+     "Indexing: content analysed and stored",
+     1,
+     "index"
+    ],
+    [
+     "Ranking on the SERP by relevance, quality, authority, speed",
+     1,
+     "rank|serp|relevance"
+    ],
+    [
+     "White hat (ethical, long-term) vs black hat (loopholes, short-term, banned)",
+     1.5,
+     "white hat|black hat|loophole|ban"
+    ]
+   ]
+  ],
+  [
+   "digimkt",
+   "What is pay-per-click advertising? Why do businesses use it alongside SEO? (5 marks)",
+   [
+    [
+     "Pay only when the ad is clicked; cost per click",
+     1.5,
+     "click|cost per click|pay"
+    ],
+    [
+     "Keyword auction: higher bid, higher placement",
+     1,
+     "auction|bid|keyword"
+    ],
+    [
+     "Immediate traffic while SEO takes months",
+     1,
+     "immediate|months|quick"
+    ],
+    [
+     "Targeted, geo-targeting, financial and editorial control, testable",
+     1.5,
+     "target|geograph|control|test"
+    ]
+   ]
+  ],
+  [
+   "ethics",
+   "Explain any four ethical frameworks with business examples. (5 marks)",
+   [
+    [
+     "Utilitarian: greatest good for greatest number",
+     1.25,
+     "utilitarian|greatest"
+    ],
+    [
+     "Rights: privacy, dignity, freedom",
+     1.25,
+     "rights|privacy"
+    ],
+    [
+     "Justice/fairness: equitable treatment",
+     1.25,
+     "justice|fair"
+    ],
+    [
+     "Virtue or common good with an example",
+     1.25,
+     "virtue|common good|society|honest"
+    ]
+   ]
+  ],
+  [
+   "ethics",
+   "Describe the ethical decision-making process. Apply it to a manager tempted to hide a product defect. (5 marks)",
+   [
+    [
+     "Identify the problem and the stakeholders",
+     1.5,
+     "identify|stakeholder"
+    ],
+    [
+     "List alternatives",
+     1,
+     "alternative|option"
+    ],
+    [
+     "Apply ethical principles/frameworks",
+     1,
+     "principle|framework|utilitarian|rights|virtue"
+    ],
+    [
+     "Decide and evaluate the outcome, applied to the defect case",
+     1.5,
+     "decide|decision|evaluat|defect|recall"
+    ]
+   ]
+  ],
+  [
+   "csr",
+   "Differentiate CSR and corporate governance. (5 marks)",
+   [
+    [
+     "CSR: responsibility to society and environment",
+     1.25,
+     "society|environment|social"
+    ],
+    [
+     "Governance: how the company is directed and controlled",
+     1.25,
+     "directed|controlled|managed"
+    ],
+    [
+     "Focus areas: education/health vs Board oversight, audits, disclosure",
+     1.25,
+     "board|audit|disclos|education|health"
+    ],
+    [
+     "One-line summary: what it does for society vs how it is managed responsibly",
+     1.25,
+     "what|how"
+    ]
+   ]
+  ],
+  [
+   "csr",
+   "Explain the three pillars of ESG and the role of SEBI's BRSR in India. (5 marks)",
+   [
+    [
+     "Environmental: carbon, waste, energy, water",
+     1.25,
+     "environment|carbon|waste|energy"
+    ],
+    [
+     "Social: labour, fair wages, safety, diversity",
+     1.25,
+     "social|labour|labor|wage|safety|diversity"
+    ],
+    [
+     "Governance: board independence, anti-corruption, transparency",
+     1.25,
+     "governance|board|corruption|transparen"
+    ],
+    [
+     "BRSR mandatory for top 1,000 listed companies by market cap",
+     1.25,
+     "brsr|1000|1,000|listed"
+    ]
+   ]
+  ],
+  [
+   "digitrans",
+   "How does digital transformation change each function of management (POLC)? (5 marks)",
+   [
+    [
+     "Planning: AI and predictive analytics for forecasting",
+     1.25,
+     "planning|forecast|predict"
+    ],
+    [
+     "Organising: cloud, platforms, robotics coordinate resources",
+     1.25,
+     "organis|coordinat|cloud|robot"
+    ],
+    [
+     "Leading: digital communication, analytics, AI training",
+     1.25,
+     "leading|communicat|training|feedback"
+    ],
+    [
+     "Controlling: IoT sensors, dashboards, real-time alerts",
+     1.25,
+     "controlling|iot|sensor|dashboard|real-time"
+    ]
+   ]
+  ],
+  [
+   "digitrans",
+   "What is a digital twin? Explain with the BMW example. (5 marks)",
+   [
+    [
+     "Virtual representation of a real object/process using real data",
+     2,
+     "virtual|real-world|real data|copy"
+    ],
+    [
+     "Used to monitor, test and improve without physical experiments",
+     1,
+     "test|simulat|monitor"
+    ],
+    [
+     "BMW Virtual Factory across 30+ sites, up to 30% lower planning cost",
+     1.5,
+     "bmw|30"
+    ],
+    [
+     "Functions involved: planning, organising, controlling",
+     0.5,
+     "planning|organis|controll"
+    ]
+   ]
+  ],
+  [
+   "entre",
+   "Explain the key traits of an entrepreneurial mindset. (5 marks)",
+   [
+    [
+     "Opportunity orientation and customer centricity",
+     1.5,
+     "opportunit|customer"
+    ],
+    [
+     "Comfort with uncertainty and calculated risk",
+     1.5,
+     "uncertain|calculated|risk"
+    ],
+    [
+     "Resilience, learning from failure, growth mindset",
+     1,
+     "failure|resilien|growth mindset|learn"
+    ],
+    [
+     "Data-driven decision making",
+     1,
+     "data"
+    ]
+   ]
+  ],
+  [
+   "entre",
+   "Explain the sources of entrepreneurial opportunity with examples. (5 marks)",
+   [
+    [
+     "Customer problems",
+     1,
+     "customer problem|frustrat|inconvenien"
+    ],
+    [
+     "Technological change",
+     1,
+     "technolog|ai|cloud"
+    ],
+    [
+     "Demographic change",
+     1,
+     "demograph|age|urban"
+    ],
+    [
+     "Regulatory change",
+     1,
+     "regulat|compliance"
+    ],
+    [
+     "Social problems",
+     1,
+     "social|education|healthcare|inclusion"
+    ]
+   ]
+  ],
+  [
+   "lean",
+   "Explain the Lean Startup Build–Measure–Learn loop and the concepts of pivot and persevere. (5 marks)",
+   [
+    [
+     "Eric Ries; building under uncertainty",
+     1,
+     "ries|uncertain"
+    ],
+    [
+     "Build an MVP, measure customer behaviour, learn from evidence",
+     2,
+     "build|measure|learn|mvp"
+    ],
+    [
+     "Persevere: continue the strategy",
+     1,
+     "persever"
+    ],
+    [
+     "Pivot: structured change of a key element, e.g. B2C to B2B",
+     1,
+     "pivot|b2b"
+    ]
+   ]
+  ],
+  [
+   "lean",
+   "What is an MVP? Explain any four types of MVP. (5 marks)",
+   [
+    [
+     "Simplest version to test assumptions with real customers, not a poor product",
+     1,
+     "simplest|minimum|assumption|test"
+    ],
+    [
+     "Concierge MVP",
+     1,
+     "concierge"
+    ],
+    [
+     "Wizard-of-Oz MVP",
+     1,
+     "wizard"
+    ],
+    [
+     "Landing page MVP",
+     1,
+     "landing"
+    ],
+    [
+     "Prototype or pre-order MVP",
+     1,
+     "prototype|pre-order|preorder"
+    ]
+   ]
+  ],
+  [
+   "lean",
+   "List the components of a business plan and explain how a business plan differs from the Lean Startup approach. (5 marks)",
+   [
+    [
+     "Components: executive summary, problem, solution, market, value proposition",
+     1.5,
+     "executive|problem|solution|target market|value proposition"
+    ],
+    [
+     "Business/revenue model, competitive, marketing, operations, technology, financial plans",
+     1.5,
+     "revenue|competit|marketing plan|operations|financial"
+    ],
+    [
+     "Business plan: planning-oriented, documented assumptions, projections",
+     1,
+     "planning|projection|document"
+    ],
+    [
+     "Lean: experiment-oriented, tested assumptions; best to combine",
+     1,
+     "experiment|test|combine|lean"
+    ]
+   ]
   ]
  ],
  "long": [
@@ -7275,6 +9473,159 @@ window.SUBJECT_DATA.pbm = {
        "Links back to the marketing concept: start from student needs",
        2,
        "marketing concept|needs"
+      ]
+     ]
+    ]
+   ]
+  },
+  {
+   "id": "L9",
+   "title": "GreenLeaf Foods: profit vs responsibility",
+   "topics": [
+    "ethics",
+    "csr"
+   ],
+   "text": "GreenLeaf Foods is a listed packaged-snacks company with ₹900 crore revenue. A plant manager discovers that the factory has been releasing untreated wastewater into a nearby river to save ₹4 crore a year; villagers have complained of skin problems. At the same time, an internal audit finds the CFO approved a large contract with a supplier owned by his brother without disclosing it. The CEO's priority is meeting quarterly profit targets, and he suggests quietly increasing the CSR budget for a tree-planting drive to 'improve our image' before the issue becomes public. Two independent directors on the Board are demanding a full investigation, and SEBI's BRSR report is due next quarter.",
+   "parts": [
+    [
+     "Identify the ethical issues at GreenLeaf and analyse them using at least three ethical frameworks.",
+     10,
+     [
+      [
+       "Wastewater: harm to community and environment",
+       2,
+       "wastewater|river|villag|pollut"
+      ],
+      [
+       "Undisclosed related-party contract: conflict of interest",
+       2,
+       "related|conflict of interest|brother|disclos"
+      ],
+      [
+       "CSR as image-washing rather than genuine responsibility",
+       2,
+       "image|greenwash|tree"
+      ],
+      [
+       "Frameworks applied (utilitarian, rights, justice, virtue, common good)",
+       4,
+       "utilitarian|rights|justice|virtue|common good"
+      ]
+     ]
+    ],
+    [
+     "What should the Board of Directors do? Explain its responsibilities for corporate governance and CSR in this situation.",
+     10,
+     [
+      [
+       "Board oversees and holds management accountable; investigate fully",
+       2.5,
+       "board|accountab|investigat|oversight"
+      ],
+      [
+       "Governance duties: transparency, conflicts of interest, financial reporting, compliance",
+       2.5,
+       "transparen|conflict|reporting|complian"
+      ],
+      [
+       "CSR duties under Section 135: genuine policy, monitoring, honest disclosure",
+       2.5,
+       "section 135|csr policy|monitor|disclos"
+      ],
+      [
+       "ESG/BRSR honest reporting and corrective action (treat wastewater, compensate villagers)",
+       2.5,
+       "brsr|esg|treat|compensat|correct"
+      ]
+     ]
+    ],
+    [
+     "Explain the likely consequences for GreenLeaf if it follows the CEO's suggestion.",
+     10,
+     [
+      [
+       "Loss of reputation and customer trust",
+       2.5,
+       "reputation|trust"
+      ],
+      [
+       "Financial loss: fines, legal action, falling share price",
+       2.5,
+       "fine|legal|share price|financial"
+      ],
+      [
+       "Investor and regulator reaction (SEBI, independent directors)",
+       2.5,
+       "investor|sebi|regulat"
+      ],
+      [
+       "Employee and long-term failure; contrast with ethical path",
+       2.5,
+       "employee|long-term|failure|ethical"
+      ]
+     ]
+    ]
+   ]
+  },
+  {
+   "id": "L10",
+   "title": "StudyMate AI: from idea to startup",
+   "topics": [
+    "entre",
+    "lean",
+    "digimkt"
+   ],
+   "text": "Two BBA students in Rajpura notice that classmates waste hours searching for notes and struggle before exams. They plan StudyMate AI, an app that turns lecture slides into quizzes and summaries. One founder wants to raise ₹50 lakh, hire developers and build the full app over a year. The other suggests a landing page and a WhatsApp-based version where they create quizzes manually for 200 students first. In the first month, 600 students visit the landing page, 120 sign up and 30 pay ₹199/month. They spent ₹9,000 on Instagram ads. They also find that coaching institutes are interested in paying for the tool for their batches.",
+   "parts": [
+    [
+     "Apply the opportunity recognition framework and the entrepreneurial mindset to StudyMate AI.",
+     10,
+     [
+      [
+       "Problem, customer, frequency and intensity identified",
+       3,
+       "problem|student|frequen|intens"
+      ],
+      [
+       "Existing solutions and the gap",
+       2,
+       "existing|gap|coaching|notes"
+      ],
+      [
+       "Willingness to pay and scalability",
+       2.5,
+       "pay|199|scal"
+      ],
+      [
+       "Mindset: calculated risk, customer centricity, data-driven",
+       2.5,
+       "calculated|customer|data|uncertain"
+      ]
+     ]
+    ],
+    [
+     "Compare the two founders' approaches using Lean Startup ideas. Calculate the conversion rate and CAC, and recommend whether to persevere or pivot.",
+     10,
+     [
+      [
+       "Founder 1 = traditional (big plan, big investment); founder 2 = Lean, MVP (landing page/concierge or Wizard-of-Oz)",
+       3,
+       "traditional|lean|mvp|landing|concierge|wizard"
+      ],
+      [
+       "Conversion: 30 paid ÷ 600 visitors = 5% (or sign-ups 20%)",
+       2.5,
+       "5%|20%|conversion"
+      ],
+      [
+       "CAC: ₹9,000 ÷ 30 = ₹300",
+       2,
+       "300|cac"
+      ],
+      [
+       "Recommendation: persevere with students and/or pivot to B2B coaching institutes, with reasons",
+       2.5,
+       "persever|pivot|b2b|coaching"
       ]
      ]
     ]
@@ -8235,12 +10586,173 @@ window.SUBJECT_DATA.pbm = {
    "stp",
    "B2B segmentation variables",
    "Demographic, operating variables, purchasing approaches, situational factors, personal characteristics"
+  ],
+  [
+   "brand",
+   "AMA definition of a brand",
+   "Name, term, sign, symbol or design (or combination) to identify a seller's goods and differentiate them from competitors"
+  ],
+  [
+   "brand",
+   "5 levels of product",
+   "Core benefit → generic → expected → augmented → potential"
+  ],
+  [
+   "brand",
+   "6 perceived risks brands reduce",
+   "Functional, physical, financial, social, psychological, time"
+  ],
+  [
+   "brand",
+   "Brand equity",
+   "Marketing effects uniquely attributable to the brand; negative if people prefer the generic (VW 2015)"
+  ],
+  [
+   "brand",
+   "Strategic brand management (4 steps)",
+   "Positioning & values → brand marketing programmes → measure performance → grow & sustain equity"
+  ],
+  [
+   "digimkt",
+   "Customer levels",
+   "Suspect → Prospect → Consumer → Client → Advocate"
+  ],
+  [
+   "digimkt",
+   "Website building steps",
+   "Planning → Design → Development → Testing → Deployment → Post-launch"
+  ],
+  [
+   "digimkt",
+   "DNS",
+   "Translates a domain name into an IP address"
+  ],
+  [
+   "digimkt",
+   "Search engine stages",
+   "Crawling → Indexing → Ranking (SERP)"
+  ],
+  [
+   "digimkt",
+   "White vs black hat SEO",
+   "White: ethical, long-term. Black: loopholes/spamdexing, short-term, banned"
+  ],
+  [
+   "digimkt",
+   "PPC",
+   "Pay only when clicked; keyword auction; SEM = SEO + PPC"
+  ],
+  [
+   "digimkt",
+   "Email metrics",
+   "Bounce, unsubscribe, open (unique/total), click-through, conversion"
+  ],
+  [
+   "ethics",
+   "5 ethical frameworks",
+   "Utilitarian (greatest good) · Rights · Justice/fairness · Virtue (good person) · Common good"
+  ],
+  [
+   "ethics",
+   "Ethical decision process",
+   "Problem → stakeholders → alternatives → apply principles → decide → evaluate"
+  ],
+  [
+   "csr",
+   "CSR vs governance",
+   "CSR = what the company does for society. Governance = how it is directed, controlled and managed responsibly"
+  ],
+  [
+   "csr",
+   "CSR law in India",
+   "Section 135, Companies Act 2013; CSR Committee and Board monitor; MCA enforces"
+  ],
+  [
+   "csr",
+   "ESG pillars",
+   "Environmental (carbon, waste) · Social (labour, safety, diversity) · Governance (board, anti-corruption, transparency)"
+  ],
+  [
+   "csr",
+   "BRSR",
+   "SEBI's ESG report: mandatory for top 1,000 listed entities by market cap"
+  ],
+  [
+   "csr",
+   "Global ESG frameworks",
+   "GRI, SASB, TCFD, UN PRI, CDP"
+  ],
+  [
+   "digitrans",
+   "Digital transformation technologies",
+   "AI, cloud, big data analytics, IoT, robotics, digital twins"
+  ],
+  [
+   "digitrans",
+   "Digital twin",
+   "Virtual copy of a real object/process using real data. BMW: 30+ sites, up to 30% lower planning cost"
+  ],
+  [
+   "digitrans",
+   "5 ethical challenges of digital transformation",
+   "Privacy, fairness, accountability, employment & skills, cybersecurity"
+  ],
+  [
+   "entre",
+   "Intrapreneurship",
+   "Entrepreneurial behaviour inside an existing organisation"
+  ],
+  [
+   "entre",
+   "3 types of risk",
+   "Known risk (estimable) · uncertainty (hard to predict) · ambiguity (problem itself unclear)"
+  ],
+  [
+   "entre",
+   "Data-driven chain",
+   "Opinion → Hypothesis → Experiment → Data → Learning → Decision"
+  ],
+  [
+   "entre",
+   "Sources of opportunity",
+   "Customer problems, technological, demographic, regulatory change, social problems"
+  ],
+  [
+   "entre",
+   "Opportunity evaluation",
+   "Market attractiveness, feasibility, profitability, scalability"
+  ],
+  [
+   "lean",
+   "Lean Startup loop",
+   "Build → Measure → Learn → persevere or pivot (Eric Ries)"
+  ],
+  [
+   "lean",
+   "MVP types",
+   "Concierge, Wizard-of-Oz, landing page, prototype, pre-order"
+  ],
+  [
+   "lean",
+   "CAC and conversion",
+   "CAC = acquisition cost ÷ new customers. Conversion = conversions ÷ visitors × 100"
+  ],
+  [
+   "lean",
+   "NASSCOM 2024",
+   "32–35k tech startups · $7.4B funding (+23%) · DeepTech $1.6B (+78%) · 6 unicorns · 800+ incubators"
+  ],
+  [
+   "lean",
+   "Business plan vs Lean",
+   "Plan: documented assumptions, projections. Lean: tested assumptions, experiments. Best: Lean → evidence → plan → scale"
   ]
  ],
  "revision": {
   "u1": "<h3>Business & forms</h3><ul><li><b>Business</b> = problem solving + value creation + value capture</li><li>Growth → complexity → need for <b>planning, organising, delegation, control</b></li><li>Forms: Sole (unlimited liability) → Partnership (conflict) → <b>LLP</b> (hybrid, LLP Act 2008) → <b>Company</b> (Companies Act 2013: private, public, OPC) → <b>Cooperative</b> (Amul)</li><li>Compare forms on: ownership, control, liability, capital, continuity</li></ul>\n<h3>Management</h3><ul><li><b>Efficiency</b> = doing things right · <b>Effectiveness</b> = doing the right things</li><li><b>POLC</b> (Fayol): plan → organise → lead → control (measure, compare, correct)</li><li><b>Mintzberg</b>: Interpersonal (figurehead, leader, liaison) · Informational (monitor, disseminator, spokesperson) · Decisional (entrepreneur, disturbance handler, resource allocator, negotiator)</li><li><b>Katz</b>: technical (low) · human (all) · conceptual (top)</li><li><b>Luthans</b>: successful managers network; effective managers communicate</li></ul>\n<h3>Evolution & Hawthorne</h3><ul><li>Taylor (efficiency) → Human relations → Systems & contingency (\"it depends\") → TQM → Digital, agile, CSR</li><li><b>Hawthorne effect</b>: behaviour changes when observed. Bank wiring: group norms beat pay. Elton Mayo → human relations</li></ul>",
   "u2": "<h3>Environment</h3><ul><li>Features: dynamic, complex, uncertain, interrelated, relative</li><li>Internal · Micro (suppliers, customers, competitors…) · Macro (<b>PESTEL</b>)</li><li>Scanning: scan → analyse → interpret → act</li><li>IKEA: FDI 30% (P), ₹199 (E), assembly (S), app (T), wood (E), GST (L)</li></ul>\n<h3>SWOT, TOWS, Five Forces</h3><ul><li>SW internal, OT external · TOWS: SO, WO, ST, WT · Kodak = failure to act</li><li><b>Five forces</b>: entrants, suppliers, buyers, substitutes, rivalry (biggest). Strong forces = low profit</li></ul>\n<h3>Strategy</h3><ul><li>Vision (destination) · Mission (purpose) · Values (rules) – Tesla</li><li>Levels: corporate (which businesses) · business (how to compete) · functional</li><li>Corporate: <b>expansion</b> (concentration, integration: backward = suppliers, forward = customers, diversification), <b>stability</b>, <b>retrenchment</b> (turnaround fix, divestment sell, liquidation close), <b>combination</b></li><li>Generic: cost leadership (IndiGo), differentiation (Apple), focus</li><li>Positioning: variety (McDonald's) · needs (luxury hotel) · access (rural bank)</li><li><b>RBV/VRIO</b> (Barney) → sustained advantage · <b>Blue ocean</b> = new market space</li></ul>",
-  "u3": "<h3>Operations & supply chain</h3><ul><li>Inputs → transformation → outputs → customers · productivity = output ÷ input</li><li>Process types: project, job, batch, line, continuous (volume ↑, variety ↓)</li><li>3 flows: material, information, financial · <b>bullwhip</b> (fix: share info)</li><li>Quality = meet/exceed requirements · internal vs external failure · priorities: cost, quality, time, dependability, flexibility, innovation</li></ul>\n<h3>Finance</h3><ul><li><b>A = L + C</b> · golden rules · journal → ledger → trial balance → trading, P&L, balance sheet</li><li>Cash flow: operating, investing (interest received), financing (dividend paid)</li><li>Ratios: current 2:1, quick 1:1, absolute 0.5:1, D/E 2:1, ROCE = EBIT ÷ capital employed</li><li>WC = CA − CL · <b>EOQ = √(2DS/H)</b> · reorder = usage × lead time · ABC · Baumol vs Miller-Orr</li><li>Capital structure: debt cheaper (tax shield) but riskier · NI, Traditional (relevance) vs NOI, MM (irrelevance)</li></ul>\n<h3>HR</h3><ul><li>Ulrich: strategic partner, change agent, employee champion, admin expert · 7 operative functions</li><li>Recruitment (positive) vs selection (negative) · direct, indirect, third-party, internet</li><li>Appraisal: BARS, MBO, 360°/720° · errors: halo, central tendency, leniency, recency, similar-to-me</li><li>Pay: internal equity, external competitiveness · incentives vs fringe benefits</li><li>Training: gap concept, ASK, OJT vs off-the-job · Trends: SHRM, gig, AI, analytics, e-HRM</li></ul>\n<h3>Marketing</h3><ul><li>Philosophies: production → product → selling → marketing → societal → holistic · myopia</li><li>4Ps + People, Process, Physical evidence = 7Ps · skimming vs penetration · STP</li></ul><h3>Segmentation & CVP (L25)</h3><ul><li>Bases: geographic · demographic · psychographic (VALS: 8 types, ideals/achievement/self-expression × resources) · behavioural (roles, usage, loyalty, readiness)</li><li>Effective: measurable, substantial, accessible, differentiable, actionable</li><li>Patterns: single segment, selective, product spec., market spec., full coverage · undifferentiated / differentiated / concentrated (niche)</li><li>CVP = why choose us (outcomes) vs USP = one feature · value = benefits − sacrifices</li></ul>"
+  "u3": "<h3>Operations & supply chain</h3><ul><li>Inputs → transformation → outputs → customers · productivity = output ÷ input</li><li>Process types: project, job, batch, line, continuous (volume ↑, variety ↓)</li><li>3 flows: material, information, financial · <b>bullwhip</b> (fix: share info)</li><li>Quality = meet/exceed requirements · internal vs external failure · priorities: cost, quality, time, dependability, flexibility, innovation</li></ul>\n<h3>Finance</h3><ul><li><b>A = L + C</b> · golden rules · journal → ledger → trial balance → trading, P&L, balance sheet</li><li>Cash flow: operating, investing (interest received), financing (dividend paid)</li><li>Ratios: current 2:1, quick 1:1, absolute 0.5:1, D/E 2:1, ROCE = EBIT ÷ capital employed</li><li>WC = CA − CL · <b>EOQ = √(2DS/H)</b> · reorder = usage × lead time · ABC · Baumol vs Miller-Orr</li><li>Capital structure: debt cheaper (tax shield) but riskier · NI, Traditional (relevance) vs NOI, MM (irrelevance)</li></ul>\n<h3>HR</h3><ul><li>Ulrich: strategic partner, change agent, employee champion, admin expert · 7 operative functions</li><li>Recruitment (positive) vs selection (negative) · direct, indirect, third-party, internet</li><li>Appraisal: BARS, MBO, 360°/720° · errors: halo, central tendency, leniency, recency, similar-to-me</li><li>Pay: internal equity, external competitiveness · incentives vs fringe benefits</li><li>Training: gap concept, ASK, OJT vs off-the-job · Trends: SHRM, gig, AI, analytics, e-HRM</li></ul>\n<h3>Marketing</h3><ul><li>Philosophies: production → product → selling → marketing → societal → holistic · myopia</li><li>4Ps + People, Process, Physical evidence = 7Ps · skimming vs penetration · STP</li></ul><h3>Segmentation & CVP (L25)</h3><ul><li>Bases: geographic · demographic · psychographic (VALS: 8 types, ideals/achievement/self-expression × resources) · behavioural (roles, usage, loyalty, readiness)</li><li>Effective: measurable, substantial, accessible, differentiable, actionable</li><li>Patterns: single segment, selective, product spec., market spec., full coverage · undifferentiated / differentiated / concentrated (niche)</li><li>CVP = why choose us (outcomes) vs USP = one feature · value = benefits − sacrifices</li></ul><h3>Branding & digital marketing (L26)</h3><ul><li>AMA brand definition · 5 product levels: core → generic → expected → augmented → potential</li><li>Brands reduce risk and search cost; give firms legal protection and advantage · brand equity (negative: VW 2015)</li><li>Brand management: positioning → programmes → measure → grow</li><li>Digital = targeted, measurable, interactive · Suspect → Prospect → Consumer → Client → Advocate</li><li>Website steps · DNS → IP · hosting types · crawl → index → rank · white vs black hat SEO · PPC = pay per click, auction · SEM = SEO + PPC · email metrics · social media forms · UPI and digital payments</li></ul>",
+  "u4": "<h3>Ethics (L27)</h3><ul><li>Business ethics: fair, honest, responsible, transparent</li><li>Frameworks: utilitarian (greatest good) · rights (privacy) · justice (fair pay) · virtue (good person) · common good (society)</li><li>Process: problem → stakeholders → alternatives → principles → decide → evaluate</li></ul><h3>CSR, governance, ESG (L27)</h3><ul><li>CSR = what we do for society · governance = how we are directed and controlled</li><li>Board: shareholders → Board → CEO; guides and holds management accountable · Section 135, Companies Act 2013</li><li>ESG: environmental, social, governance · GRI, SASB, TCFD, UN PRI, CDP · SEBI BRSR top 1,000 · MCA CSR · RBI green deposits</li></ul><h3>Digital transformation (L28)</h3><ul><li>AI, cloud, big data, IoT, robotics, digital twins</li><li>Planning = AI forecasts · organising = platforms, robots · leading = dashboards, training · controlling = IoT sensors, alerts</li><li>BMW digital twins: 30+ sites, up to 30% lower planning cost · DHL AI agents</li><li>Ethics: privacy, fairness, accountability, reskilling, cybersecurity</li></ul><h3>Entrepreneurship (L29–30)</h3><ul><li>Mindset: opportunity, customer-centric, uncertainty, calculated risk, resilience, growth, data · intrapreneurship</li><li>Risk vs uncertainty vs ambiguity · ₹2 lakh MVP, 500 customers</li><li>Sources: customer problems, technology, demographics, regulation, social problems · 9-step framework · evaluate: attractiveness, feasibility, profitability, scalability</li><li>Lean Startup (Eric Ries): build → measure → learn → persevere/pivot · MVPs: concierge, Wizard-of-Oz, landing page, prototype, pre-order</li><li>CAC, CLV, conversion, churn, retention · NASSCOM 2024: 32–35k startups, $7.4B, DeepTech +78%, 6 unicorns, 800+ incubators</li><li>Business plan components · business models · plan vs Lean: combine them</li></ul>"
  },
  "tools": true,
  "longq": [
@@ -8997,6 +11509,239 @@ window.SUBJECT_DATA.pbm = {
      "Tested: customer-specific, outcome-focused, differentiated, credible",
      2,
      "specific|outcome|differentiat|credible|deliverable"
+    ]
+   ]
+  ],
+  [
+   "brand",
+   "Explain the strategic brand management process with its four steps and key concepts. Apply it to a new Indian D2C skincare brand. (10 marks)",
+   [
+    [
+     "Step 1: positioning and values: frame of reference, points-of-parity/difference, core values, brand mantra",
+     2.5,
+     "position|parity|difference|mantra"
+    ],
+    [
+     "Step 2: plan and implement marketing programmes: brand elements, integrated activities, secondary associations",
+     2.5,
+     "brand element|integrat|secondary"
+    ],
+    [
+     "Step 3: measure performance: brand value chain, audits, tracking",
+     2,
+     "audit|track|value chain|measure"
+    ],
+    [
+     "Step 4: grow and sustain: portfolios, expansion, reinforcement, revitalisation",
+     2,
+     "portfolio|expan|revitali|reinforce"
+    ],
+    [
+     "Applied to the skincare brand",
+     1,
+     "skincare|d2c|example"
+    ]
+   ]
+  ],
+  [
+   "digimkt",
+   "You are launching an online bakery. Explain how you would build its website and use SEO, PPC, email and social media to bring customers. (10 marks)",
+   [
+    [
+     "Website steps: planning, design, development, testing, deployment, post-launch; domain and hosting",
+     3,
+     "planning|design|develop|test|domain|hosting"
+    ],
+    [
+     "SEO: keywords, quality content, mobile, local results",
+     2,
+     "seo|keyword|organic"
+    ],
+    [
+     "PPC: keyword bids, targeted ads, pay per click, landing page",
+     2,
+     "ppc|click|bid|ad"
+    ],
+    [
+     "Email: list, offers, call to action, open/click metrics",
+     1.5,
+     "email|call to action|open rate|click"
+    ],
+    [
+     "Social media: Instagram/WhatsApp, engagement, reviews",
+     1.5,
+     "instagram|social|whatsapp|engag|review"
+    ]
+   ]
+  ],
+  [
+   "ethics",
+   "Explain the five ethical frameworks. A pharmaceutical company finds a minor side effect in a best-selling drug. Use the frameworks and the decision process to recommend what it should do. (10 marks)",
+   [
+    [
+     "Utilitarian, rights, justice, virtue and common good explained",
+     4,
+     "utilitarian|rights|justice|virtue|common good"
+    ],
+    [
+     "Decision process: problem, stakeholders, alternatives, principles, decide, evaluate",
+     2,
+     "stakeholder|alternative|evaluat"
+    ],
+    [
+     "Applies frameworks to the drug case (patient safety, disclosure)",
+     2.5,
+     "patient|disclos|safety|recall|warn"
+    ],
+    [
+     "Clear recommendation and consequences of unethical behaviour",
+     1.5,
+     "recommend|reputation|trust"
+    ]
+   ]
+  ],
+  [
+   "csr",
+   "Explain CSR, corporate governance and ESG. What are the responsibilities of the Board towards CSR and governance in India? (10 marks)",
+   [
+    [
+     "CSR meaning, activities and benefits",
+     2,
+     "society|environment|education|health"
+    ],
+    [
+     "Governance meaning and importance (transparency, accountability, fraud prevention)",
+     2,
+     "directed|controlled|transparen|accountab"
+    ],
+    [
+     "ESG three pillars",
+     2,
+     "environment|social|governance"
+    ],
+    [
+     "Board CSR duties under Section 135, Companies Act 2013",
+     2,
+     "section 135|companies act|csr policy|monitor"
+    ],
+    [
+     "Board governance duties and regulators (SEBI BRSR, MCA, RBI)",
+     2,
+     "sebi|brsr|mca|rbi|shareholder|risk"
+    ]
+   ]
+  ],
+  [
+   "digitrans",
+   "Discuss how digital technologies transform the four management functions, with examples like BMW and DHL. What ethical challenges must managers handle? (10 marks)",
+   [
+    [
+     "Planning and organising with AI forecasting and digital platforms",
+     2,
+     "planning|forecast|organis"
+    ],
+    [
+     "Leading and controlling with analytics, dashboards and IoT",
+     2,
+     "leading|controlling|dashboard|iot"
+    ],
+    [
+     "Digital twins (BMW) and AI agents (DHL)",
+     2.5,
+     "bmw|dhl|digital twin|ai agent"
+    ],
+    [
+     "Ethical challenges: privacy, fairness, accountability, reskilling, cybersecurity",
+     2.5,
+     "privacy|fairness|accountab|reskill|cyber"
+    ],
+    [
+     "Changing role of the manager (real-time, predictive, human judgment)",
+     1,
+     "real-time|predict|judgment|judgement"
+    ]
+   ]
+  ],
+  [
+   "entre",
+   "What is the entrepreneurial mindset? Using the opportunity recognition framework, develop and evaluate a business opportunity in your city. (10 marks)",
+   [
+    [
+     "Mindset traits: opportunity, customer centricity, uncertainty, calculated risk, data",
+     2.5,
+     "opportunit|customer|uncertain|calculated|data"
+    ],
+    [
+     "Sources of opportunity",
+     1.5,
+     "technolog|demograph|regulat|social|problem"
+    ],
+    [
+     "Applies the 9-step framework (problem, customer, frequency, intensity, gap, solution, pay, scale)",
+     3.5,
+     "frequency|intensity|gap|willingness|scalab"
+    ],
+    [
+     "Evaluates: market attractiveness, feasibility, profitability, scalability",
+     2.5,
+     "attractive|feasib|profitab|scalab"
+    ]
+   ]
+  ],
+  [
+   "lean",
+   "Explain the Lean Startup methodology, MVP types, validated learning and key metrics. How would you test the idea 'students will pay ₹199/month for an AI study assistant'? (10 marks)",
+   [
+    [
+     "Build–Measure–Learn, persevere vs pivot",
+     2,
+     "build|measure|learn|pivot|persever"
+    ],
+    [
+     "MVP meaning and types",
+     2,
+     "mvp|concierge|wizard|landing|prototype|pre-order"
+    ],
+    [
+     "Validated learning",
+     1.5,
+     "validated|evidence|hypothesis"
+    ],
+    [
+     "Metrics: CAC, CLV, conversion, churn, retention",
+     2,
+     "cac|clv|conversion|churn|retention"
+    ],
+    [
+     "Concrete test plan for the ₹199 assistant",
+     2.5,
+     "199|students|sign-up|paid|interview"
+    ]
+   ]
+  ],
+  [
+   "lean",
+   "Describe India's startup ecosystem and its components. What did the NASSCOM 2024 report find, and why are Tier-2 and Tier-3 cities important? (10 marks)",
+   [
+    [
+     "Ecosystem meaning and components (entrepreneurs, VCs, angels, incubators, accelerators, universities, corporates, government)",
+     3,
+     "venture|angel|incubator|accelerator|universit|government"
+    ],
+    [
+     "NASSCOM figures: 32,000–35,000 startups, $7.4B funding, DeepTech +78%, 6 unicorns, 800+ incubators",
+     3,
+     "32,000|35,000|7.4|deeptech|unicorn|800"
+    ],
+    [
+     "Tier-2/3 cities: lower costs, talent, internet, remote work, government support",
+     2.5,
+     "tier|lower cost|talent|remote"
+    ],
+    [
+     "NASSCOM six pillars",
+     1.5,
+     "pillar|innovation hub|capital|market access|talent|regulation"
     ]
    ]
   ]

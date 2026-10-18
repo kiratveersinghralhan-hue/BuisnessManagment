@@ -9,6 +9,7 @@
   --grad-u1:linear-gradient(135deg,#8B5CF6,#38BDF8);
   --grad-u2:linear-gradient(135deg,#EC4899,#FB923C);
   --grad-u3:linear-gradient(135deg,#14B8A6,#A3E635);
+  --grad-u4:linear-gradient(135deg,#F59E0B,#EF4444);
   --good:#34D399; --bad:#FB7185; --info:#38BDF8;
   --r-lg:24px; --r-md:16px; --r-sm:12px;
   --display:"Bricolage Grotesque",system-ui,sans-serif;
@@ -595,3 +596,5 @@ pre.qcode{font-size:14px;font-weight:500}
 @media print{.mic-bar,.voice-list{display:none}}
 .paper .mock-bar .chips{flex-wrap:nowrap}
 .paper .mock-bar .chips .chip{padding:6px 11px;min-width:0;font-size:13px}
+.u4{--ug:var(--grad-u4)}
+.structure > div:nth-child(4) .sec{background:var(--grad-u4)}
