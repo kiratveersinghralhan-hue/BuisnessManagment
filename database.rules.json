@@ -6,21 +6,49 @@
       ".read": true,
       "$uid": {
         ".write": "auth != null && ((auth.uid === $uid && !data.exists()) || auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2')",
-        ".validate": "newData.isString() && newData.val().length >= 3 && newData.val().length <= 40"
+        ".validate": "newData.isString() && newData.val().length >= 3 && newData.val().length <= 40 && !newData.val().matches(/[<>{}]/)"
       }
     },
     "lb": {
       ".read": true,
       "$uid": {
         ".write": "auth != null && (auth.uid === $uid || auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2')",
+        ".validate": "!newData.exists() || newData.hasChildren(['xp','ts'])",
         "xp": {
-          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() < 200000"
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 200000"
         },
         "best": {
           ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100"
         },
         "acc": {
           ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100"
+        },
+        "mocks": {
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 5000"
+        },
+        "solved": {
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 20000"
+        },
+        "sec": {
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 10000000"
+        },
+        "notes": {
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1000"
+        },
+        "streak": {
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 2000"
+        },
+        "wins": {
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 10000"
+        },
+        "badges": {
+          ".validate": "newData.isString() && newData.val().length <= 200"
+        },
+        "ts": {
+          ".validate": "newData.isNumber() && newData.val() <= now + 60000"
+        },
+        "$other": {
+          ".validate": false
         }
       }
     },
@@ -28,7 +56,18 @@
       ".read": "auth != null && auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2'",
       "$uid": {
         ".read": "auth != null && auth.uid === $uid",
-        ".write": "auth != null && (auth.uid === $uid || auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2')"
+        ".write": "auth != null && (auth.uid === $uid || auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2')",
+        "name": {
+          ".validate": "newData.isString() && newData.val().length >= 3 && newData.val().length <= 40 && !newData.val().matches(/[<>{}]/)"
+        },
+        "mynotes": {
+          "$t": {
+            ".validate": "newData.isString() && newData.val().length <= 30000"
+          }
+        },
+        "studySec": {
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 10000000"
+        }
       }
     },
     "attempts": {
@@ -37,14 +76,27 @@
         ".read": "auth != null && auth.uid === $uid",
         ".write": "auth != null && auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2'",
         "$aid": {
-          ".write": "auth != null && auth.uid === $uid && !data.exists()"
+          ".write": "auth != null && auth.uid === $uid && !data.exists()",
+          ".validate": "newData.hasChildren(['type','ts']) && newData.child('type').isString() && newData.child('ts').val() <= now + 60000"
         }
       }
     },
     "presence": {
       ".read": true,
       "$uid": {
-        ".write": "auth != null && (auth.uid === $uid || auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2')"
+        ".write": "auth != null && (auth.uid === $uid || auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2')",
+        "on": {
+          ".validate": "newData.isBoolean()"
+        },
+        "ts": {
+          ".validate": "newData.isNumber() && newData.val() <= now + 60000"
+        },
+        "page": {
+          ".validate": "newData.isString() && newData.val().length <= 30"
+        },
+        "$other": {
+          ".validate": false
+        }
       }
     },
     "removed": {
@@ -60,7 +112,10 @@
         "$day": {
           "$uid": {
             ".write": "auth != null && ((auth.uid === $uid && !data.exists()) || auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2')",
-            ".validate": "newData.hasChildren(['score','ms'])"
+            ".validate": "newData.hasChildren(['score','ms']) && newData.child('score').isNumber() && newData.child('score').val() >= 0 && newData.child('score').val() <= 10 && newData.child('ms').isNumber() && newData.child('ms').val() >= 0",
+            "name": {
+              ".validate": "newData.isString() && newData.val().length >= 3 && newData.val().length <= 40 && !newData.val().matches(/[<>{}]/)"
+            }
           }
         }
       }
@@ -104,13 +159,15 @@
           "$uid": {
             ".write": "auth != null && auth.uid === $uid && root.child('battles').child($code).child('mode').val() === 'party' && root.child('battles').child($code).child('state').val() === 'rematch' && root.child('battles').child($code).child('players').child(auth.uid).exists() && newData.val() === true"
           }
-        }
+        },
+        ".validate": "$code.matches(/^[A-Z0-9]{4,8}$/)"
       }
     },
     "match": {
       "$subj": {
         ".read": "auth != null",
-        ".write": "auth != null"
+        ".write": "auth != null",
+        ".validate": "!newData.exists() || (newData.hasChildren(['code']) && newData.child('code').isString() && newData.child('code').val().length <= 8)"
       }
     },
     "doubts": {
@@ -121,10 +178,30 @@
         ],
         "$id": {
           ".write": "auth != null && ((!data.exists() && newData.child('uid').val() === auth.uid) || data.child('uid').val() === auth.uid || auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2')",
-          ".validate": "!newData.exists() || (newData.child('text').isString() && newData.child('text').val().length <= 600)",
+          ".validate": "!newData.exists() || (newData.child('uid').isString() && newData.child('text').isString() && newData.child('text').val().length >= 3 && newData.child('text').val().length <= 600)",
+          "name": {
+            ".validate": "newData.isString() && newData.val().length >= 3 && newData.val().length <= 40 && !newData.val().matches(/[<>{}]/)"
+          },
+          "topic": {
+            ".validate": "newData.isString() && newData.val().length <= 40"
+          },
+          "ts": {
+            ".validate": "newData.isNumber() && newData.val() <= now + 60000"
+          },
           "n": {
-            ".write": "auth != null",
-            ".validate": "newData.isNumber()"
+            ".validate": "newData.isNumber() && newData.val() === 0"
+          },
+          "solved": {
+            ".validate": "newData.isString() && newData.val().length <= 40"
+          },
+          "uid": {
+            ".validate": "newData.isString()"
+          },
+          "text": {
+            ".validate": "newData.isString()"
+          },
+          "$other": {
+            ".validate": false
           }
         }
       }
@@ -136,14 +213,20 @@
           ".write": "auth != null && (root.child('doubts').child($subj).child($id).child('uid').val() === auth.uid || auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2')",
           "$aid": {
             ".write": "auth != null && ((!data.exists() && newData.child('uid').val() === auth.uid) || data.child('uid').val() === auth.uid || auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2')",
-            ".validate": "!newData.exists() || (newData.child('text').isString() && newData.child('text').val().length <= 1200)"
+            ".validate": "!newData.exists() || (newData.child('text').isString() && newData.child('text').val().length <= 1200)",
+            "name": {
+              ".validate": "newData.isString() && newData.val().length >= 3 && newData.val().length <= 40 && !newData.val().matches(/[<>{}]/)"
+            }
           }
         }
       }
     },
     "announce": {
       ".read": true,
-      ".write": "auth != null && auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2'"
+      ".write": "auth != null && auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2'",
+      "$id": {
+        ".validate": "!newData.exists() || (newData.child('text').isString() && newData.child('text').val().length <= 1000)"
+      }
     }
   }
 }

@@ -1,7 +1,40 @@
 BOARDROOM: BBA DS & BM exam prep (Chitkara Business School)
 ===========================================================
 
-WHAT'S NEW IN v5
+WHAT'S NEW IN v6
+  • New look: premium ivory, crimson and black theme with soft 3D tilt,
+    glare and gentle motion on cards (switched off for reduced-motion users).
+  • NEW SUBJECT: Applied Linear Algebra & Calculus (from CULMS Lectures 1–16):
+    11 notes (matrices, inverse, determinants & rank, Gaussian elimination,
+    LU, QR, Unit I review, eigenvalues, diagonalization, Spectral Theorem,
+    PCA & PageRank), 167 MCQs (every numeric answer checked by computer),
+    20 short + 10 long questions, 3 case studies, 46 flashcards, revision,
+    and full 100-mark papers in the university format.
+  • NEW SUBJECT: Intro to AI & ML (from the CULMS session slides): system
+    prompts, AI knowledge base, predictive analytics. 42 MCQs, 12 short +
+    6 long questions, 2 case studies, 15 flashcards, full papers.
+  • University-style papers: every written question shows its Bloom level
+    (BT1 Remember … BT6 Create). The printed paper now has the Chitkara
+    header (Roll No., programme, semester, course code, time, marks,
+    instructions).
+  • Admin panel rebuilt: sidebar sections (Overview, Students, Learning,
+    Exams, Community, Security), filters for online / active today /
+    inactive / duplicates, a per-subject learning view, and a security
+    checklist.
+  • Security: stricter database rules (range checks on leaderboard numbers,
+    size limits, no fake scores, no code in names), Content-Security-Policy
+    on both pages, admin session ends when the tab closes or after 20 min
+    idle, admin sign-in locks after 5 wrong passwords, your email is no
+    longer inside the site's code, CSV export is formula-injection safe.
+
+v5.1
+  • Business Management Lectures 26–30 added: branding & digital marketing
+    (Unit 3), and a new Unit 4: ethics, CSR, corporate governance, ESG,
+    digital transformation, entrepreneurship, Lean Startup & business plans.
+    +7 notes, 147 MCQs, 17 short + 8 long answers, 2 exam case studies,
+    1 Case Arena scenario, 32 flashcards, Unit 4 revision sheet.
+
+v5
   • Business Management exam now uses the official end-term format:
     100 marks, 3 hours. A: 10×2 or 20×1 MCQs · B: any 5 of 6 short answers
     (6 marks, 100 words) · C: any 3 of 4 long answers (10 marks, 500 words)
@@ -31,8 +64,10 @@ FILES (upload ALL of them, no folders needed)
   styles.css, admin.css, app.js, admin.js
   firebase-config.js  your Firebase settings (already filled in)
   subjects.js         list of all subjects, exam dates and exam patterns
-  subject-pbm.js      Principles of Business Management (Lectures 1–25)
+  subject-pbm.js      Principles of Business Management (Lectures 1–30)
   subject-prog.js     Programming Fundamentals (Python)
+  subject-alac.js     Applied Linear Algebra & Calculus (new)
+  subject-aiml.js     Intro to AI & ML (new)
   sw.js               offline mode
   manifest.json, icon-180.png, icon-512.png   "Add to Home Screen" app icon
   database.rules.json security rules to paste into Firebase
@@ -42,13 +77,17 @@ FILES (upload ALL of them, no folders needed)
   If they're still on GitHub, you can delete data-notes.js and
   data-questions.js: they were merged into subject-pbm.js.
 
-UPDATING FROM THE PREVIOUS VERSION
-  Delete v7-games.css from GitHub (the game was removed).
+UPDATING FROM THE PREVIOUS VERSION (do all 3)
   1. Upload all the files above to your repo (they replace the old ones).
-  2. Re-paste the database rules: battles, daily challenge, doubts and
-     announcements need the new rules or they won't save.
+  2. Re-paste the database rules (they are stricter now):
      Firebase console → Realtime Database → Rules → delete everything →
      paste all of database.rules.json → Publish.
+  3. One-time security settings (5 minutes, details in admin → Security):
+     • Authentication → Settings → User actions: untick "Enable create
+       (sign-up)" so nobody else can make an email account.
+     • Authentication → Settings: turn on Email enumeration protection.
+     • Google Cloud Console → APIs & Services → Credentials → Browser key →
+       Application restrictions: HTTP referrers → YOUR-USERNAME.github.io/*
 
 ADDING A SUBJECT LATER
   Send the material to Claude (or open CULMS in Claude's browser). You'll get
@@ -61,7 +100,8 @@ FIRST-TIME SETUP (already done, kept for reference)
 
 ADMIN PANEL
   https://YOUR-USERNAME.github.io/REPO-NAME/admin.html
-  Sign in with kiratveersinghralhan@gmail.com and your Firebase password.
+  Sign in with your admin email and Firebase password (type the email; it
+  is no longer pre-filled).
   You can: see who's studying now, daily activity, study time, weak topics,
   every student's scores, mocks and battle wins, rename, merge duplicates,
   remove a student, export a CSV, post announcements, delete doubts.

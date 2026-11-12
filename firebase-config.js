@@ -13,6 +13,5 @@ export const firebaseConfig = {
 
 // Only this account can open admin.html
 export const ADMIN_UID = "cqYV6YMFt3TOdUfP37su7rSZQuL2";
-export const ADMIN_EMAIL = "kiratveersinghralhan@gmail.com";
 
 export const FIREBASE_VERSION = "10.12.2";

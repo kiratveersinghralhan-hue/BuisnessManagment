@@ -34,14 +34,14 @@ async function loadSubject(id) {
   BANK = (SD.bank || []).map(r => toQ(r));
   CASESETS = (SD.casesets || []).map(cs => ({ ...cs, qs: cs.qs.map(r => toQ([cs.topics[0], ...r], cs.id)) }));
   CASES = SD.cases || []; GUIDE = SD.guide || "";
-  SHORT = (SD.short || []).map(r => ({ id: hash("s" + r[1]), t: r[0], q: r[1], pts: r[2], marks: r[2].reduce((a, x) => a + x[1], 0) }));
+  SHORT = (SD.short || []).map(r => ({ id: hash("s" + r[1]), t: r[0], q: r[1], pts: r[2], bl: r[3] || blOf(r[1]), marks: r[2].reduce((a, x) => a + x[1], 0) }));
   LONG = SD.long || [];
   VIDEOS = (SD.videos || []).map(x => ({ id: x[0], t: x[1], title: x[2] }));
   EXAM = Object.assign({ title: "End-term practice paper", minutes: 90, total: 70, mcq: 15, mcqCaseSets: 1, shortShow: 5, shortAttempt: 4, shortMarks: 5, longMarks: 30 }, SD.exam || {}, sub.paper || {});
-  LONGQ = (SD.longq || []).map(r => ({ id: hash("lq" + r[1]), t: r[0], q: r[1], pts: r[2], marks: r[2].reduce((a, x) => a + x[1], 0) }));
+  LONGQ = (SD.longq || []).map(r => ({ id: hash("lq" + r[1]), t: r[0], q: r[1], pts: r[2], bl: r[3] || blOf(r[1]), marks: r[2].reduce((a, x) => a + x[1], 0) }));
   if (EXAM.format === "4sec" && EXAM.shortMarks) SHORT = SHORT.map(x => ({ ...x, pts: scalePts(x.pts, EXAM.shortMarks), marks: EXAM.shortMarks, q: x.q.replace(/\(\d+(\.\d+)? marks\)\s*$/, `(${EXAM.shortMarks} marks)`) }));
   LS.set("cr_subject", sub.id);
-  document.documentElement.style.setProperty("--subj", `linear-gradient(135deg,${(sub.grad || ["#8B5CF6", "#EC4899"]).join(",")})`);
+  document.documentElement.style.setProperty("--subj", `linear-gradient(135deg,${(sub.grad || ["#D7141E", "#0B0B0C"]).join(",")})`);
   const chip = $("#subjChip"); if (chip) chip.innerHTML = `<span>${sub.icon || "📘"}</span><b>${esc(sub.short || sub.name)}</b><span class="caret">▾</span>`;
 }
 const unitOf = t => NOTE[t]?.unit;
@@ -58,6 +58,7 @@ function arenaDaily() {
   S.arena62 ||= {};
   const key = today();
   S.arena62[key] ||= { answers: 0, cases: {}, notes: {}, rewards: {} };
+  { const t = S.arena62[key]; t.answers ||= 0; t.cases ||= {}; t.notes ||= {}; t.rewards ||= {}; } // Firebase drops empty objects
   // Keep history bounded on the device (today + last 44 days)
   const keys = Object.keys(S.arena62).sort();
   for (const old of keys.slice(0, Math.max(0, keys.length - 45))) delete S.arena62[old];
@@ -255,6 +256,23 @@ function reveal(root) {
   const els = $$(RV_SEL, root).filter(el => !el.classList.contains("rv"));
   let k = 0; els.forEach(el => { const r = el.getBoundingClientRect(); el.classList.add("rv"); if (r.top < innerHeight) el.style.setProperty("--d", Math.min(k++ * 0.05, 0.5) + "s"); io.observe(el); });
 }
+/* soft 3D tilt on cards (mouse/trackpad only) */
+const TILT_SEL = ".action,.unit-card,.play,.bcard,.exam-card,.stat,.pyq-card,.guide-card,.vcard,.arena62-card";
+if (matchMedia("(hover:hover) and (pointer:fine)").matches && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+  let cur = null;
+  const reset = el => { el.style.transform = ""; el.style.boxShadow = ""; };
+  addEventListener("pointermove", e => {
+    const el = e.target.closest && e.target.closest(TILT_SEL);
+    if (cur && cur !== el) { reset(cur); cur = null; }
+    if (!el) return;
+    if (!el.classList.contains("tilt")) { el.classList.add("tilt"); if (!el.querySelector(":scope > .glare")) { const g = document.createElement("i"); g.className = "glare"; el.appendChild(g); } }
+    cur = el; const r = el.getBoundingClientRect(), px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
+    const max = r.width > 520 ? 3 : 7;
+    el.style.transform = `perspective(900px) rotateX(${(.5 - py) * max}deg) rotateY(${(px - .5) * max}deg) translateY(-3px)`;
+    el.style.setProperty("--gx", px * 100 + "%"); el.style.setProperty("--gy", py * 100 + "%");
+  }, { passive: true });
+  document.addEventListener("pointerleave", () => { if (cur) { reset(cur); cur = null; } });
+}
 /* header + bottom bar hide while scrolling down, come back when scrolling up; progress line */
 let lastY = 0, ticking = false;
 function showBars() { $("#topBar").classList.remove("hide"); $("#bottomNav").classList.remove("hide"); }
@@ -305,7 +323,7 @@ function vHome(v) {
     <button class="subj-hero" id="heroSubj">${SUBJ.icon || "📘"} Sem ${SUBJ.sem} · ${esc(SUBJ.short || SUBJ.name)} · change <span class="caret">▾</span></button>
     <h1>${esc(SUBJ.tagline || "Crack the case, not just the syllabus.")}</h1>
     <p>${NOTES.length ? `${NOTES.length} topic notes, ${BANK.length} MCQs${SHORT.length + LONG.length ? `, ${SHORT.length + LONG.length} exam-style written questions and full ${EXAM.total}-mark papers` : ""}.` : "Notes, MCQs and exam papers for this subject are being added. Check back soon."}</p>
-    <div class="row">${!BANK.length ? `<button class="btn primary" onclick="window.__pick()">Switch subject</button>` : isMcqExam() ? `<a class="btn primary" href="#mock">Take the ${EXAM.questions}-MCQ test</a><a class="btn ghost" href="#practice">Quick practice</a>` : `<a class="btn primary" href="#exam">Write an exam paper</a><a class="btn ghost" href="#practice">Quick practice</a>`}</div>
+    <div class="row">${!BANK.length ? `<button class="btn primary" data-pick>Switch subject</button>` : isMcqExam() ? `<a class="btn primary" href="#mock">Take the ${EXAM.questions}-MCQ test</a><a class="btn ghost" href="#practice">Quick practice</a>` : `<a class="btn primary" href="#exam">Write an exam paper</a><a class="btn ghost" href="#practice">Quick practice</a>`}</div>
   </section>
   <div id="annBox">${announceHTML()}</div>
   ${examBanner()}
@@ -346,7 +364,7 @@ function vGuide(v) {
 }
 
 function comingSoon(what) {
-  return `<div class="soon"><div class="soon-ic">${SUBJ.icon || "📘"}</div><h3>${esc(what)} for ${esc(SUBJ.name)} are coming soon</h3><p class="muted">Content is added as the lectures and material come in. Meanwhile you can switch to another subject.</p><button class="btn primary" onclick="window.__pick()">Switch subject</button></div>`;
+  return `<div class="soon"><div class="soon-ic">${SUBJ.icon || "📘"}</div><h3>${esc(what)} for ${esc(SUBJ.name)} are coming soon</h3><p class="muted">Content is added as the lectures and material come in. Meanwhile you can switch to another subject.</p><button class="btn primary" data-pick>Switch subject</button></div>`;
 }
 function examBanner(sub = SUBJ) {
   if (!sub.exam?.date) return "";
@@ -356,7 +374,7 @@ function examBanner(sub = SUBJ) {
 }
 function vNotes(v) {
   if (!NOTES.length) { v.innerHTML = `<h2>Notes</h2>` + comingSoon("Notes"); return; }
-  setTimeout(() => { if (SD.starter) { const el = document.createElement("div"); el.className = "tip"; el.innerHTML = "<b>Starter set.</b> These notes and questions cover standard Programming Fundamentals topics. They'll be matched to your teacher's slides soon."; v.querySelector("h2").after(el); } });
+  setTimeout(() => { if (SD.upcoming) { const el = document.createElement("div"); el.className = "tip"; el.textContent = SD.upcoming; v.querySelector("h2")?.after(el); } if (SD.starter) { const el = document.createElement("div"); el.className = "tip"; el.innerHTML = "<b>Starter set.</b> These notes and questions cover standard Programming Fundamentals topics. They'll be matched to your teacher's slides soon."; v.querySelector("h2").after(el); } });
   v.innerHTML = `<h2>Notes</h2><p class="muted">${esc(SUBJ.name)} · every topic from the lectures so far. Finish a topic to earn 15 XP.</p>
   <div class="row" style="margin-bottom:14px"><a class="btn small" href="#revise">⚡ Revision sheets</a><a class="btn small" href="#cards">🃏 Flashcards</a>${VIDEOS.length ? `<a class="btn small" href="#videos">▶️ Videos</a>` : ""}<a class="btn small" href="#doubts">💬 Doubts</a><button class="btn small" id="printAll">🖨️ Save all notes as PDF</button></div>
   <a class="guide-card" href="#guide"><span style="font-size:30px">🗝️</span><div><b>Read first: how to crack case questions</b><span class="muted">Read → identify → analyse → recommend</span></div></a>
@@ -545,6 +563,16 @@ function pickMCQs(n) {
     let i = 0, got = 0, guard = 0; while (got < k && guard++ < 999 && topics.length) { const q = pools[topics[i++ % topics.length]].pop(); if (q) { A.push(q); got++; } }
   }
   return shuffle(A);
+}
+function blOf(q) {
+  const t = String(q).toLowerCase();
+  if (/\b(design|create|develop|formulate|draft|propose a plan)\b/.test(t)) return "BT6 · Create";
+  if (/\b(evaluate|justify|critically|assess|should|recommend|do you agree)\b/.test(t)) return "BT5 · Evaluate";
+  if (/\b(analy[sz]e|compare|differentiate|distinguish|diagnose|examine)\b/.test(t)) return "BT4 · Analyse";
+  if (/\b(apply|calculate|compute|find|solve|use|illustrate|show|prepare|verify|evaluate the)\b/.test(t)) return "BT3 · Apply";
+  if (/\b(explain|describe|discuss|why|how|interpret)\b/.test(t)) return "BT2 · Understand";
+  if (/\b(define|state|list|name|what is|what are|identify)\b/.test(t)) return "BT1 · Remember";
+  return "BT2 · Understand";
 }
 function qf(t) { t = String(t ?? ""); const i = t.indexOf("\n"); return i < 0 ? esc(t) : `${esc(t.slice(0, i))}<pre class="qcode">${esc(t.slice(i + 1))}</pre>`; }
 const isMcqExam = () => EXAM.type === "mcq";
@@ -741,7 +769,7 @@ function pickSubject(first) {
   el.innerHTML = `<div class="subj-wrap" role="dialog" aria-modal="true" aria-label="Choose a subject">
     <div class="subj-top"><div class="dim" style="font-size:13px;font-weight:700">${esc(PROGRAM.short || "")} · Year 1 · Semester 1</div>
     <h2>${first ? "Which subject do you want to start with?" : "Switch subject"}</h2><p class="muted">Swipe to browse, tap the front card to choose. You can change it any time from the menu.</p></div>
-    <div class="car-stage" id="carStage"><div class="car-ring" id="carRing">${list.map((x, i) => `<div class="car-card" data-i="${i}" style="--g:linear-gradient(155deg,${(x.grad || ["#8B5CF6", "#EC4899"]).join(",")})"><span class="cc-ic">${x.icon || "📘"}</span><span class="cc-code">${esc(x.code || "")}</span><b>${esc(x.name)}</b><span class="cc-meta">${hasContent(x) ? "Notes · MCQs · Exam papers" : "Content coming soon"}</span>${x.exam?.date ? `<span class="cc-exam">⏰ ${examLine(x)}</span>` : ""}</div>`).join("")}</div></div>
+    <div class="car-stage" id="carStage"><div class="car-ring" id="carRing">${list.map((x, i) => `<div class="car-card" data-i="${i}" style="--g:linear-gradient(155deg,${(x.grad || ["#D7141E", "#0B0B0C"]).join(",")})"><span class="cc-ic">${x.icon || "📘"}</span><span class="cc-code">${esc(x.code || "")}</span><b>${esc(x.name)}</b><span class="cc-meta">${hasContent(x) ? "Notes · MCQs · Exam papers" : "Content coming soon"}</span>${x.exam?.date ? `<span class="cc-exam">⏰ ${examLine(x)}</span>` : ""}</div>`).join("")}</div></div>
     <div class="car-nav"><button class="car-arrow" id="carPrev" aria-label="Previous">‹</button><div class="car-dots">${list.map((x, i) => `<i data-d="${i}"></i>`).join("")}</div><button class="car-arrow" id="carNext" aria-label="Next">›</button></div>
     <button class="btn primary block" id="carGo"></button>${first ? "" : `<button class="btn ghost block" style="margin-top:8px" data-x>Close</button>`}</div>`;
   document.body.appendChild(el);
@@ -960,10 +988,15 @@ function paperPrint(m, key) {
   const X = E4(), T = examTotals(m), P = paperParts(m); let n = 1;
   const scheme = pts => key ? `<div class="p-key"><b>Marking scheme:</b><ul>${pts.map(p => `<li>${esc(p[0])} (${p[1]})</li>`).join("")}</ul></div>` : "";
   const A = `<div class="p-q"><b>Question 1.</b> Please choose the correct option:</div>` + m.mcq.map((it, i) => `<div class="p-q"><b>${String.fromCharCode(97 + (i % 26))}${i >= 26 ? i : ""}.</b> ${qf(it.q)}<ol type="i">${it.opts.map(o => `<li>${esc(o)}</li>`).join("")}</ol>${key ? `<div class="p-key">Answer: (${["i", "ii", "iii", "iv"][it.ans]}) ${esc(it.c)}</div>` : ""}</div>`).join("");
-  const B = P.B.map(x => `<div class="p-q"><b>${++n}.</b> ${esc(qNoMarks(x.q))}${scheme(x.pts)}</div>`).join("");
-  const C = P.C.map(x => `<div class="p-q"><b>${++n}.</b> ${esc(qNoMarks(x.q))}${scheme(x.pts)}</div>`).join("");
+  const blt = x => x.bl ? ` <span class="p-bl">[${esc(x.bl.split(" ")[0])}]</span>` : "";
+  const B = P.B.map(x => `<div class="p-q"><b>${++n}.</b> ${esc(qNoMarks(x.q))}${blt(x)}${scheme(x.pts)}</div>`).join("");
+  const C = P.C.map(x => `<div class="p-q"><b>${++n}.</b> ${esc(qNoMarks(x.q))}${blt(x)}${scheme(x.pts)}</div>`).join("");
   const D = P.long ? `<div class="p-case"><b>${esc(P.long.title)}</b><br>${esc(P.long.text)}</div>${P.D.map(x => `<div class="p-q"><b>${++n}.</b> ${esc(x.q)}${scheme(x.pts)}</div>`).join("")}` : "";
-  return `<h1>End Term Examination</h1><p><b>${esc(SUBJ.name)}</b> · ${esc(PROGRAM.short || "")} · Max. marks: ${X.total} · Time: ${X.minutes / 60} hours</p>
+  const now = new Date(), ay = now.getMonth() >= 6 ? `${now.getFullYear()}-${String(now.getFullYear() + 1).slice(2)}` : `${now.getFullYear() - 1}-${String(now.getFullYear()).slice(2)}`, semW = ["", "FIRST", "SECOND", "THIRD", "FOURTH", "FIFTH", "SIXTH"][SUBJ.sem || 1] || "";
+  return `<div class="p-meta"><span>Roll No.: ____________________</span><span>Total pages: __</span></div>
+  <div class="p-uni">CHITKARA UNIVERSITY, PUNJAB<br>${esc((PROGRAM.name || "").toUpperCase())}<br>END TERM EXAMINATION, ${semW} SEMESTER, ${ay}<br>${esc(SUBJ.code || "")} · ${esc(SUBJ.name.toUpperCase())}</div>
+  <div class="p-meta"><span>Time: ${X.minutes / 60} hours</span><span>Max. marks: ${X.total}</span></div>
+  <p class="p-ins"><b>Instructions:</b> (1) Section A is compulsory. (2) Attempt any ${X.shortAttempt} questions from Section B and any ${X.longAttempt} from Section C. (3) Section D is compulsory. (4) Write question numbers clearly; marks are shown in brackets. BT = Bloom's taxonomy level.</p>
   <h2>Section A (${m.mode[0]} × ${m.mode[1]} marks = ${T.A} marks)<br><small>Multiple choice questions</small></h2>${A}
   <h2>Section B (${X.shortAttempt} × ${X.shortMarks} marks = ${T.B} marks)<br><small>Short answers. Max. ${X.shortWords} words. (Attempt any ${X.shortAttempt} questions)</small></h2>${B}
   <h2>Section C (${X.longAttempt} × ${X.longMarks} marks = ${T.C} marks)<br><small>Long answers, each answer may have max. ${X.longWords} words. (Attempt any ${X.longAttempt} questions)</small></h2>${C}
@@ -983,7 +1016,7 @@ function vPaper(v) {
   const total = () => Math.round((scoreA() + scoreB() + scoreC() + scoreD()) * 10) / 10;
   const answered = (list, kf) => list.filter((x, i) => wGet(kf(i)).trim()).length;
   const cnt = (list, kf, n) => { const a = answered(list, kf); return `${a} answered${a > n ? `. Your best ${n} will count` : ""}`; };
-  const wq = (label, q, marks, k, topic, limit, tall) => `<div class="pq"><div class="row" style="align-items:flex-start"><div class="pq-t" style="flex:1"><b>${label}</b> ${esc(q)}</div><span class="mk">${marks} marks</span></div><textarea data-w="${k}" data-topic="${esc(topic || "")}" data-q="${esc(q.slice(0, 140))}" ${tall ? 'class="tall"' : ""} placeholder="Your answer (max ${limit} words)… or tap 🎙️ Speak">${esc(wGet(k))}</textarea><div class="wc dim" data-wc="${k}" data-lim="${limit}">${words(wGet(k))} / ${limit} words</div></div>`;
+  const wq = (label, q, marks, k, topic, limit, tall, bl) => `<div class="pq"><div class="row" style="align-items:flex-start"><div class="pq-t" style="flex:1"><b>${label}</b> ${esc(q)}${bl ? ` <span class="co-tag">${esc(bl)}</span>` : ""}</div><span class="mk">${marks} marks</span></div><textarea data-w="${k}" data-topic="${esc(topic || "")}" data-q="${esc(q.slice(0, 140))}" ${tall ? 'class="tall"' : ""} placeholder="Your answer (max ${limit} words)… or tap 🎙️ Speak">${esc(wGet(k))}</textarea><div class="wc dim" data-wc="${k}" data-lim="${limit}">${words(wGet(k))} / ${limit} words</div></div>`;
   const wcText = (t, lim) => { const n = words(t); return `${n} / ${lim} words${n > lim ? " · over the limit" : ""}`; };
 
   const writeView = () => {
@@ -995,9 +1028,9 @@ function vPaper(v) {
     <section id="secA" class="psec"><h3>Section A <small>${m.mode[0]} × ${m.mode[1]} marks = ${T.A} marks · Multiple choice</small></h3><p class="dim" style="font-size:13.5px;margin-top:-4px">Question 1. Please choose the correct option:</p>
     ${m.mcq.map((it, i) => `<div class="pq"><div class="pq-t"><b>${String.fromCharCode(97 + (i % 26))}${i >= 26 ? i : ""}.</b> ${qf(it.q)}</div><div class="opts">${it.opts.map((o, k) => `<button class="opt ${m.ans[i] === k ? "sel" : ""}" data-i="${i}" data-k="${k}"><span class="k">${["i", "ii", "iii", "iv"][k]}</span><span>${esc(o)}</span></button>`).join("")}</div></div>`).join("")}</section>
     <section id="secB" class="psec"><h3>Section B <small>${X.shortAttempt} × ${X.shortMarks} = ${T.B} marks · Short answers, max ${X.shortWords} words · attempt any ${X.shortAttempt}</small></h3><p class="dim" id="bCount" style="font-size:13.5px">${cnt(P.B, kB, X.shortAttempt)}</p>
-    ${P.B.map((x, i) => wq(`Q${++qn}.`, qNoMarks(x.q), X.shortMarks, kB(i), x.t, X.shortWords)).join("")}</section>
+    ${P.B.map((x, i) => wq(`Q${++qn}.`, qNoMarks(x.q), X.shortMarks, kB(i), x.t, X.shortWords, false, x.bl)).join("")}</section>
     <section id="secC" class="psec"><h3>Section C <small>${X.longAttempt} × ${X.longMarks} = ${T.C} marks · Long answers, max ${X.longWords} words · attempt any ${X.longAttempt}</small></h3><p class="dim" id="cCount" style="font-size:13.5px">${cnt(P.C, kC, X.longAttempt)}</p>
-    ${P.C.map((x, i) => wq(`Q${++qn}.`, qNoMarks(x.q), X.longMarks, kC(i), x.t, X.longWords, true)).join("")}</section>
+    ${P.C.map((x, i) => wq(`Q${++qn}.`, qNoMarks(x.q), X.longMarks, kC(i), x.t, X.longWords, true, x.bl)).join("")}</section>
     <section id="secD" class="psec"><h3>Section D <small>${X.caseQs} × ${X.caseMarks} = ${T.D} marks · Case study, all compulsory</small></h3>
     ${P.long ? `<div class="casebox"><h4>${esc(P.long.title)}</h4>${esc(P.long.text)}</div>${P.D.map((x, i) => wq(`Q${++qn}.`, x.q, X.caseMarks, kD(i), (P.long.topics || [])[0], X.longWords, true)).join("")}` : ""}</section>
     <button class="btn primary block" id="submitPaper2">Submit paper</button></div>`;
@@ -1637,7 +1670,7 @@ function askName() {
   // someone with this name already exists: same person on another phone, or a different person?
   const askSame = existing => {
     const box = document.createElement("div"); box.id = "sameBox";
-    box.innerHTML = `<div class="warnbox" style="background:rgba(56,189,248,.1);border-color:rgba(56,189,248,.45)"><span>👥</span><span><b>${esc(existing)}</b> is already on the leaderboard. Is that you on another phone or browser?</span></div>
+    box.innerHTML = `<div class="warnbox" style="background:#fff;border-color:rgba(17,17,17,.15)"><span>👥</span><span><b>${esc(existing)}</b> is already on the leaderboard. Is that you on another phone or browser?</span></div>
     <button class="btn primary block" id="sameYes">Yes, that's me. Combine my progress</button><button class="btn ghost block" style="margin-top:8px" id="sameNo">No, I'm a different person</button>`;
     go.classList.add("hidden"); go.after(box); inp.readOnly = true; err.textContent = "";
     $("#sameYes").onclick = () => { sameAs = existing; inp.value = existing; box.remove(); go.classList.remove("hidden"); submit(); };
@@ -1648,13 +1681,13 @@ function askName() {
 
 /* ================= 3D: intro + hero ================= */
 const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-const PAL = [0x8B5CF6, 0xEC4899, 0xFB923C, 0xFBBF24, 0x2DD4BF, 0x38BDF8];
+const PAL = [0xD7141E, 0x1A1A1D, 0xFF3B44, 0x3A3A40, 0x8E0A12, 0xD9D4CE];
 function coinMats(T) {
   const c = document.createElement("canvas"); c.width = c.height = 128; const g = c.getContext("2d");
-  const gr = g.createRadialGradient(54, 50, 6, 64, 64, 64); gr.addColorStop(0, "#FFF3B0"); gr.addColorStop(.6, "#FBBF24"); gr.addColorStop(1, "#B45309");
+  const gr = g.createRadialGradient(54, 50, 6, 64, 64, 64); gr.addColorStop(0, "#3A3A40"); gr.addColorStop(.65, "#151517"); gr.addColorStop(1, "#050505");
   g.fillStyle = gr; g.fillRect(0, 0, 128, 128);
-  g.strokeStyle = "rgba(120,53,15,.55)"; g.lineWidth = 6; g.beginPath(); g.arc(64, 64, 52, 0, Math.PI * 2); g.stroke();
-  g.fillStyle = "#92400E"; g.font = "bold 64px Arial"; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText("₹", 64, 68);
+  g.strokeStyle = "#D7141E"; g.lineWidth = 7; g.beginPath(); g.arc(64, 64, 52, 0, Math.PI * 2); g.stroke();
+  g.fillStyle = "#FFFFFF"; g.font = "bold 64px Arial"; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText("₹", 64, 68);
   const face = new T.MeshStandardMaterial({ map: new T.CanvasTexture(c), metalness: .6, roughness: .3 });
   const side = new T.MeshStandardMaterial({ color: 0xD97706, metalness: .85, roughness: .25 });
   return [side, face, face];
@@ -1662,7 +1695,7 @@ function coinMats(T) {
 function windowTex(T) {
   const c = document.createElement("canvas"); c.width = 64; c.height = 128; const g = c.getContext("2d");
   g.fillStyle = "#000"; g.fillRect(0, 0, 64, 128);
-  const lit = ["#FDE68A", "#FBCFE8", "#A5F3FC", "#DDD6FE"];
+  const lit = ["#FF3B44", "#FFFFFF", "#FFD6D8", "#FF8A8F"];
   for (let y = 6; y < 124; y += 10) for (let x = 6; x < 60; x += 12) if (Math.random() < .55) { g.fillStyle = lit[Math.random() * 4 | 0]; g.globalAlpha = .5 + Math.random() * .5; g.fillRect(x, y, 7, 5); }
   const t = new T.CanvasTexture(c); t.wrapS = t.wrapT = T.RepeatWrapping; return t;
 }
@@ -1675,51 +1708,51 @@ function playIntro() {
     try {
       const T = THREE, canvas = $("#introCanvas");
       const r = new T.WebGLRenderer({ canvas, antialias: true });
-      r.setPixelRatio(Math.min(devicePixelRatio, 2)); r.setSize(innerWidth, innerHeight); r.setClearColor(0x0D0B22);
-      const scene = new T.Scene(); scene.fog = new T.Fog(0x0D0B22, 16, 42);
+      r.setPixelRatio(Math.min(devicePixelRatio, 2)); r.setSize(innerWidth, innerHeight); r.setClearColor(0xF6F4F1);
+      const scene = new T.Scene(); scene.fog = new T.Fog(0xF6F4F1, 18, 44);
       const cam = new T.PerspectiveCamera(innerWidth < 600 ? 62 : 48, innerWidth / innerHeight, .1, 100);
-      scene.add(new T.AmbientLight(0x8b85c9, .7));
+      scene.add(new T.AmbientLight(0xffffff, .85));
       const sun = new T.DirectionalLight(0xffffff, .7); sun.position.set(5, 12, 10); scene.add(sun);
-      [[0x8B5CF6, -10, 6, -4], [0xEC4899, 10, 5, -2], [0x2DD4BF, 0, 4, 6]].forEach(([c, x, y, z]) => { const l = new T.PointLight(c, 2.2, 30); l.position.set(x, y, z); scene.add(l); });
+      [[0xFF3B44, -10, 6, -4], [0xD7141E, 10, 5, -2], [0xffffff, 0, 4, 6]].forEach(([c, x, y, z]) => { const l = new T.PointLight(c, 2.2, 30); l.position.set(x, y, z); scene.add(l); });
       // skyline: buildings rise like a bar chart
       const tex = windowTex(T), box = new T.BoxGeometry(1, 1, 1), bars = [];
-      const tints = [0x2E1065, 0x3B0764, 0x1E3A8A, 0x134E4A, 0x4C0519, 0x1E1B4B];
+      const tints = [0x111113, 0x1C1C1F, 0x2A2A2E, 0x0B0B0C, 0x3A3A40, 0x151517];
       for (let row = 0; row < 3; row++) for (let i = 0; i < 15; i++) {
         const x = (i - 7) * 1.55 + (row % 2) * .7, z = -3 - row * 2.6 + Math.random() * .6;
         const h = (1.4 + Math.random() * 3.2) * (1 + row * .45) * (1.15 - Math.abs(i - 7) / 14);
         const w = .9 + Math.random() * .5, t = tex.clone(); t.needsUpdate = true; t.repeat.set(1, Math.max(1, h / 2.5));
-        const m = new T.Mesh(box, new T.MeshStandardMaterial({ color: tints[(i + row) % tints.length], map: t, emissive: 0xffffff, emissiveMap: t, emissiveIntensity: .85, metalness: .4, roughness: .45 }));
+        const m = new T.Mesh(box, new T.MeshStandardMaterial({ color: tints[(i + row) % tints.length], map: t, emissive: 0xffffff, emissiveMap: t, emissiveIntensity: .7, metalness: .55, roughness: .3 }));
         m.position.set(x, 0, z); m.scale.set(w, .01, w); m.userData = { h, delay: .15 + Math.abs(i - 7) * .05 + row * .12 + Math.random() * .1 }; scene.add(m); bars.push(m);
       }
-      const grid = new T.GridHelper(60, 60, 0x6D28D9, 0x2A1F5C); scene.add(grid);
-      const floor = new T.Mesh(new T.PlaneGeometry(60, 60), new T.MeshStandardMaterial({ color: 0x0D0B22, metalness: .8, roughness: .35, transparent: true, opacity: .85 }));
+      const grid = new T.GridHelper(60, 60, 0xD7141E, 0xD9D4CE); scene.add(grid);
+      const floor = new T.Mesh(new T.PlaneGeometry(60, 60), new T.MeshStandardMaterial({ color: 0xF6F4F1, metalness: .15, roughness: .85, transparent: true, opacity: .9 }));
       floor.rotation.x = -Math.PI / 2; floor.position.y = -.01; scene.add(floor);
       // growth line chart with arrow head
       const pts = []; for (let i = 0; i <= 9; i++) { const x = -9 + i * 2; pts.push(new T.Vector3(x, .8 + i * .62 + (i % 2 ? -.55 : .35) * (i < 9 ? 1 : 0), 1.2)); }
       const curve = new T.CatmullRomCurve3(pts), SEG = 220, RAD = 10;
       const tube = new T.TubeGeometry(curve, SEG, .1, RAD, false);
-      const cols = [], stops = [new T.Color(0x8B5CF6), new T.Color(0xEC4899), new T.Color(0xFB923C), new T.Color(0xFBBF24)];
+      const cols = [], stops = [new T.Color(0x111111), new T.Color(0x5A0A10), new T.Color(0xD7141E), new T.Color(0xFF3B44)];
       const pos = tube.attributes.position;
       for (let k = 0; k < pos.count; k++) { const u = Math.floor(k / (RAD + 1)) / SEG, f = u * 3, a = Math.min(2, Math.floor(f)); const c = stops[a].clone().lerp(stops[a + 1], f - a); cols.push(c.r, c.g, c.b); }
       tube.setAttribute("color", new T.Float32BufferAttribute(cols, 3));
       const line = new T.Mesh(tube, new T.MeshBasicMaterial({ vertexColors: true })); scene.add(line);
       const total = tube.index.count; tube.setDrawRange(0, 0);
-      const head = new T.Mesh(new T.ConeGeometry(.32, .8, 20), new T.MeshBasicMaterial({ color: 0xFDE68A })); scene.add(head);
-      const glow = new T.PointLight(0xFDE68A, 3, 8); scene.add(glow);
+      const head = new T.Mesh(new T.ConeGeometry(.32, .8, 20), new T.MeshBasicMaterial({ color: 0xD7141E })); scene.add(head);
+      const glow = new T.PointLight(0xFF3B44, 3, 8); scene.add(glow);
       // gold ₹ coins raining down
       const cm = coinMats(T), cg = new T.CylinderGeometry(.42, .42, .08, 40), coins = [];
       for (let i = 0; i < 18; i++) { const c = new T.Mesh(cg, cm); c.position.set((Math.random() - .5) * 18, 14 + Math.random() * 8, -1 + Math.random() * 5); c.userData = { v: 0, d: 1.4 + Math.random() * 1.6, s: 2 + Math.random() * 4, land: .05 + Math.random() * .1 }; c.rotation.set(Math.random() * 3, 0, Math.random() * 3); scene.add(c); coins.push(c); }
       // digital science: a glowing data network floating above the business skyline
       const net = new T.Group(), nodes = [], NG = new T.SphereGeometry(.09, 10, 10);
-      for (let i = 0; i < 34; i++) { const p = new T.Vector3((Math.random() - .5) * 20, 8.5 + Math.random() * 4.5, -6 + (Math.random() - .5) * 8); nodes.push(p); const mm = new T.Mesh(NG, new T.MeshBasicMaterial({ color: [0x38BDF8, 0x2DD4BF, 0xA78BFA][i % 3], transparent: true, opacity: 0 })); mm.position.copy(p); net.add(mm); }
+      for (let i = 0; i < 34; i++) { const p = new T.Vector3((Math.random() - .5) * 20, 8.5 + Math.random() * 4.5, -6 + (Math.random() - .5) * 8); nodes.push(p); const mm = new T.Mesh(NG, new T.MeshBasicMaterial({ color: [0x111111, 0xD7141E, 0x6B6B70][i % 3], transparent: true, opacity: 0 })); mm.position.copy(p); net.add(mm); }
       const lp = []; nodes.forEach((p, i) => nodes.forEach((q, j) => { if (j > i && p.distanceTo(q) < 4.2) lp.push(p.x, p.y, p.z, q.x, q.y, q.z); }));
       const lg = new T.BufferGeometry(); lg.setAttribute("position", new T.Float32BufferAttribute(lp, 3));
-      const links = new T.LineSegments(lg, new T.LineBasicMaterial({ color: 0x38BDF8, transparent: true, opacity: 0 })); net.add(links); scene.add(net);
+      const links = new T.LineSegments(lg, new T.LineBasicMaterial({ color: 0x111111, transparent: true, opacity: 0 })); net.add(links); scene.add(net);
       // sparkles
       const sg = new T.BufferGeometry(), S = 300, sp = new Float32Array(S * 3);
       for (let i = 0; i < S; i++) { sp[i * 3] = (Math.random() - .5) * 40; sp[i * 3 + 1] = Math.random() * 20; sp[i * 3 + 2] = (Math.random() - .5) * 30; }
       sg.setAttribute("position", new T.BufferAttribute(sp, 3));
-      const stars = new T.Points(sg, new T.PointsMaterial({ color: 0xF9A8D4, size: .07, transparent: true, opacity: .8 })); scene.add(stars);
+      const stars = new T.Points(sg, new T.PointsMaterial({ color: 0xD7141E, size: .06, transparent: true, opacity: .55 })); scene.add(stars);
 
       const t0 = performance.now(), DUR = 5600; let raf, ended = false, prev = t0;
       const ease = t => 1 - Math.pow(1 - Math.min(1, Math.max(0, t)), 3);
@@ -1736,7 +1769,7 @@ function playIntro() {
         const k = ease(t / 3.6), a = Math.sin(t * .35) * .35;
         cam.position.set(Math.sin(a) * (17 - k * 3), 1.4 + k * 6.2, Math.cos(a) * (17 - k * 3)); cam.lookAt(0, 2.6 + k * .8, -2);
         stars.rotation.y = t * .03;
-        const nf = ease((t - 1.6) / 1.4); links.material.opacity = nf * .45; net.children.forEach((c, i) => { if (c.material && c !== links) c.material.opacity = nf * (.6 + .4 * Math.sin(t * 3 + i)); }); net.position.y = Math.sin(t * .8) * .2;
+        const nf = ease((t - 1.6) / 1.4); links.material.opacity = nf * .3; net.children.forEach((c, i) => { if (c.material && c !== links) c.material.opacity = nf * (.6 + .4 * Math.sin(t * 3 + i)); }); net.position.y = Math.sin(t * .8) * .2;
         r.render(scene, cam);
         if (t > 3.0) wrap.classList.add("show-title");
         if (now - t0 > DUR) return end();
@@ -1758,16 +1791,16 @@ function heroSceneInner(canvas) {
   const r = new T.WebGLRenderer({ canvas, antialias: true, alpha: true });
   r.setPixelRatio(Math.min(devicePixelRatio, 2)); r.setSize(w, h, false);
   const scene = new T.Scene(), cam = new T.PerspectiveCamera(38, w / h, .1, 50); cam.position.set(0, 0, 9);
-  scene.add(new T.AmbientLight(0xc4b5fd, .6));
+  scene.add(new T.AmbientLight(0xffffff, .55));
   const l1 = new T.DirectionalLight(0xffffff, 1.1); l1.position.set(3, 5, 6); scene.add(l1);
-  const l2 = new T.PointLight(0xEC4899, 2, 20); l2.position.set(-4, -2, 4); scene.add(l2);
-  const l3 = new T.PointLight(0x38BDF8, 1.6, 20); l3.position.set(4, 3, 2); scene.add(l3);
+  const l2 = new T.PointLight(0xFF3B44, 2.6, 20); l2.position.set(-4, -2, 4); scene.add(l2);
+  const l3 = new T.PointLight(0xffffff, 1.4, 20); l3.position.set(4, 3, 2); scene.add(l3);
   const group = new T.Group(); scene.add(group);
   const donut = new T.Group(); group.add(donut);
   const shares = [.3, .22, .18, .17, .13], segs = []; let start = 0;
   shares.forEach((s, i) => {
     const arc = s * Math.PI * 2 - .06;
-    const m = new T.Mesh(new T.TorusGeometry(1.55, .5, 24, 80, arc), new T.MeshStandardMaterial({ color: PAL[i], metalness: .35, roughness: .3 }));
+    const m = new T.Mesh(new T.TorusGeometry(1.55, .5, 24, 80, arc), new T.MeshStandardMaterial({ color: PAL[i], metalness: .45, roughness: .22 }));
     m.rotation.z = start; const mid = start + arc / 2; m.userData = { dx: Math.cos(mid), dy: Math.sin(mid), ph: i * 1.1 };
     donut.add(m); segs.push(m); start += s * Math.PI * 2;
   });
@@ -1792,8 +1825,9 @@ function heroSceneInner(canvas) {
 }
 
 /* ================= boot ================= */
-const LOGO = id => `<defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8B5CF6"/><stop offset=".55" stop-color="#EC4899"/><stop offset="1" stop-color="#FB923C"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="url(#${id})"/><rect x="13" y="36" width="9" height="15" rx="3" fill="#fff" opacity=".65"/><rect x="27.5" y="27" width="9" height="24" rx="3" fill="#fff" opacity=".82"/><rect x="42" y="18" width="9" height="33" rx="3" fill="#fff"/><path d="M12 30 L26 20 L34 25 L50 11" fill="none" stroke="#FDE68A" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M43 10 L51 10 L51 18" fill="none" stroke="#FDE68A" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+const LOGO = id => `<defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF3B44"/><stop offset=".55" stop-color="#D7141E"/><stop offset="1" stop-color="#7A0B13"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="url(#${id})"/><rect x="13" y="36" width="9" height="15" rx="3" fill="#fff" opacity=".6"/><rect x="27.5" y="27" width="9" height="24" rx="3" fill="#fff" opacity=".8"/><rect x="42" y="18" width="9" height="33" rx="3" fill="#fff"/><path d="M12 30 L26 20 L34 25 L50 11" fill="none" stroke="#0B0B0C" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M43 10 L51 10 L51 18" fill="none" stroke="#0B0B0C" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>`;
 window.__pick = () => pickSubject();
+document.addEventListener("click", e => { if (e.target.closest && e.target.closest("[data-pick]")) pickSubject(); });
 if ("serviceWorker" in navigator && location.protocol === "https:") addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => { }));
 (async function boot() {
   $$("[data-logo]").forEach((el, i) => el.innerHTML = LOGO("lg" + i));
