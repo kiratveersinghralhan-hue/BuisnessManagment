@@ -1,69 +1,75 @@
 <!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://cdnjs.cloudflare.com https://*.firebaseio.com https://*.firebasedatabase.app; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://i.ytimg.com; media-src 'self' blob:; connect-src 'self' https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.gstatic.com https://cdnjs.cloudflare.com; frame-src https://www.youtube-nocookie.com https://*.firebaseapp.com; worker-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'">
-<meta name="referrer" content="strict-origin-when-cross-origin">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#F6F4F1">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Boardroom">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<link rel="apple-touch-icon" href="icon-180.png">
-<link rel="manifest" href="manifest.json">
-<title>Boardroom · Business Management Prep</title>
-<meta name="description" content="Notes, scenario MCQs, case-based mock tests and a class leaderboard for Principles of Business & Management.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,650;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=8">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23FF3B44'/%3E%3Cstop offset='1' stop-color='%237A0B13'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='18' fill='url(%23g)'/%3E%3Crect x='14' y='36' width='8' height='14' rx='3' fill='%23fff' opacity='.7'/%3E%3Crect x='28' y='27' width='8' height='23' rx='3' fill='%23fff' opacity='.85'/%3E%3Crect x='42' y='18' width='8' height='32' rx='3' fill='%23fff'/%3E%3C/svg%3E">
-</head>
-<body>
-<div class="aurora" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
-
-<div id="intro" class="hidden" aria-hidden="true">
-  <canvas id="introCanvas"></canvas>
-  <div class="shade"></div>
-  <div class="title">
-    <svg class="logo" data-logo viewBox="0 0 64 64"></svg>
-    <h1 id="introName"></h1>
-    <p>BBA · Digital Science &amp; Business Management</p>
-    <p class="sub2">Chitkara Business School · a student-made study space</p>
-  </div>
-  <button class="skip" id="skipIntro">Skip</button>
-</div>
-
-<header class="top" id="topBar">
-  <a class="brand" href="#home"><svg class="logo" data-logo viewBox="0 0 64 64"></svg><span class="brand-text">Boardroom</span></a>
-  <button class="subj-chip" id="subjChip" aria-label="Change subject"><span>📘</span><b>Loading…</b><span class="caret">▾</span></button>
-  <nav class="top-nav" id="topNav">
-    <a href="#home" data-r="home">Home</a><a href="#notes" data-r="notes">Notes</a><a href="#practice" data-r="practice">Practice</a>
-    <a href="#exam" data-r="exam">Exam</a><a href="#battle" data-r="battle">Battle</a><a href="#written" data-r="written">Written</a><a href="#videos" data-r="videos">Videos</a><a href="#ranks" data-r="ranks">Leaderboard</a>
-  </nav>
-  <div class="top-right">
-    <span class="sync" id="syncDot" title="Sync status"></span>
-    <span class="xp-pill"><b id="xpTop">0</b> XP</span>
-    <a class="avatar" href="#me" id="avatarTop" aria-label="Your profile">?</a>
-  </div>
-  <div class="scroll-prog" id="scrollProg"></div>
-</header>
-
-<main id="view" tabindex="-1"></main>
-
-<nav class="bottom-nav" id="bottomNav" aria-label="Main">
-  <span class="nav-ind" id="navInd"></span>
-  <a href="#home" data-r="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7v9a1 1 0 01-1 1h-5v-6h-6v6H4a1 1 0 01-1-1z"/></svg>Home</a>
-  <a href="#notes" data-r="notes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h11a3 3 0 013 3v13H7a3 3 0 01-3-3z"/><path d="M8 9h6M8 13h6"/></svg>Notes</a>
-  <a href="#practice" data-r="practice"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 5-6"/></svg>Practice</a>
-  <a href="#exam" data-r="exam"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6"/></svg>Exam</a>
-  <a href="#ranks" data-r="ranks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21V11H3v10zM15 21V5h-5v16zM21 21v-7h-5v7z"/></svg>Ranks</a>
-</nav>
-
-<div class="toast" id="toast" role="status" aria-live="polite"></div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="subjects.js?v=8"></script>
-<script type="module" src="app.js?v=8"></script>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#122e36" />
+    <title>Boardroom · Study library</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body data-area="student">
+    <a class="skip" href="#main">Skip to content</a>
+    <header>
+      <div class="bar">
+        <a href="./index.html" class="brand"
+          ><b aria-hidden="true">B</b> Boardroom</a
+        ><span>Student workspace</span
+        ><button id="exit" hidden>Sign out</button>
+      </div>
+    </header>
+    <main id="main">
+      <section id="gate">
+        <div class="intro">
+          <small>Chitkara Business School · Semester 1</small>
+          <h1>The study library</h1>
+          <p>
+            Course notes, recall cards and practice for BBA in Digital Science &
+            Business Management.
+          </p>
+          <div class="prospect">
+            <strong>Semester 1 collection</strong>
+            <ul>
+              <li>Business Management</li>
+              <li>Programming Fundamentals</li>
+              <li>Linear Algebra &amp; Calculus</li>
+              <li>Introduction to AI &amp; ML</li>
+            </ul>
+          </div>
+        </div>
+        <form id="login">
+          <h2>Student sign in</h2>
+          <label
+            >Email address<input
+              id="email"
+              type="email"
+              autocomplete="username"
+              required
+              placeholder="you@chitkara.edu.in" /></label
+          ><label
+            >Boardroom password<input
+              id="pass"
+              type="password"
+              autocomplete="current-password"
+              required /></label
+          ><button class="primary" id="signin">Sign in</button
+          ><button type="button" id="register">Create student account</button
+          ><button type="button" class="link" id="reset">Reset password</button>
+          <div id="verify" hidden>
+            <button type="button" id="recheck">I verified my email</button
+            ><button type="button" id="resend">
+              Resend verification email
+            </button>
+          </div>
+          <p id="authmsg" role="status"></p>
+        </form>
+      </section>
+      <section id="desk" hidden></section>
+      <p role="status" id="status"></p>
+    </main>
+    <footer>
+      Boardroom · Independent student study portal
+      <a href="./admin.html">Administrator sign in</a>
+    </footer>
+    <script type="module" src="./portal.js"></script>
+  </body>
 </html>

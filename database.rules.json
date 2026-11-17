@@ -2,230 +2,88 @@
   "rules": {
     ".read": false,
     ".write": false,
-    "names": {
-      ".read": true,
+    "students": {
+      ".read": "auth != null && auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2' && auth.token.firebase.sign_in_provider === 'password'",
       "$uid": {
-        ".write": "auth != null && ((auth.uid === $uid && !data.exists()) || auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2')",
-        ".validate": "newData.isString() && newData.val().length >= 3 && newData.val().length <= 40 && !newData.val().matches(/[<>{}]/)"
-      }
-    },
-    "lb": {
-      ".read": true,
-      "$uid": {
-        ".write": "auth != null && (auth.uid === $uid || auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2')",
-        ".validate": "!newData.exists() || newData.hasChildren(['xp','ts'])",
-        "xp": {
-          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 200000"
+        ".read": "(auth != null && auth.token.firebase.sign_in_provider === 'password' && auth.token.email_verified === true && auth.token.email.matches(/^[^@ ]+@chitkara[.]edu[.]in$/)) && auth.uid === $uid",
+        ".write": "(auth != null && auth.token.firebase.sign_in_provider === 'password' && auth.token.email_verified === true && auth.token.email.matches(/^[^@ ]+@chitkara[.]edu[.]in$/)) && auth.uid === $uid && newData.exists()",
+        ".validate": "newData.hasChildren(['email','lastSeen'])",
+        "email": {
+          ".validate": "newData.val() === auth.token.email"
         },
-        "best": {
-          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100"
+        "lastSeen": {
+          ".validate": "newData.isNumber() && newData.val() === now"
         },
-        "acc": {
-          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100"
-        },
-        "mocks": {
-          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 5000"
-        },
-        "solved": {
-          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 20000"
-        },
-        "sec": {
-          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 10000000"
-        },
-        "notes": {
-          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1000"
-        },
-        "streak": {
-          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 2000"
-        },
-        "wins": {
-          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 10000"
-        },
-        "badges": {
-          ".validate": "newData.isString() && newData.val().length <= 200"
-        },
-        "ts": {
-          ".validate": "newData.isNumber() && newData.val() <= now + 60000"
-        },
-        "$other": {
-          ".validate": false
-        }
-      }
-    },
-    "users": {
-      ".read": "auth != null && auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2'",
-      "$uid": {
-        ".read": "auth != null && auth.uid === $uid",
-        ".write": "auth != null && (auth.uid === $uid || auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2')",
-        "name": {
-          ".validate": "newData.isString() && newData.val().length >= 3 && newData.val().length <= 40 && !newData.val().matches(/[<>{}]/)"
-        },
-        "mynotes": {
-          "$t": {
-            ".validate": "newData.isString() && newData.val().length <= 30000"
-          }
-        },
-        "studySec": {
-          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 10000000"
-        }
-      }
-    },
-    "attempts": {
-      ".read": "auth != null && auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2'",
-      "$uid": {
-        ".read": "auth != null && auth.uid === $uid",
-        ".write": "auth != null && auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2'",
-        "$aid": {
-          ".write": "auth != null && auth.uid === $uid && !data.exists()",
-          ".validate": "newData.hasChildren(['type','ts']) && newData.child('type').isString() && newData.child('ts').val() <= now + 60000"
-        }
-      }
-    },
-    "presence": {
-      ".read": true,
-      "$uid": {
-        ".write": "auth != null && (auth.uid === $uid || auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2')",
-        "on": {
-          ".validate": "newData.isBoolean()"
-        },
-        "ts": {
-          ".validate": "newData.isNumber() && newData.val() <= now + 60000"
-        },
-        "page": {
-          ".validate": "newData.isString() && newData.val().length <= 30"
-        },
-        "$other": {
-          ".validate": false
-        }
-      }
-    },
-    "removed": {
-      ".read": "auth != null && auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2'",
-      "$uid": {
-        ".read": "auth != null && auth.uid === $uid",
-        ".write": "auth != null && auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2'"
-      }
-    },
-    "daily": {
-      ".read": "auth != null",
-      "$subj": {
-        "$day": {
-          "$uid": {
-            ".write": "auth != null && ((auth.uid === $uid && !data.exists()) || auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2')",
-            ".validate": "newData.hasChildren(['score','ms']) && newData.child('score').isNumber() && newData.child('score').val() >= 0 && newData.child('score').val() <= 10 && newData.child('ms').isNumber() && newData.child('ms').val() >= 0",
-            "name": {
-              ".validate": "newData.isString() && newData.val().length >= 3 && newData.val().length <= 40 && !newData.val().matches(/[<>{}]/)"
+        "completed": {
+          ".validate": "newData.hasChildren()",
+          "aiml": {
+            ".validate": "newData.hasChildren()",
+            "$lesson": {
+              ".validate": "$lesson.matches(/^(ai-sys|ai-kb|ai-pred|ai-tokens|ai-check|ai-zero|ai-churn)$/) && newData.isNumber() && newData.val() === now"
             }
-          }
-        }
-      }
-    },
-    "battles": {
-      ".read": "auth != null",
-      ".indexOn": [
-        "state"
-      ],
-      "$code": {
-        ".write": "auth != null && (!data.exists() || data.child('host').val() === auth.uid || auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2')",
-        "guest": {
-          ".write": "auth != null && !data.exists() && newData.val() === auth.uid"
-        },
-        "state": {
-          ".write": "auth != null && (data.parent().child('host').val() === auth.uid || (data.parent().child('mode').val() !== 'party' && newData.parent().child('guest').val() === auth.uid))"
-        },
-        "startAt": {
-          ".write": "auth != null && (data.parent().child('host').val() === auth.uid || (data.parent().child('mode').val() !== 'party' && newData.parent().child('guest').val() === auth.uid))"
-        },
-        "players": {
-          "$uid": {
-            ".write": "auth != null && auth.uid === $uid",
-            "name": {
-              ".validate": "newData.isString() && newData.val().length >= 3 && newData.val().length <= 40"
-            },
-            "ans": {
-              "$q": {
-                ".validate": "newData.hasChildren(['k','ms']) && newData.child('k').isNumber() && newData.child('k').val() >= 0 && newData.child('k').val() <= 3 && newData.child('ms').isNumber() && newData.child('ms').val() >= 0 && newData.child('ms').val() <= 20000"
-              }
+          },
+          "alac": {
+            ".validate": "newData.hasChildren()",
+            "$lesson": {
+              ".validate": "$lesson.matches(/^(la-ops|la-trans|la-det|la-gauss|la-lu|la-qr|la-review|la-eig|la-diag|la-spec|la-pca)$/) && newData.isNumber() && newData.val() === now"
             }
-          }
-        },
-        "seats": {
-          "$seat": {
-            ".write": "auth != null && $seat !== '0' && ($seat === '1' || $seat === '2' || $seat === '3') && !data.exists() && newData.val() === auth.uid && root.child('battles').child($code).child('state').val() === 'waiting' && (root.child('battles').child($code).child('maxPlayers').val() === null || $seat === '1' || ($seat === '2' && root.child('battles').child($code).child('maxPlayers').val() >= 3) || ($seat === '3' && root.child('battles').child($code).child('maxPlayers').val() >= 4))",
-            ".validate": "newData.isString() && newData.val() === auth.uid"
-          }
-        },
-        "rematchVotes": {
-          "$uid": {
-            ".write": "auth != null && auth.uid === $uid && root.child('battles').child($code).child('mode').val() === 'party' && root.child('battles').child($code).child('state').val() === 'rematch' && root.child('battles').child($code).child('players').child(auth.uid).exists() && newData.val() === true"
-          }
-        },
-        ".validate": "$code.matches(/^[A-Z0-9]{4,8}$/)"
-      }
-    },
-    "match": {
-      "$subj": {
-        ".read": "auth != null",
-        ".write": "auth != null",
-        ".validate": "!newData.exists() || (newData.hasChildren(['code']) && newData.child('code').isString() && newData.child('code').val().length <= 8)"
-      }
-    },
-    "doubts": {
-      ".read": "auth != null",
-      "$subj": {
-        ".indexOn": [
-          "ts"
-        ],
-        "$id": {
-          ".write": "auth != null && ((!data.exists() && newData.child('uid').val() === auth.uid) || data.child('uid').val() === auth.uid || auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2')",
-          ".validate": "!newData.exists() || (newData.child('uid').isString() && newData.child('text').isString() && newData.child('text').val().length >= 3 && newData.child('text').val().length <= 600)",
-          "name": {
-            ".validate": "newData.isString() && newData.val().length >= 3 && newData.val().length <= 40 && !newData.val().matches(/[<>{}]/)"
           },
-          "topic": {
-            ".validate": "newData.isString() && newData.val().length <= 40"
+          "prog": {
+            ".validate": "newData.hasChildren()",
+            "$lesson": {
+              ".validate": "$lesson.matches(/^(pf-hw|pf-num|pf-arith|pf-enc|pf-algo|pf-flow|pf-cx|pf-py|pf-basics|pf-types|pf-ops|pf-io|pf-if|pf-loop|pf-pat|pf-lab|pf-str|pf-list|pf-tuple|pf-dict|pf-set)$/) && newData.isNumber() && newData.val() === now"
+            }
           },
-          "ts": {
-            ".validate": "newData.isNumber() && newData.val() <= now + 60000"
-          },
-          "n": {
-            ".validate": "newData.isNumber() && newData.val() === 0"
-          },
-          "solved": {
-            ".validate": "newData.isString() && newData.val().length <= 40"
-          },
-          "uid": {
-            ".validate": "newData.isString()"
-          },
-          "text": {
-            ".validate": "newData.isString()"
+          "pbm": {
+            ".validate": "newData.hasChildren()",
+            "$lesson": {
+              ".validate": "$lesson.matches(/^(business|forms|polc|mintz|evolution|hawthorne|env|swot|porter5|strategy|generic|rbv|ops|scm|accounting|fsa|ratios|wcm|capstr|hrm|recruit|appraisal|comp|training|hrtrends|marketing|stp|brand|digimkt|ethics|csr|digitrans|entre|lean)$/) && newData.isNumber() && newData.val() === now"
+            }
           },
           "$other": {
             ".validate": false
           }
-        }
-      }
-    },
-    "doubtAns": {
-      ".read": "auth != null",
-      "$subj": {
-        "$id": {
-          ".write": "auth != null && (root.child('doubts').child($subj).child($id).child('uid').val() === auth.uid || auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2')",
-          "$aid": {
-            ".write": "auth != null && ((!data.exists() && newData.child('uid').val() === auth.uid) || data.child('uid').val() === auth.uid || auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2')",
-            ".validate": "!newData.exists() || (newData.child('text').isString() && newData.child('text').val().length <= 1200)",
-            "name": {
-              ".validate": "newData.isString() && newData.val().length >= 3 && newData.val().length <= 40 && !newData.val().matches(/[<>{}]/)"
+        },
+        "practice": {
+          ".validate": "newData.hasChildren()",
+          "aiml": {
+            ".validate": "newData.hasChildren()",
+            "$question": {
+              ".validate": "$question.matches(/^(0|1|2|3|4|5|6|7|8|9|1[0-9]|2[0-9]|3[0-9]|4[0-5])$/) && newData.isBoolean()"
             }
+          },
+          "alac": {
+            ".validate": "newData.hasChildren()",
+            "$question": {
+              ".validate": "$question.matches(/^(0|1|2|3|4|5|6|7|8|9|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9]|6[0-9]|7[0-9]|8[0-9]|9[0-9]|10[0-9]|11[0-9]|12[0-9]|13[0-9]|14[0-9]|15[0-9]|16[0-6])$/) && newData.isBoolean()"
+            }
+          },
+          "prog": {
+            ".validate": "newData.hasChildren()",
+            "$question": {
+              ".validate": "$question.matches(/^(0|1|2|3|4|5|6|7|8|9|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9]|6[0-9]|7[0-9]|8[0-9]|9[0-9]|10[0-9]|11[0-9]|12[0-9]|13[0-9]|14[0-9]|15[0-9]|16[0-9]|17[0-9]|18[0-9]|19[0-9]|20[0-9]|21[0-9]|22[0-9]|23[0-9]|24[0-9]|25[0-9]|26[0-9]|27[0-9]|28[0-9]|29[0-9]|30[0-9]|31[0-9]|32[0-9]|33[0-9]|34[0-9]|35[0-9]|36[0-9]|37[0-9]|38[0-9]|39[0-9]|40[0-9]|41[0-9]|42[0-9]|43[0-9]|44[0-9]|45[0-9]|46[0-9]|47[0-9]|48[0-9]|49[0-9]|50[0-1])$/) && newData.isBoolean()"
+            }
+          },
+          "pbm": {
+            ".validate": "newData.hasChildren()",
+            "$question": {
+              ".validate": "$question.matches(/^(0|1|2|3|4|5|6|7|8|9|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9]|6[0-9]|7[0-9]|8[0-9]|9[0-9]|10[0-9]|11[0-9]|12[0-9]|13[0-9]|14[0-9]|15[0-9]|16[0-9]|17[0-9]|18[0-9]|19[0-9]|20[0-9]|21[0-9]|22[0-9]|23[0-9]|24[0-9]|25[0-9]|26[0-9]|27[0-9]|28[0-9]|29[0-9]|30[0-9]|31[0-9]|32[0-9]|33[0-9]|34[0-9]|35[0-9]|36[0-9]|37[0-9]|38[0-9]|39[0-9]|40[0-9]|41[0-9]|42[0-9]|43[0-9]|44[0-9]|45[0-9]|46[0-9]|47[0-9]|48[0-9]|49[0-9]|50[0-6])$/) && newData.isBoolean()"
+            }
+          },
+          "$other": {
+            ".validate": false
           }
+        },
+        "$other": {
+          ".validate": false
         }
       }
     },
     "announce": {
-      ".read": true,
-      ".write": "auth != null && auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2'",
+      ".read": "(auth != null && auth.token.firebase.sign_in_provider === 'password' && auth.token.email_verified === true && auth.token.email.matches(/^[^@ ]+@chitkara[.]edu[.]in$/)) || (auth != null && auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2' && auth.token.firebase.sign_in_provider === 'password')",
+      ".write": "auth != null && auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2' && auth.token.firebase.sign_in_provider === 'password'",
       "$id": {
-        ".validate": "!newData.exists() || (newData.child('text').isString() && newData.child('text').val().length <= 1000)"
+        ".validate": "newData.hasChildren(['text','ts']) && newData.child('text').isString() && newData.child('text').val().length > 0 && newData.child('text').val().length <= 1000 && newData.child('ts').isNumber()"
       }
     }
   }

@@ -1,0 +1,63 @@
+export const catalog = [
+  [
+    "pbm",
+    "26BBM1104",
+    "Principles of Business Management",
+    8766,
+    [
+      "Course handout available.",
+      "Unit 1 · Business ownership, management roles and functions (6 uploads)",
+      "Unit 2 · Business environment and strategy (4 uploads)",
+      "Unit 3 · Operations, finance, human resources and marketing; ethics, governance and digital transformation (18 uploads)",
+      "Unit 4 · Lectures 29 and 30: entrepreneurship and business planning.",
+    ],
+  ],
+  [
+    "prog",
+    "26BBM1100",
+    "Programming Fundamentals",
+    8773,
+    [
+      "Course handout available.",
+      "Unit 1 · Computing fundamentals, number systems and algorithms",
+      "Unit 2 · Python fundamentals",
+      "Unit 3 · 38 lab files covering decisions, loops, digits, primes, perfect numbers and Armstrong numbers",
+      "Unit 4 uploads · Coming soon. The handout covers strings, lists, tuples, dictionaries and sets. Boardroom notes are available.",
+    ],
+  ],
+  [
+    "alac",
+    "26BBM1103",
+    "Applied Linear Algebra and Calculus",
+    8767,
+    [
+      "Course handout available.",
+      "Prerequisites · Equations and systems, sets, functions, coordinate geometry and trigonometry (6 resources)",
+      "Unit 1 · 15 resources covering matrices, systems and decompositions",
+      "Unit 2 · Lectures 12–16: eigenvalues, diagonalization, spectral theorem, PCA and PageRank",
+      "Unit 3 · Limits, differentiation, extrema and Taylor series. Lecture uploads coming soon.",
+      "Unit 4 · Definite and indefinite integrals, substitution, partial fractions and integration by parts. Lecture uploads coming soon.",
+      "Unit 5 in the handout · Partial derivatives, gradients, Hessians and multivariable optimization. Study materials coming soon.",
+    ],
+  ],
+  [
+    "aiml",
+    "26BBM1107",
+    "Introduction to AI and ML",
+    9296,
+    [
+      "Unit 1 · System and role prompting, zero-shot examples, knowledge bases, predictive analytics, LLM operation, limitations and mitigation.",
+      "Practice files include sales, digital payments and telecom churn data.",
+      "Course handout and units 2–4 · Coming soon",
+    ],
+  ],
+  ["dviz", "26BBM1106", "Data Visualization", 9298, []],
+  ["drm", "25BBM1102", "Digital Reputation Management-I", 9090, []],
+  ["arts", "26BBM1105", "Performing Arts", 9297, []],
+].map(([id, code, name, course, outline]) => ({
+  id,
+  code,
+  name,
+  url: "https://culms.chitkara.edu.in/d2l/home/" + course,
+  outline,
+}));
