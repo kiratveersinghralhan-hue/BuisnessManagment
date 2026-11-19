@@ -4,8 +4,6 @@ import {
   onAuthStateChanged,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  GoogleAuthProvider,
-  signInWithPopup,
   sendEmailVerification,
   sendPasswordResetEmail,
   signOut,
@@ -76,12 +74,7 @@ function friendly(err) {
       "auth/weak-password": "Choose a longer Boardroom password.",
       "auth/network-request-failed": "Connection failed. Please try again.",
       "auth/unauthorized-domain": "This domain is not authorized in Firebase Authentication. Ask the owner to add it to Authorized domains.",
-      "auth/operation-not-allowed": "Google sign-in isn't enabled in Firebase yet. Use campus email and password for now.",
-      "auth/account-exists-with-different-credential": "This email already uses another sign-in method. Sign in with your campus password, or ask the owner about account linking.",
-      "auth/popup-closed-by-user": "Google sign-in was closed. Try again or use your campus password.",
-      "auth/popup-blocked": "Your browser blocked Google sign-in. Allow pop-ups for this site, then retry.",
-      "auth/internal-error": "Google sign-in could not finish. Confirm the GitHub Pages domain in Firebase Authorized domains and check the Google OAuth configuration. Email/password sign-in still works.",
-      "auth/invalid-oauth-client-id": "Google OAuth configuration needs repair in Firebase. Contact the site owner or use campus email/password.",
+      "auth/operation-not-allowed": "Email/password sign-in is disabled in Firebase Authentication. Contact the site owner.",
       "auth/invalid-api-key": "Firebase rejected the API key. Ask the owner to review the project configuration.",
     }[err.code] || err.message
   );
@@ -129,26 +122,6 @@ async function run(action) {
   } finally {
     buttons.forEach((b) => (b.disabled = false));
   }
-}
-
-if (!admin && $("google-login")) {
-  $("google-login").onclick = () => run(async () => {
-    const provider = new GoogleAuthProvider();
-    // Hosted-domain is a convenience hint, not authorization. The Chitkara
-    // email check plus Firebase security rules enforce the real restriction.
-    provider.setCustomParameters({ hd: "chitkara.edu.in", prompt: "select_account" });
-    try {
-      const result = await signInWithPopup(auth, provider);
-      if (!allowed(result.user.email || "") || !result.user.emailVerified) {
-        await signOut(auth);
-        throw Error("Only verified @chitkara.edu.in Google accounts may access Boardroom.");
-      }
-    } catch (err) {
-      // Avoid logging OAuth tokens or personally identifiable customData.
-      console.warn("Boardroom Google sign-in failure code:", err.code || "unknown");
-      throw err;
-    }
-  });
 }
 
 $("login").onsubmit = (ev) => {
@@ -433,7 +406,7 @@ async function enterWorkspace(user) {
     admin
       ? user.uid !== ADMIN_UID
       : !allowed(user.email || "") ||
-        !user.providerData.some((p) => ["password", "google.com"].includes(p.providerId))
+        !user.providerData.some((p) => p.providerId === "password")
   ) {
     authMessage("This account cannot access this workspace.");
     await signOut(auth);
