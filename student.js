@@ -2,6 +2,7 @@ import { resources } from "./resources.js";
 import { bankFor, splitQuestion } from "./quiz-bank.js";
 import { catalog } from "./catalog.js";
 import { showToast } from "./motion.js";
+import { videosFor, videoCard, bindVideoCards, bookmarks, notes, references } from "./library.js";
 
 export const escapeHTML = (value) =>
   String(value ?? "").replace(
@@ -153,6 +154,49 @@ export function studentPage(root, record, news, save) {
         href("Set username", "profile", true) +
         "</div>";
 
+    const carouselHTML =
+      '<section class="carousel-section" aria-label="360-degree subject selector">' +
+      '<div class="carousel-head"><div><small class="eyebrow">360° Subject Selector</small><h2>Explore your courses</h2></div>' +
+      '<div class="carousel-controls"><button type="button" id="car-prev" aria-label="Previous subject">←</button><button type="button" id="car-spin" class="chip">Auto-spin</button><button type="button" id="car-next" aria-label="Next subject">→</button></div></div>' +
+      '<div class="carousel-stage" id="carousel-stage"><div class="carousel-ring" id="carousel-ring">' +
+      catalog
+        .map((item, idx) => {
+          const sd = all[item.id];
+          const dc = sd ? sd.notes.filter((n) => record.completed?.[item.id]?.[n.id]).length : 0;
+          const tc = sd ? sd.notes.length : 0;
+          return (
+            '<div class="carousel-card' +
+            (idx === 0 ? " is-front" : "") +
+            '" data-idx="' +
+            idx +
+            '"><small>' +
+            e(item.code) +
+            "</small><h3>" +
+            e(item.name) +
+            "</h3><p>" +
+            (sd ? dc + "/" + tc + " lessons · " + bankFor(item.id).length + " MCQs" : "Coming soon · Starter MCQs") +
+            '</p><a class="action primary" href="#' +
+            item.id +
+            '">Open subject</a></div>'
+          );
+        })
+        .join("") +
+      "</div></div>" +
+      '<div class="carousel-dots" id="carousel-dots">' +
+      catalog
+        .map(
+          (item, idx) =>
+            '<button type="button" class="car-dot' +
+            (idx === 0 ? " is-active" : "") +
+            '" data-dot="' +
+            idx +
+            '" aria-label="Select ' +
+            e(item.name) +
+            '"></button>',
+        )
+        .join("") +
+      "</div></section>";
+
     root.innerHTML =
       '<div class="page-head"><small class="eyebrow">BBA · Digital Science &amp; Business Management · Semester 1</small><h1>Study library</h1></div>' +
       '<div class="banner hero-banner"><div><small>' +
@@ -168,11 +212,89 @@ export function studentPage(root, record, news, save) {
         true,
       ) +
       "</div>" +
+      carouselHTML +
       profileNotice +
       '<h2 class="subjects-heading">Your subjects</h2><div class="grid">' +
       catalog.map(card).join("") +
       "</div>" +
       '<section id="home-announcements"></section>';
+
+    const stage = root.querySelector("#carousel-stage");
+    const ring = root.querySelector("#carousel-ring");
+    const cards = [...root.querySelectorAll(".carousel-card")];
+    const dots = [...root.querySelectorAll(".car-dot")];
+    const total = cards.length;
+    const stepDeg = 360 / total;
+    let index = 0,
+      spinTimer = null,
+      spinning = false,
+      dragStartX = null;
+
+    function layoutCarousel() {
+      const w = stage.clientWidth || 340;
+      const radius = Math.round(Math.min(350, Math.max(195, w * 0.42)));
+      cards.forEach((el, i) => {
+        el.style.transform = `rotateY(${i * stepDeg}deg) translateZ(${radius}px)`;
+      });
+      ring.style.transform = `translateZ(-${radius}px) rotateY(${-index * stepDeg}deg)`;
+    }
+
+    function goTo(nextIdx) {
+      index = ((nextIdx % total) + total) % total;
+      cards.forEach((el, i) => el.classList.toggle("is-front", i === index));
+      dots.forEach((el, i) => el.classList.toggle("is-active", i === index));
+      layoutCarousel();
+    }
+
+    root.querySelector("#car-prev").onclick = () => goTo(index - 1);
+    root.querySelector("#car-next").onclick = () => goTo(index + 1);
+    dots.forEach((d) => (d.onclick = () => goTo(Number(d.dataset.dot))));
+    cards.forEach((el) => {
+      el.onclick = (ev) => {
+        const idx = Number(el.dataset.idx);
+        if (idx !== index) {
+          ev.preventDefault();
+          goTo(idx);
+        }
+      };
+    });
+
+    const spinBtn = root.querySelector("#car-spin");
+    spinBtn.onclick = () => {
+      spinning = !spinning;
+      spinBtn.classList.toggle("active", spinning);
+      clearInterval(spinTimer);
+      if (spinning) {
+        spinTimer = setInterval(() => {
+          if (!document.contains(stage)) {
+            clearInterval(spinTimer);
+            return;
+          }
+          goTo(index + 1);
+        }, 2800);
+      }
+    };
+
+    stage.addEventListener("pointerdown", (ev) => {
+      if (ev.target.closest("a,button")) return;
+      dragStartX = ev.clientX;
+    });
+    stage.addEventListener("pointerup", (ev) => {
+      if (dragStartX === null) return;
+      const dx = ev.clientX - dragStartX;
+      dragStartX = null;
+      if (Math.abs(dx) > 35) goTo(index + (dx < 0 ? 1 : -1));
+    });
+
+    const onResize = () => {
+      if (!document.contains(stage)) {
+        window.removeEventListener("resize", onResize);
+        return;
+      }
+      layoutCarousel();
+    };
+    window.addEventListener("resize", onResize, { passive: true });
+    layoutCarousel();
     return;
   }
 
@@ -197,7 +319,7 @@ export function studentPage(root, record, news, save) {
 
   const panel = root.querySelector("#subject");
   const syllabus =
-    '<section class="panel syllabus-panel"><div class="row"><h3>CULMS syllabus and uploads</h3><small>Checked 17 November 2026</small></div>' +
+    '<section class="panel syllabus-panel"><div class="row"><h3>CULMS syllabus and uploads</h3><small>Checked 19 November 2026</small></div>' +
     (c.outline.length
       ? "<ul>" +
         c.outline.map((v) => "<li>" + e(v) + "</li>").join("") +
@@ -207,19 +329,66 @@ export function studentPage(root, record, news, save) {
     c.url +
     '" target="_blank" rel="noopener">Open course in CULMS ↗</a></section>';
 
+  const subjectVideos = videosFor(c.id);
+  const subjectRefs = references[c.id] || [];
+  const refsSection = subjectRefs.length
+    ? '<section class="panel"><h3>Recommended references</h3><ul class="ref-list">' +
+      subjectRefs
+        .map(
+          ([label, url]) =>
+            '<li><a href="' + url + '" target="_blank" rel="noopener">' + e(label) + " ↗</a></li>",
+        )
+        .join("") +
+      "</ul></section>"
+    : "";
+  const vidsSection = subjectVideos.length
+    ? '<section class="panel"><div class="row"><h3>Reference videos</h3>' +
+      href("All videos", "videos") +
+      '</div><div class="video-grid compact">' +
+      subjectVideos.slice(0, 6).map(videoCard).join("") +
+      "</div></section>"
+    : "";
+
   if (!d && !["practice", "mistakes"].includes(view)) {
     panel.innerHTML =
       syllabus +
       '<div class="panel"><h2>Introductory self-test</h2><p>Original subject fundamentals while CULMS materials are pending.</p>' +
       href("Start random self-test", c.id + "/practice", true) +
       href("Review mistakes", c.id + "/mistakes") +
-      "</div>";
+      "</div>" +
+      vidsSection +
+      refsSection;
+    bindVideoCards(panel);
     return;
   }
 
   const done = record.completed?.[c.id] || {};
   if (view === "resources") {
     panel.innerHTML = "<h2>Study resources</h2>" + resources(d);
+    return;
+  }
+
+  if (view === "revision") {
+    const rev = d.revision || {};
+    panel.innerHTML =
+      '<div class="lesson-tools"><button type="button" id="print-rev" class="chip">🖨 Print revision sheet</button></div>' +
+      "<h2>Quick revision sheet</h2>" +
+      (Object.keys(rev).length
+        ? d.units
+            .filter((u) => rev[u.id])
+            .map(
+              (u) =>
+                '<article class="reading revision-unit"><small>' +
+                e(u.name) +
+                "</small><h3>" +
+                e(u.title) +
+                "</h3>" +
+                rev[u.id] +
+                "</article>",
+            )
+            .join("")
+        : '<p class="muted">Revision sheet coming soon.</p>');
+    panel.querySelector("#print-rev").onclick = () => window.print();
     return;
   }
 
@@ -232,6 +401,9 @@ export function studentPage(root, record, news, save) {
     const i = d.notes.indexOf(n);
     const prev = d.notes[i - 1],
       next = d.notes[i + 1];
+    const words = (n.html || "").replace(/<[^>]+>/g, " ").split(/\s+/).filter(Boolean).length;
+    const mins = Math.max(1, Math.round(words / 200));
+    const related = videosFor(c.id, n.id);
     panel.innerHTML =
       '<article class="reading"><div class="lesson-meta"><small>' +
       e(n.lec) +
@@ -239,16 +411,25 @@ export function studentPage(root, record, news, save) {
       (i + 1) +
       " of " +
       d.notes.length +
-      "</span></div><h2>" +
+      " · " +
+      mins +
+      ' min read</span></div><div class="lesson-tools" role="toolbar" aria-label="Lesson tools"><button type="button" id="bm-toggle" class="chip">' +
+      (bookmarks.has(c.id, n.id) ? "★ Bookmarked" : "☆ Bookmark") +
+      '</button><button type="button" id="read-aloud" class="chip">🔊 Read aloud</button><button type="button" id="print-lesson" class="chip">🖨 Print / PDF</button></div><h2>' +
       e(n.title) +
       "</h2>" +
       n.html +
+      (related.length
+        ? '<section class="related-videos"><h3>Watch: related videos</h3><div class="video-grid compact">' +
+          related.map(videoCard).join("") +
+          "</div></section>"
+        : "") +
       '<hr><div class="lesson-takeaway"><p><strong>Active recall prompt:</strong> Close your notes and explain the main idea in your own words before marking reviewed.</p><div class="lesson-actions"><button id="review" class="primary">' +
       (done[n.id] ? "Reviewed" : "Mark reviewed") +
       "</button>" +
       href("Recall cards", c.id + "/cards/" + n.id) +
       href("Self-test", c.id + "/practice") +
-      '</div></div><div class="lesson-pager">' +
+      '</div></div><section class="my-notes"><label for="lesson-note">My private notes <small>(saved on this device)</small></label><textarea id="lesson-note" maxlength="4000" placeholder="Summarise this lesson in your own words, add examples or exam reminders…"></textarea><span id="note-state" class="muted"></span></section><div class="lesson-pager">' +
       (prev
         ? '<a class="pager-link" href="#' +
           c.id +
@@ -270,6 +451,42 @@ export function studentPage(root, record, news, save) {
       "</div></article>";
     const btn = panel.querySelector("#review");
     btn.disabled = !!done[n.id];
+    bindVideoCards(panel);
+    const bmBtn = panel.querySelector("#bm-toggle");
+    bmBtn.onclick = () => {
+      const on = bookmarks.toggle(c.id, n.id, n.title);
+      bmBtn.textContent = on ? "★ Bookmarked" : "☆ Bookmark";
+      showToast(on ? "Lesson bookmarked" : "Bookmark removed");
+    };
+    const readBtn = panel.querySelector("#read-aloud");
+    if (!("speechSynthesis" in window)) readBtn.hidden = true;
+    readBtn.onclick = () => {
+      if (speechSynthesis.speaking) {
+        speechSynthesis.cancel();
+        readBtn.textContent = "🔊 Read aloud";
+        return;
+      }
+      const text = n.title + ". " + (n.html || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ");
+      const u = new SpeechSynthesisUtterance(text.slice(0, 6000));
+      u.lang = "en-IN";
+      u.onend = () => (readBtn.textContent = "🔊 Read aloud");
+      speechSynthesis.speak(u);
+      readBtn.textContent = "⏹ Stop reading";
+    };
+    window.addEventListener("hashchange", () => window.speechSynthesis?.cancel(), { once: true });
+    panel.querySelector("#print-lesson").onclick = () => window.print();
+    const noteBox = panel.querySelector("#lesson-note");
+    const noteState = panel.querySelector("#note-state");
+    noteBox.value = notes.get(c.id, n.id);
+    let noteTimer;
+    noteBox.oninput = () => {
+      clearTimeout(noteTimer);
+      noteState.textContent = "Saving…";
+      noteTimer = setTimeout(() => {
+        notes.set(c.id, n.id, n.title, noteBox.value);
+        noteState.textContent = "Saved";
+      }, 500);
+    };
     btn.onclick = async () => {
       btn.disabled = true;
       try {
@@ -502,6 +719,7 @@ export function studentPage(root, record, news, save) {
       c.id + "/mistakes",
     ) +
     href("Recall cards", c.id + "/cards") +
+    (d.revision ? href("Revision sheet", c.id + "/revision") : "") +
     href("Study resources", c.id + "/resources") +
     "</div></div>" +
     syllabus +
@@ -535,5 +753,8 @@ export function studentPage(root, record, news, save) {
             .join("") +
           "</details>",
       )
-      .join("");
+      .join("") +
+    vidsSection +
+    refsSection;
+  bindVideoCards(panel);
 }

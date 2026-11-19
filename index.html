@@ -4,22 +4,22 @@
     <meta charset="utf-8" />
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self' https://www.gstatic.com https://*.firebaseio.com https://*.firebasedatabase.app; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.gstatic.com http://127.0.0.1:* ws://127.0.0.1:*; frame-src https://*.firebaseapp.com; worker-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'"
+      content="default-src 'self'; script-src 'self' https://www.gstatic.com https://*.firebaseio.com https://*.firebasedatabase.app; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://i.ytimg.com; connect-src 'self' https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.gstatic.com http://127.0.0.1:* ws://127.0.0.1:*; frame-src https://www.youtube-nocookie.com https://*.firebaseapp.com; worker-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'"
     />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-    <meta name="theme-color" content="#0F3138" />
+    <meta name="theme-color" content="#0D0D0F" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="Boardroom" />
     <meta
       name="description"
-      content="Boardroom — Chitkara Business School Semester 1 study library, recall cards, self-tests, and live quiz battles for BBA DS & BM."
+      content="Boardroom — Chitkara Business School Semester 1 study library, reference videos, revision sheets, self-tests, planner, and live quiz battles for BBA DS & BM."
     />
     <link rel="manifest" href="./manifest.json" />
     <link rel="apple-touch-icon" href="./icon-180.png" />
     <link
       rel="icon"
-      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230F3138'/%3E%3Crect x='5' y='5' width='54' height='54' rx='10' fill='none' stroke='%23C49650' stroke-width='2.5'/%3E%3Ctext x='32' y='44' text-anchor='middle' font-family='Georgia,serif' font-style='italic' font-weight='700' font-size='36' fill='%23EFE0C2'%3EB%3C/text%3E%3C/svg%3E"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230D0D0F'/%3E%3Crect x='4' y='4' width='56' height='56' rx='11' fill='none' stroke='%23C8102E' stroke-width='3'/%3E%3Ctext x='32' y='44' text-anchor='middle' font-family='Georgia,serif' font-style='italic' font-weight='700' font-size='36' fill='%23D4AF37'%3EB%3C/text%3E%3C/svg%3E"
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -27,21 +27,11 @@
       href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600;1,6..72,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <title>Boardroom · Chitkara Study Library</title>
-    <link rel="stylesheet" href="./styles.css?v=9" />
+    <title>Boardroom · Chitkara Study Hub</title>
+    <link rel="stylesheet" href="./styles.css?v=11" />
   </head>
   <body data-area="student">
     <a class="skip" href="#main">Skip to content</a>
-
-    <div id="intro-splash" class="intro-splash" hidden aria-hidden="true">
-      <div class="intro-card">
-        <div class="intro-seal" aria-hidden="true">B</div>
-        <p class="intro-kicker">Chitkara Business School · BBA DS &amp; BM</p>
-        <h2 class="intro-title">Boardroom</h2>
-        <p class="intro-sub">Focused study library &amp; peer practice</p>
-        <button id="skip-intro" type="button" class="intro-skip">Skip intro</button>
-      </div>
-    </div>
 
     <header class="site-header">
       <div class="bar">
@@ -49,7 +39,7 @@
           <b aria-hidden="true">B</b>
           <span class="brand-copy">
             <strong>Boardroom</strong>
-            <small>Student workspace</small>
+            <small>BBA DS &amp; BM Study Hub</small>
           </span>
         </a>
         <div class="header-actions">
@@ -68,21 +58,21 @@
           <small class="eyebrow">Chitkara Business School · Semester 1</small>
           <h1>The study library</h1>
           <p class="lead">
-            Structured course notes, active-recall flashcards, randomized self-tests, and live
-            peer quiz battles for BBA in Digital Science &amp; Business Management.
+            Structured course notes, curated reference videos, quick revision sheets, flashcards,
+            self-tests, study planner, and live 8-player quiz battles.
           </p>
           <div class="gate-highlights">
             <div class="highlight-item">
               <strong>7 Semester Subjects</strong>
-              <span>Aligned with CULMS handouts, units &amp; worked Python/math examples.</span>
+              <span>Notes, worked Python &amp; matrix examples, and revision sheets.</span>
             </div>
             <div class="highlight-item">
-              <strong>Active Recall &amp; Battles</strong>
-              <span>5/10/15-question self-tests, mistake review, and 8-player friend battles.</span>
+              <strong>Videos &amp; Resources</strong>
+              <span>43 curated explainer videos, references, bookmarks &amp; planner.</span>
             </div>
             <div class="highlight-item">
               <strong>Verified Campus Access</strong>
-              <span>Private progress synced securely to your <code>@chitkara.edu.in</code> account.</span>
+              <span>Private progress synced to your <code>@chitkara.edu.in</code> account.</span>
             </div>
           </div>
           <div class="prospect">
@@ -153,7 +143,7 @@
             <span>Boardroom</span>
           </a>
           <p>
-            Independent academic study workspace for Chitkara Business School · BBA Digital
+            Independent student-built study workspace for Chitkara Business School · BBA Digital
             Science &amp; Business Management (Semester 1).
           </p>
         </div>
@@ -161,15 +151,18 @@
           <h4>Study workspace</h4>
           <ul>
             <li><a href="#">Study library</a></li>
+            <li><a href="#videos">Reference videos</a></li>
+            <li><a href="#resources">Resources &amp; references</a></li>
+            <li><a href="#planner">Planner &amp; bookmarks</a></li>
             <li><a href="#battle">Quiz battles</a></li>
             <li><a href="#leaderboard">Live leaderboard</a></li>
-            <li><a href="#profile">My profile</a></li>
-            <li><a href="#inbox">Private inbox</a></li>
           </ul>
         </div>
         <div class="footer-col">
-          <h4>Portal &amp; links</h4>
+          <h4>Account &amp; portal</h4>
           <ul>
+            <li><a href="#profile">My profile</a></li>
+            <li><a href="#inbox">Private inbox</a></li>
             <li><a href="https://culms.chitkara.edu.in/d2l/login" target="_blank" rel="noopener">Chitkara CULMS / D2L ↗</a></li>
             <li><a href="./admin.html">Administrator sign in</a></li>
           </ul>
@@ -184,7 +177,7 @@
 
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-    <script type="module" src="./motion.js?v=9"></script>
-    <script type="module" src="./portal.js?v=9"></script>
+    <script type="module" src="./motion.js?v=11"></script>
+    <script type="module" src="./portal.js?v=11"></script>
   </body>
 </html>

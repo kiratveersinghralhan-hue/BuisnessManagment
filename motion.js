@@ -9,43 +9,7 @@ export function showToast(message) {
   el._timer = setTimeout(() => el.classList.remove("is-visible"), 2600);
 }
 
-// Skippable academic intro reveal (once per tab session, never blocks input).
-const splash = document.getElementById("intro-splash");
-if (splash) {
-  let alreadySeen = false;
-  try {
-    alreadySeen = sessionStorage.getItem("br_intro_seen") === "1";
-  } catch {
-    /* ignore storage restrictions */
-  }
-  const dismissIntro = () => {
-    if (splash.hidden) return;
-    splash.classList.add("is-leaving");
-    try {
-      sessionStorage.setItem("br_intro_seen", "1");
-    } catch {
-      /* ignore */
-    }
-    setTimeout(() => {
-      splash.hidden = true;
-      splash.setAttribute("aria-hidden", "true");
-    }, reduce.matches ? 0 : 280);
-  };
-  if (!reduce.matches && !alreadySeen) {
-    splash.hidden = false;
-    splash.setAttribute("aria-hidden", "false");
-    document.getElementById("skip-intro")?.addEventListener("click", dismissIntro);
-    window.addEventListener("keydown", (ev) => {
-      if (ev.key === "Escape") dismissIntro();
-    }, { once: true });
-    document.addEventListener("focusin", (ev) => {
-      if (ev.target instanceof Element && !splash.contains(ev.target)) dismissIntro();
-    }, { once: true });
-    setTimeout(dismissIntro, 1150);
-  }
-}
-
-// Scroll progress indicator.
+// Crisp scroll progress bar
 const progress = document.getElementById("scroll-progress");
 if (progress) {
   let raf = 0;
@@ -53,8 +17,8 @@ if (progress) {
     raf = 0;
     const doc = document.documentElement;
     const max = doc.scrollHeight - doc.clientHeight;
-    const pct = max > 0 ? Math.min(100, Math.max(0, (window.scrollY / max) * 100)) : 0;
-    progress.style.width = pct.toFixed(2) + "%";
+    const ratio = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+    progress.style.width = (ratio * 100).toFixed(2) + "%";
   };
   window.addEventListener(
     "scroll",
@@ -67,30 +31,63 @@ if (progress) {
   syncProgress();
 }
 
-// Bidirectional smooth scroll reveal.
+// Subtle desktop 3D card tilt (no neon, crisp shadow lift)
+const canTilt =
+  !reduce.matches && matchMedia("(hover: hover) and (pointer: fine)").matches;
+const tiltBound = new WeakSet();
+const tiltSelector = ".course,.fact-card,.study-tool-card,.kpi-card,.resource-card,.video-card";
+
+function attachTilt(el) {
+  if (!canTilt || tiltBound.has(el)) return;
+  tiltBound.add(el);
+  el.addEventListener("pointermove", (ev) => {
+    const r = el.getBoundingClientRect();
+    if (!r.width || !r.height) return;
+    const px = (ev.clientX - r.left) / r.width;
+    const py = (ev.clientY - r.top) / r.height;
+    const rx = (0.5 - py) * 4.5;
+    const ry = (px - 0.5) * 5.5;
+    el.style.transform = `perspective(900px) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg) translateY(-2px)`;
+  });
+  el.addEventListener("pointerleave", () => {
+    el.style.transform = "";
+  });
+}
+
+// Smooth bidirectional scroll reveal
 const seen = new WeakSet();
 if ("IntersectionObserver" in window) {
   const observer = new IntersectionObserver(
     (entries) => {
+      let batch = 0;
       for (const entry of entries) {
         if (entry.isIntersecting && !reduce.matches) {
           const fromTop = entry.boundingClientRect.top < 0;
+          const delay = Math.min(batch * 30, 150);
+          batch++;
           entry.target.animate(
             [
               {
-                opacity: 0.72,
-                transform: "translateY(" + (fromTop ? "-10" : "10") + "px)",
+                opacity: 0.65,
+                transform: `translateY(${fromTop ? "-12" : "14"}px)`,
               },
               { opacity: 1, transform: "translateY(0)" },
             ],
-            { duration: 320, easing: "cubic-bezier(0.22, 1, 0.36, 1)" },
+            {
+              duration: 320,
+              delay,
+              easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+              fill: "backwards",
+            },
           );
         }
       }
     },
-    { threshold: 0.06 },
+    { threshold: 0.05 },
   );
-  const selector = ".course,.fact-card,.reading,.banner,.unit,.intro,.kpi-card,.study-tool-card,.panel";
+  const selector =
+    ".course,.fact-card,.reading,.banner,.unit,.intro,.kpi-card,.study-tool-card,.panel,.resource-card,.video-card";
+
   function attach(node) {
     if (!(node instanceof Element)) return;
     for (const el of [node, ...node.querySelectorAll(selector)]) {
@@ -98,6 +95,9 @@ if ("IntersectionObserver" in window) {
         seen.add(el);
         observer.observe(el);
       }
+    }
+    for (const el of [node, ...node.querySelectorAll(tiltSelector)]) {
+      if (el.matches(tiltSelector)) attachTilt(el);
     }
   }
   attach(document.body);

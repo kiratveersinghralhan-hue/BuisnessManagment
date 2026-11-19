@@ -31,6 +31,7 @@ import { courseEditor } from "./course-editor.js";
 import { owner, messages } from "./owner.js";
 import { factsCard } from "./study-facts.js";
 import { studyTools } from "./study-tools.js";
+import { videosPage, resourcesPage, plannerPage } from "./library.js";
 import { catalog } from "./catalog.js";
 
 const app = initializeApp(firebaseConfig),
@@ -201,6 +202,9 @@ function render() {
       ]
     : [
         ["Library", ""],
+        ["Videos", "videos"],
+        ["Resources", "resources"],
+        ["Planner", "planner"],
         ["Battles", "battle"],
         ["Leaderboard", "leaderboard"],
         ["Inbox", "inbox"],
@@ -235,6 +239,19 @@ function render() {
 
   if (["profile", "battle", "leaderboard"].includes(area)) {
     cleanup = community($("desk"), db, active, record, route);
+    return;
+  }
+
+  if (area === "videos") {
+    cleanup = videosPage($("desk"));
+    return;
+  }
+  if (area === "resources") {
+    cleanup = resourcesPage($("desk"));
+    return;
+  }
+  if (area === "planner") {
+    cleanup = plannerPage($("desk"));
     return;
   }
 
@@ -451,6 +468,7 @@ async function enterWorkspace(user) {
 
     if (token !== session) return;
     active = user;
+    window.__brUid = user.uid;
     $("pass").value = "";
     authMessage("");
     $("gate").hidden = true;

@@ -46,8 +46,8 @@ export const catalog = [
     "Introduction to AI and ML",
     9296,
     [
-      "Unit 1 · System and role prompting, zero-shot examples, knowledge bases, predictive analytics, LLM operation, limitations and mitigation.",
-      "Practice files include sales, digital payments and telecom churn data.",
+      "Unit 1 · 11 uploads covering system and role prompting, zero-shot examples, knowledge bases, predictive analytics, LLM operation, limitations and mitigation.",
+      "Practice files include sales_data_500.csv, D50-DigitalPayments_32.csv and telecom churn data.",
       "Course handout and units 2–4 · Coming soon",
     ],
   ],
