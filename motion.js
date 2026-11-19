@@ -124,3 +124,14 @@ if ("IntersectionObserver" in window) {
 document.querySelector("#top")?.addEventListener("click", () => {
   window.scrollTo({ top: 0, behavior: reduce.matches ? "instant" : "smooth" });
 });
+
+
+// Friendly first-visit motion. Skip for repeat sessions and reduced-motion users.
+const hello = document.getElementById("intro-screen");
+if (hello) {
+  const hide = () => { hello.classList.add("is-done"); setTimeout(() => hello.remove(), 800); };
+  let shown = false;
+  try { shown = sessionStorage.getItem("br_studio_intro_v2") === "1"; sessionStorage.setItem("br_studio_intro_v2", "1"); } catch {}
+  if (reduce.matches || shown) hide();
+  else setTimeout(hide, 1550);
+}

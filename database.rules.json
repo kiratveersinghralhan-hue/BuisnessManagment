@@ -5,8 +5,8 @@
     "students": {
       ".read": "auth != null && auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2' && auth.token.firebase.sign_in_provider === 'password'",
       "$uid": {
-        ".read": "(auth != null && auth.token.firebase.sign_in_provider === 'password' && auth.token.email_verified === true && auth.token.email.matches(/^[^@ ]+@chitkara[.]edu[.]in$/)) && auth.uid === $uid",
-        ".write": "(auth != null && auth.token.firebase.sign_in_provider === 'password' && auth.token.email_verified === true && auth.token.email.matches(/^[^@ ]+@chitkara[.]edu[.]in$/)) && auth.uid === $uid && newData.exists()",
+        ".read": "(auth != null && (auth.token.firebase.sign_in_provider === 'password' || auth.token.firebase.sign_in_provider === 'google.com') && auth.token.email_verified === true && auth.token.email.matches(/^[^@ ]+@chitkara[.]edu[.]in$/)) && auth.uid === $uid",
+        ".write": "(auth != null && (auth.token.firebase.sign_in_provider === 'password' || auth.token.firebase.sign_in_provider === 'google.com') && auth.token.email_verified === true && auth.token.email.matches(/^[^@ ]+@chitkara[.]edu[.]in$/)) && auth.uid === $uid && newData.exists()",
         ".validate": "newData.hasChildren(['email','lastSeen'])",
         "email": {
           ".validate": "newData.val() === auth.token.email"
@@ -122,7 +122,7 @@
       }
     },
     "announce": {
-      ".read": "(auth != null && auth.token.firebase.sign_in_provider === 'password' && auth.token.email_verified === true && auth.token.email.matches(/^[^@ ]+@chitkara[.]edu[.]in$/)) || (auth != null && auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2' && auth.token.firebase.sign_in_provider === 'password')",
+      ".read": "(auth != null && (auth.token.firebase.sign_in_provider === 'password' || auth.token.firebase.sign_in_provider === 'google.com') && auth.token.email_verified === true && auth.token.email.matches(/^[^@ ]+@chitkara[.]edu[.]in$/)) || (auth != null && auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2' && auth.token.firebase.sign_in_provider === 'password')",
       ".write": "auth != null && auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2' && auth.token.firebase.sign_in_provider === 'password'",
       "$id": {
         ".validate": "newData.hasChildren(['text','ts']) && newData.child('text').isString() && newData.child('text').val().length > 0 && newData.child('text').val().length <= 1000 && newData.child('ts').isNumber()"
@@ -131,12 +131,15 @@
     "profiles": {
       ".read": "auth != null && auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2' && auth.token.firebase.sign_in_provider === 'password'",
       "$uid": {
-        ".read": "(auth != null && auth.token.firebase.sign_in_provider === 'password' && auth.token.email_verified === true && auth.token.email.matches(/^[^@ ]+@chitkara[.]edu[.]in$/))",
-        ".write": "(auth != null && auth.token.firebase.sign_in_provider === 'password' && auth.token.email_verified === true && auth.token.email.matches(/^[^@ ]+@chitkara[.]edu[.]in$/)) && auth.uid === $uid",
+        ".read": "(auth != null && (auth.token.firebase.sign_in_provider === 'password' || auth.token.firebase.sign_in_provider === 'google.com') && auth.token.email_verified === true && auth.token.email.matches(/^[^@ ]+@chitkara[.]edu[.]in$/))",
+        ".write": "(auth != null && (auth.token.firebase.sign_in_provider === 'password' || auth.token.firebase.sign_in_provider === 'google.com') && auth.token.email_verified === true && auth.token.email.matches(/^[^@ ]+@chitkara[.]edu[.]in$/)) && auth.uid === $uid",
         ".validate": "newData.hasChildren(['name'])",
         "name": {
           ".validate": "newData.isString() && newData.val().matches(/^[A-Za-z0-9_]{3,20}$/)",
           ".write": "auth != null && auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2' && auth.token.firebase.sign_in_provider === 'password' && newData.exists() && root.child('students').child($uid).exists()"
+        },
+        "displayName": {
+          ".validate": "newData.isString() && newData.val().length <= 48 && newData.val().matches(/^[A-Za-z0-9 ._'-]*$/)"
         },
         "photo": {
           ".write": "auth != null && auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2' && auth.token.firebase.sign_in_provider === 'password' && !newData.exists()",
@@ -150,7 +153,7 @@
     "inbox": {
       ".read": "auth != null && auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2' && auth.token.firebase.sign_in_provider === 'password'",
       "$uid": {
-        ".read": "(auth != null && auth.token.firebase.sign_in_provider === 'password' && auth.token.email_verified === true && auth.token.email.matches(/^[^@ ]+@chitkara[.]edu[.]in$/)) && auth.uid === $uid",
+        ".read": "(auth != null && (auth.token.firebase.sign_in_provider === 'password' || auth.token.firebase.sign_in_provider === 'google.com') && auth.token.email_verified === true && auth.token.email.matches(/^[^@ ]+@chitkara[.]edu[.]in$/)) && auth.uid === $uid",
         "$id": {
           ".write": "auth != null && auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2' && auth.token.firebase.sign_in_provider === 'password'",
           ".validate": "newData.hasChildren(['text','ts']) && root.child('students').child($uid).exists()",
@@ -168,17 +171,17 @@
     },
     "credits": {
       "$uid": {
-        ".read": "(auth != null && auth.token.firebase.sign_in_provider === 'password' && auth.token.email_verified === true && auth.token.email.matches(/^[^@ ]+@chitkara[.]edu[.]in$/)) && auth.uid === $uid",
+        ".read": "(auth != null && (auth.token.firebase.sign_in_provider === 'password' || auth.token.firebase.sign_in_provider === 'google.com') && auth.token.email_verified === true && auth.token.email.matches(/^[^@ ]+@chitkara[.]edu[.]in$/)) && auth.uid === $uid",
         "$course": {
           "$question": {
-            ".write": "(auth != null && auth.token.firebase.sign_in_provider === 'password' && auth.token.email_verified === true && auth.token.email.matches(/^[^@ ]+@chitkara[.]edu[.]in$/)) && auth.uid === $uid && !data.exists() && newData.val() === true && root.child('students').child($uid).child('practice').child($course).child($question).val() === true"
+            ".write": "(auth != null && (auth.token.firebase.sign_in_provider === 'password' || auth.token.firebase.sign_in_provider === 'google.com') && auth.token.email_verified === true && auth.token.email.matches(/^[^@ ]+@chitkara[.]edu[.]in$/)) && auth.uid === $uid && !data.exists() && newData.val() === true && root.child('students').child($uid).child('practice').child($course).child($question).val() === true"
           }
         }
       }
     },
     "claim": {
       "$uid": {
-        ".write": "(auth != null && auth.token.firebase.sign_in_provider === 'password' && auth.token.email_verified === true && auth.token.email.matches(/^[^@ ]+@chitkara[.]edu[.]in$/)) && auth.uid === $uid && newData.hasChildren(['course','question'])",
+        ".write": "(auth != null && (auth.token.firebase.sign_in_provider === 'password' || auth.token.firebase.sign_in_provider === 'google.com') && auth.token.email_verified === true && auth.token.email.matches(/^[^@ ]+@chitkara[.]edu[.]in$/)) && auth.uid === $uid && newData.hasChildren(['course','question'])",
         "course": {
           ".validate": "newData.isString() && newData.val().matches(/^(pbm|alac|aiml|prog|dviz|arts|drm)$/)"
         },
@@ -191,17 +194,17 @@
       }
     },
     "xp": {
-      ".read": "(auth != null && auth.token.firebase.sign_in_provider === 'password' && auth.token.email_verified === true && auth.token.email.matches(/^[^@ ]+@chitkara[.]edu[.]in$/)) || (auth != null && auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2' && auth.token.firebase.sign_in_provider === 'password')",
+      ".read": "(auth != null && (auth.token.firebase.sign_in_provider === 'password' || auth.token.firebase.sign_in_provider === 'google.com') && auth.token.email_verified === true && auth.token.email.matches(/^[^@ ]+@chitkara[.]edu[.]in$/)) || (auth != null && auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2' && auth.token.firebase.sign_in_provider === 'password')",
       ".indexOn": ".value",
       "$uid": {
-        ".write": "(auth != null && auth.token.firebase.sign_in_provider === 'password' && auth.token.email_verified === true && auth.token.email.matches(/^[^@ ]+@chitkara[.]edu[.]in$/)) && auth.uid === $uid && root.child('profiles').child($uid).child('name').exists() && newData.isNumber() && ((!data.exists() && newData.val() === 10) || (data.exists() && newData.val() === data.val()+10)) && newData.parent().parent().child('claim').child($uid).hasChildren(['course','question']) && !root.child('credits').child($uid).child(newData.parent().parent().child('claim').child($uid).child('course').val()).child(newData.parent().parent().child('claim').child($uid).child('question').val()).exists() && newData.parent().parent().child('credits').child($uid).child(newData.parent().parent().child('claim').child($uid).child('course').val()).child(newData.parent().parent().child('claim').child($uid).child('question').val()).val() === true"
+        ".write": "(auth != null && (auth.token.firebase.sign_in_provider === 'password' || auth.token.firebase.sign_in_provider === 'google.com') && auth.token.email_verified === true && auth.token.email.matches(/^[^@ ]+@chitkara[.]edu[.]in$/)) && auth.uid === $uid && root.child('profiles').child($uid).child('name').exists() && newData.isNumber() && ((!data.exists() && newData.val() === 10) || (data.exists() && newData.val() === data.val()+10)) && newData.parent().parent().child('claim').child($uid).hasChildren(['course','question']) && !root.child('credits').child($uid).child(newData.parent().parent().child('claim').child($uid).child('course').val()).child(newData.parent().parent().child('claim').child($uid).child('question').val()).exists() && newData.parent().parent().child('credits').child($uid).child(newData.parent().parent().child('claim').child($uid).child('course').val()).child(newData.parent().parent().child('claim').child($uid).child('question').val()).val() === true"
       }
     },
     "quizRooms": {
       ".read": "auth != null && auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2' && auth.token.firebase.sign_in_provider === 'password'",
       "$code": {
-        ".read": "(auth != null && auth.token.firebase.sign_in_provider === 'password' && auth.token.email_verified === true && auth.token.email.matches(/^[^@ ]+@chitkara[.]edu[.]in$/))",
-        ".write": "((auth != null && auth.token.firebase.sign_in_provider === 'password' && auth.token.email_verified === true && auth.token.email.matches(/^[^@ ]+@chitkara[.]edu[.]in$/)) && !data.exists() && $code.matches(/^[A-F0-9]{12}$/) && newData.child('host').val() === auth.uid && newData.child('seats/p0/uid').val() === auth.uid && !newData.child('started').exists() && !newData.child('answers').exists() && !newData.child('seats/p1').exists() && !newData.child('seats/p2').exists() && !newData.child('seats/p3').exists() && !newData.child('seats/p4').exists() && !newData.child('seats/p5').exists() && !newData.child('seats/p6').exists() && !newData.child('seats/p7').exists()) || (!newData.exists() && ((auth != null && auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2' && auth.token.firebase.sign_in_provider === 'password') || ((auth != null && auth.token.firebase.sign_in_provider === 'password' && auth.token.email_verified === true && auth.token.email.matches(/^[^@ ]+@chitkara[.]edu[.]in$/)) && data.child('host').val() === auth.uid && !data.child('started').exists())))",
+        ".read": "(auth != null && (auth.token.firebase.sign_in_provider === 'password' || auth.token.firebase.sign_in_provider === 'google.com') && auth.token.email_verified === true && auth.token.email.matches(/^[^@ ]+@chitkara[.]edu[.]in$/))",
+        ".write": "((auth != null && (auth.token.firebase.sign_in_provider === 'password' || auth.token.firebase.sign_in_provider === 'google.com') && auth.token.email_verified === true && auth.token.email.matches(/^[^@ ]+@chitkara[.]edu[.]in$/)) && !data.exists() && $code.matches(/^[A-F0-9]{12}$/) && newData.child('host').val() === auth.uid && newData.child('seats/p0/uid').val() === auth.uid && !newData.child('started').exists() && !newData.child('answers').exists() && !newData.child('seats/p1').exists() && !newData.child('seats/p2').exists() && !newData.child('seats/p3').exists() && !newData.child('seats/p4').exists() && !newData.child('seats/p5').exists() && !newData.child('seats/p6').exists() && !newData.child('seats/p7').exists()) || (!newData.exists() && ((auth != null && auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2' && auth.token.firebase.sign_in_provider === 'password') || ((auth != null && (auth.token.firebase.sign_in_provider === 'password' || auth.token.firebase.sign_in_provider === 'google.com') && auth.token.email_verified === true && auth.token.email.matches(/^[^@ ]+@chitkara[.]edu[.]in$/)) && data.child('host').val() === auth.uid && !data.child('started').exists())))",
         ".validate": "newData.hasChildren(['host','created','subject','seats'])",
         "host": {
           ".validate": "newData.val() === auth.uid"
@@ -213,11 +216,11 @@
           ".validate": "newData.isNumber() && newData.val() === now"
         },
         "started": {
-          ".write": "(auth != null && auth.token.firebase.sign_in_provider === 'password' && auth.token.email_verified === true && auth.token.email.matches(/^[^@ ]+@chitkara[.]edu[.]in$/)) && root.child('quizRooms').child($code).child('host').val() === auth.uid && !data.exists() && newData.val() === now && root.child('quizRooms').child($code).child('created').val()+3600000 > now && (root.child('quizRooms').child($code).child('seats/p1').exists() || root.child('quizRooms').child($code).child('seats/p2').exists() || root.child('quizRooms').child($code).child('seats/p3').exists() || root.child('quizRooms').child($code).child('seats/p4').exists() || root.child('quizRooms').child($code).child('seats/p5').exists() || root.child('quizRooms').child($code).child('seats/p6').exists() || root.child('quizRooms').child($code).child('seats/p7').exists())"
+          ".write": "(auth != null && (auth.token.firebase.sign_in_provider === 'password' || auth.token.firebase.sign_in_provider === 'google.com') && auth.token.email_verified === true && auth.token.email.matches(/^[^@ ]+@chitkara[.]edu[.]in$/)) && root.child('quizRooms').child($code).child('host').val() === auth.uid && !data.exists() && newData.val() === now && root.child('quizRooms').child($code).child('created').val()+3600000 > now && (root.child('quizRooms').child($code).child('seats/p1').exists() || root.child('quizRooms').child($code).child('seats/p2').exists() || root.child('quizRooms').child($code).child('seats/p3').exists() || root.child('quizRooms').child($code).child('seats/p4').exists() || root.child('quizRooms').child($code).child('seats/p5').exists() || root.child('quizRooms').child($code).child('seats/p6').exists() || root.child('quizRooms').child($code).child('seats/p7').exists())"
         },
         "seats": {
           "$seat": {
-            ".write": "((auth != null && auth.token.firebase.sign_in_provider === 'password' && auth.token.email_verified === true && auth.token.email.matches(/^[^@ ]+@chitkara[.]edu[.]in$/)) && !data.exists() && !root.child('quizRooms').child($code).child('started').exists() && root.child('quizRooms').child($code).child('created').val()+3600000 > now && newData.exists()) || ((auth != null && auth.token.firebase.sign_in_provider === 'password' && auth.token.email_verified === true && auth.token.email.matches(/^[^@ ]+@chitkara[.]edu[.]in$/)) && !newData.exists() && $seat !== 'p0' && data.child('uid').val() === auth.uid && !root.child('quizRooms').child($code).child('started').exists())",
+            ".write": "((auth != null && (auth.token.firebase.sign_in_provider === 'password' || auth.token.firebase.sign_in_provider === 'google.com') && auth.token.email_verified === true && auth.token.email.matches(/^[^@ ]+@chitkara[.]edu[.]in$/)) && !data.exists() && !root.child('quizRooms').child($code).child('started').exists() && root.child('quizRooms').child($code).child('created').val()+3600000 > now && newData.exists()) || ((auth != null && (auth.token.firebase.sign_in_provider === 'password' || auth.token.firebase.sign_in_provider === 'google.com') && auth.token.email_verified === true && auth.token.email.matches(/^[^@ ]+@chitkara[.]edu[.]in$/)) && !newData.exists() && $seat !== 'p0' && data.child('uid').val() === auth.uid && !root.child('quizRooms').child($code).child('started').exists())",
             ".validate": "$seat.matches(/^p[0-7]$/) && newData.hasChildren(['uid','name']) && newData.child('uid').val() === auth.uid && newData.child('name').val() === root.child('profiles').child(auth.uid).child('name').val() && ($seat === 'p0' || newData.parent().child('p0').child('uid').val() !== auth.uid) && ($seat === 'p1' || newData.parent().child('p1').child('uid').val() !== auth.uid) && ($seat === 'p2' || newData.parent().child('p2').child('uid').val() !== auth.uid) && ($seat === 'p3' || newData.parent().child('p3').child('uid').val() !== auth.uid) && ($seat === 'p4' || newData.parent().child('p4').child('uid').val() !== auth.uid) && ($seat === 'p5' || newData.parent().child('p5').child('uid').val() !== auth.uid) && ($seat === 'p6' || newData.parent().child('p6').child('uid').val() !== auth.uid) && ($seat === 'p7' || newData.parent().child('p7').child('uid').val() !== auth.uid)",
             "uid": {
               ".validate": "newData.isString()"
@@ -233,7 +236,7 @@
         "answers": {
           "$seat": {
             "$q": {
-              ".write": "(auth != null && auth.token.firebase.sign_in_provider === 'password' && auth.token.email_verified === true && auth.token.email.matches(/^[^@ ]+@chitkara[.]edu[.]in$/)) && root.child('quizRooms').child($code).child('seats').child($seat).child('uid').val() === auth.uid && root.child('quizRooms').child($code).child('started').exists() && root.child('quizRooms').child($code).child('started').val()+300000 > now && !data.exists() && newData.exists()",
+              ".write": "(auth != null && (auth.token.firebase.sign_in_provider === 'password' || auth.token.firebase.sign_in_provider === 'google.com') && auth.token.email_verified === true && auth.token.email.matches(/^[^@ ]+@chitkara[.]edu[.]in$/)) && root.child('quizRooms').child($code).child('seats').child($seat).child('uid').val() === auth.uid && root.child('quizRooms').child($code).child('started').exists() && root.child('quizRooms').child($code).child('started').val()+300000 > now && !data.exists() && newData.exists()",
               ".validate": "$q.matches(/^[0-4]$/) && (newData.val() === 0 || newData.val() === 1 || newData.val() === 2 || newData.val() === 3)"
             }
           }
@@ -246,7 +249,7 @@
     "courseUpdates": {
       ".read": "auth != null && auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2' && auth.token.firebase.sign_in_provider === 'password'",
       "$subject": {
-        ".read": "(auth != null && auth.token.firebase.sign_in_provider === 'password' && auth.token.email_verified === true && auth.token.email.matches(/^[^@ ]+@chitkara[.]edu[.]in$/))",
+        ".read": "(auth != null && (auth.token.firebase.sign_in_provider === 'password' || auth.token.firebase.sign_in_provider === 'google.com') && auth.token.email_verified === true && auth.token.email.matches(/^[^@ ]+@chitkara[.]edu[.]in$/))",
         ".write": "auth != null && auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2' && auth.token.firebase.sign_in_provider === 'password'",
         ".validate": "$subject.matches(/^(pbm|prog|aiml|alac|arts|dviz|drm)$/) && newData.hasChildren(['text','ts'])",
         "text": {

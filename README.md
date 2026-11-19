@@ -14,7 +14,7 @@ Open `admin.html` and sign in with the authorized Firebase administrator account
 
 ## Firebase
 
-The release includes `database.rules.json` and `firebase.json` for project `buisness-managment`. These rules already match the deployed live Firebase rules (`verify-release.cjs verify`). Anonymous authentication is disabled. Pushing to GitHub Pages updates the static frontend only.
+The release includes `database.rules.json` and `firebase.json` for project `buisness-managment`. The included database rules have been adapted to allow verified Chitkara Google sign-ins as well as verified campus email/password accounts. **They have not been deployed or tested against production in this package.** Anonymous authentication must remain disabled. Pushing to GitHub Pages updates the static frontend only; deploy the rules separately after a safe backup and Firebase Emulator validation.
 
 ## Course coverage
 
@@ -32,3 +32,18 @@ CULMS handouts and posted unit listings were checked on 17 November 2026. Each c
 - **Overview & Directory**: Live class KPIs, filterable student search (`All`, `With username`, `Needs username`), individual progress inspection, username/photo moderation, and private inbox messaging.
 - **Announcements**: Create, edit, delete, target by subject (`All subjects` or specific course), and pin/unpin announcements.
 - **Battle rooms & Course updates**: Inspect active/completed rooms, delete rooms, and publish per-subject update banners.
+
+## Voice Notes Reader and spoken study
+
+Open any full lesson and use **Listen to this lesson** to play the **entire** lesson, your personal lesson notes, or highlighted text. The audio player offers Play, Pause/Resume, Stop, speed controls (0.75×–1.7×), and a choice of available English device voices, with the current spoken segment and playback progress displayed. The **Play lesson** shortcut starts reading the full lesson.
+
+**Dictate my notes** converts spoken words to editable text in the private lesson notes area; the normal autosave continues to work. In **Study buddy**, dictate brain-dump notes or questions, hear the notes and questions, and listen to matched answers from the existing verified practice bank. The companion is **a search/matching tool, not a cloud AI chatbot**; its results and the reader do not fabricate syllabus facts. Notes are stored locally per account on the current browser, not synchronized across devices. The audio reader saves voice/speed preferences on the device.
+
+Audio uses the browser's **Web Speech API** (speech synthesis); voice dictation uses `SpeechRecognition` or `webkitSpeechRecognition`. Capability and voices vary by OS and browser, and some browsers use provider cloud processing for recognition or voice synthesis. It requires user interaction and microphone permission for dictation. Supported controls degrade to readable/editable text when Web Speech APIs are unavailable. Test voice features on the actual target browsers and devices before release; automated page tests cannot prove microphone permission or audible output.
+
+## Extra deployment checklist for this redesign
+
+- Enable the **Google** provider in Firebase Authentication and allow the site's domain in Authorized domains. Hosted-domain hints are not a security boundary.
+- Deploy and review the included `database.rules.json` before allowing student data or Google authentication. Confirm the rules permit only verified campus accounts (and authorized administrators), and review leaderboard permissions so students cannot impersonate peers or arbitrarily edit XP.
+- Don't enable anonymous authentication. Don't expose administrator service credentials in client files. Preserve existing live database data when updating rules.
+- The uploaded source and redesign retain the course content and Firebase project identifiers; this package has **not** changed the deployed Firebase project or production database.

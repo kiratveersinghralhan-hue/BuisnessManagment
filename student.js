@@ -2,6 +2,7 @@ import { resources } from "./resources.js";
 import { bankFor, splitQuestion } from "./quiz-bank.js";
 import { catalog } from "./catalog.js";
 import { showToast } from "./motion.js";
+import { mountAudioReader, attachDictation } from "./audio-reader.js";
 import { videosFor, videoCard, bindVideoCards, bookmarks, notes, references } from "./library.js";
 
 export const escapeHTML = (value) =>
@@ -415,9 +416,9 @@ export function studentPage(root, record, news, save) {
       mins +
       ' min read</span></div><div class="lesson-tools" role="toolbar" aria-label="Lesson tools"><button type="button" id="bm-toggle" class="chip">' +
       (bookmarks.has(c.id, n.id) ? "★ Bookmarked" : "☆ Bookmark") +
-      '</button><button type="button" id="read-aloud" class="chip">🔊 Read aloud</button><button type="button" id="print-lesson" class="chip">🖨 Print / PDF</button></div><h2>' +
+      '</button><button type="button" id="read-aloud" class="chip">🔊 Play lesson</button><button type="button" id="print-lesson" class="chip">🖨 Print / PDF</button></div><h2>' +
       e(n.title) +
-      "</h2>" +
+      "</h2><section class=\"audio-card\" id=\"lesson-reader\" aria-label=\"Listen to this lesson\"></section>" +
       n.html +
       (related.length
         ? '<section class="related-videos"><h3>Watch: related videos</h3><div class="video-grid compact">' +
@@ -429,7 +430,7 @@ export function studentPage(root, record, news, save) {
       "</button>" +
       href("Recall cards", c.id + "/cards/" + n.id) +
       href("Self-test", c.id + "/practice") +
-      '</div></div><section class="my-notes"><label for="lesson-note">My private notes <small>(saved on this device)</small></label><textarea id="lesson-note" maxlength="4000" placeholder="Summarise this lesson in your own words, add examples or exam reminders…"></textarea><span id="note-state" class="muted"></span></section><div class="lesson-pager">' +
+      '</div></div><section class="my-notes"><label for="lesson-note">My private notes <small>(saved on this device)</small></label><textarea id="lesson-note" maxlength="4000" placeholder="Summarise this lesson in your own words, add examples or exam reminders…"></textarea><div class="personal-notes-actions"><button type="button" id="dictate-lesson" class="chip">🎙 Dictate my notes</button><span id="note-state" class="muted" role="status"></span></div></section><div class="lesson-pager">' +
       (prev
         ? '<a class="pager-link" href="#' +
           c.id +
@@ -458,25 +459,26 @@ export function studentPage(root, record, news, save) {
       bmBtn.textContent = on ? "★ Bookmarked" : "☆ Bookmark";
       showToast(on ? "Lesson bookmarked" : "Bookmark removed");
     };
-    const readBtn = panel.querySelector("#read-aloud");
-    if (!("speechSynthesis" in window)) readBtn.hidden = true;
-    readBtn.onclick = () => {
-      if (speechSynthesis.speaking) {
-        speechSynthesis.cancel();
-        readBtn.textContent = "🔊 Read aloud";
-        return;
-      }
-      const text = n.title + ". " + (n.html || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ");
-      const u = new SpeechSynthesisUtterance(text.slice(0, 6000));
-      u.lang = "en-IN";
-      u.onend = () => (readBtn.textContent = "🔊 Read aloud");
-      speechSynthesis.speak(u);
-      readBtn.textContent = "⏹ Stop reading";
-    };
-    window.addEventListener("hashchange", () => window.speechSynthesis?.cancel(), { once: true });
-    panel.querySelector("#print-lesson").onclick = () => window.print();
     const noteBox = panel.querySelector("#lesson-note");
     const noteState = panel.querySelector("#note-state");
+    const reader = mountAudioReader(panel.querySelector("#lesson-reader"), {
+      title: "Listen to this lesson",
+      description: "Play the full syllabus notes, your own notes, or highlighted text. Adjust voice and speed at any time.",
+      sources: {
+        lesson: {
+          label: "Full lesson",
+          getText: () => n.title + ". " + new DOMParser().parseFromString(n.html || "", "text/html").body.textContent,
+        },
+        private: { label: "My private notes", getText: () => noteBox.value },
+        selected: { label: "Highlighted text", getText: () => window.getSelection()?.toString() || "" },
+      },
+      defaultSource: "lesson",
+    });
+    const readBtn = panel.querySelector("#read-aloud");
+    readBtn.onclick = () => reader.start("lesson");
+    if (!("speechSynthesis" in window)) readBtn.hidden = true;
+    panel.querySelector("#print-lesson").onclick = () => window.print();
+    attachDictation(panel.querySelector("#dictate-lesson"), noteBox, noteState);
     noteBox.value = notes.get(c.id, n.id);
     let noteTimer;
     noteBox.oninput = () => {
@@ -547,10 +549,28 @@ export function studentPage(root, record, news, save) {
 
   if (view === "practice" || view === "mistakes") {
     const bank = bankFor(c.id);
+    // Complexity-ranked practice buckets, not official university difficulty tags.
+    // Quartiles give a stable 25/50/25 bell-shaped practice mix without rewriting
+    // or adding any syllabus questions.
+    const challengeScores = bank.map((row, index) => {
+      const q = String(row[1] || "");
+      const complexTerms = /calculate|derive|evaluate|predict|debug|output|interpret|compare|differentiat|integrat|complexity|algorithm|scenario|determin|matrix|apply|why|case|code|result|effect|strategy/i;
+      return {index, score: q.length + (q.includes("\n") ? 85 : 0) + (complexTerms.test(q) ? 36 : 0) + (q.match(/[0-9]/g)||[]).length * 4};
+    }).sort((a,b) => a.score-b.score || a.index-b.index);
+    const challengeLevel = Array(bank.length).fill("medium");
+    challengeScores.forEach((v,rank) => {
+      challengeLevel[v.index] = rank < Math.round(bank.length*.25) ? "easy" : rank >= Math.round(bank.length*.75) ? "hard" : "medium";
+    });
+    const selectedLevel = view === "practice" && ["easy","medium","hard"].includes(item) ? item : "all";
+    const levelMenu = view === "practice" ?
+      '<div class="difficulty-picker" role="group" aria-label="Practice difficulty">' +
+      [["all","Mixed / Bell curve","25 · 50 · 25"],["easy","Easy","Foundation"],["medium","Medium","Application"],["hard","Hard","Exam-style"]]
+        .map(([id,label,sub]) => '<a class="' + (selectedLevel===id?'is-selected':'') + '" href="#' + c.id + '/practice' + (id==='all'?'':'/'+id) + '">' + e(label) + '<small>' + e(sub) + '</small></a>').join('') +
+      '</div><p class="difficulty-note">25% easy · 50% medium · 25% hard is a suggested practice mix. Questions are grouped heuristically, not tagged or graded by the university.</p>' : '';
     const previous = record.practice?.[c.id] || {};
     const pool = bank
       .map((_, i) => i)
-      .filter((i) => view !== "mistakes" || previous[i] === false);
+      .filter((i) => (view !== "mistakes" || previous[i] === false) && (selectedLevel === "all" || challengeLevel[i] === selectedLevel));
 
     let limit = view === "mistakes" ? pool.length : 5;
     let order = [];
@@ -559,7 +579,16 @@ export function studentPage(root, record, news, save) {
 
     function startSession(count) {
       limit = Math.min(count, pool.length || bank.length);
-      order = shuffle(pool).slice(0, limit);
+      if (view === "practice" && selectedLevel === "all" && limit >= 4) {
+        const easy = shuffle(pool.filter(i=>challengeLevel[i]==="easy"));
+        const medium = shuffle(pool.filter(i=>challengeLevel[i]==="medium"));
+        const hard = shuffle(pool.filter(i=>challengeLevel[i]==="hard"));
+        const baseEasy = Math.max(1,Math.round(limit*.25));
+        const baseHard = Math.max(1,Math.round(limit*.25));
+        const baseMedium = Math.max(1,limit-baseEasy-baseHard);
+        const chosen=[...easy.slice(0,baseEasy),...medium.slice(0,baseMedium),...hard.slice(0,baseHard)];
+        order = shuffle([...chosen, ...shuffle(pool.filter(i=>!chosen.includes(i))).slice(0,limit-chosen.length)]);
+      } else order = shuffle(pool).slice(0, limit);
       step = 0;
       score = 0;
       show();
@@ -625,8 +654,8 @@ export function studentPage(root, record, news, save) {
         (record._hasProfile
           ? ""
           : '<p class="banner banner-gold"><span>Set a username in <a href="#profile">My profile</a> so correct answers also award leaderboard XP.</span></p>') +
-        lengthBar +
-        '<article class="reading quiz-card"><div class="lesson-meta"><small>Practice · ' +
+        levelMenu + lengthBar +
+        '<article class="reading quiz-card"><span class="difficulty-label">✦ ' + e(challengeLevel[idx][0].toUpperCase()+challengeLevel[idx].slice(1)) + ' · Practice question ' + (step+1) + '</span><div class="lesson-meta"><small>Practice · ' +
         (step + 1) +
         " of " +
         order.length +

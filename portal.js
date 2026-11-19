@@ -4,6 +4,10 @@ import {
   onAuthStateChanged,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
   sendEmailVerification,
   sendPasswordResetEmail,
   signOut,
@@ -33,6 +37,8 @@ import { factsCard } from "./study-facts.js";
 import { studyTools } from "./study-tools.js";
 import { videosPage, resourcesPage, plannerPage } from "./library.js";
 import { catalog } from "./catalog.js";
+import { studyCompanion } from "./companion.js";
+import { addStudyGarden } from "./garden.js";
 
 const app = initializeApp(firebaseConfig),
   auth = getAuth(app),
@@ -71,6 +77,10 @@ function friendly(err) {
       "auth/too-many-requests": "Too many attempts. Try again later.",
       "auth/weak-password": "Choose a longer Boardroom password.",
       "auth/network-request-failed": "Connection failed. Please try again.",
+      "auth/unauthorized-domain": "This domain is not authorized in Firebase Authentication. Ask the owner to add it to Authorized domains.",
+      "auth/operation-not-allowed": "Google sign-in isn't enabled in Firebase yet. Use campus email and password for now.",
+      "auth/account-exists-with-different-credential": "This email already uses another sign-in method. Sign in with your campus password, or ask the owner about account linking.",
+      "auth/popup-closed-by-user": "Google sign-in was closed. You can retry or use email and password.",
     }[err.code] || err.message
   );
 }
@@ -119,6 +129,34 @@ async function run(action) {
   }
 }
 
+if (!admin && $("google-login")) {
+  $("google-login").onclick = () => run(async () => {
+    const provider = new GoogleAuthProvider();
+    // Hosted-domain is a convenience hint, not authorization. The Chitkara
+    // email check plus Firebase security rules enforce the real restriction.
+    provider.setCustomParameters({ hd: "chitkara.edu.in", prompt: "select_account" });
+    try {
+      const result = await signInWithPopup(auth, provider);
+      if (!allowed(result.user.email || "") || !result.user.emailVerified) {
+        await signOut(auth);
+        throw Error("Only verified @chitkara.edu.in Google accounts may access Boardroom.");
+      }
+    } catch (err) {
+      if (err.code === "auth/popup-blocked" || err.code === "auth/cancelled-popup-request") {
+        await signInWithRedirect(auth, provider);
+        return;
+      }
+      throw err;
+    }
+  });
+  getRedirectResult(auth).then(async (result) => {
+    if (result && (!allowed(result.user.email || "") || !result.user.emailVerified)) {
+      await signOut(auth);
+      authMessage("Only verified @chitkara.edu.in Google accounts may access Boardroom.");
+    }
+  }).catch(err => authMessage(friendly(err)));
+}
+
 $("login").onsubmit = (ev) => {
   ev.preventDefault();
   run(() => signInWithEmailAndPassword(auth, email(), $("pass").value));
@@ -154,7 +192,7 @@ $("exit").onclick = () => signOut(auth);
 function updateHeaderUser(profileData, user) {
   const pill = $("header-user");
   if (!pill || !user) return;
-  const label = profileData?.name || user.email?.split("@")[0] || "Profile";
+  const label = profileData?.displayName || profileData?.name || user.email?.split("@")[0] || "Profile";
   pill.hidden = false;
   pill.innerHTML =
     face({ name: label, photo: profileData?.photo }) +
@@ -203,6 +241,7 @@ function render() {
     : [
         ["Library", ""],
         ["Videos", "videos"],
+        ["✦ Study buddy", "voice"],
         ["Resources", "resources"],
         ["Planner", "planner"],
         ["Battles", "battle"],
@@ -239,6 +278,11 @@ function render() {
 
   if (["profile", "battle", "leaderboard"].includes(area)) {
     cleanup = community($("desk"), db, active, record, route);
+    return;
+  }
+
+  if (area === "voice") {
+    cleanup = studyCompanion($("desk"), active.uid);
     return;
   }
 
@@ -296,6 +340,7 @@ function render() {
 
   if (!area) {
     const stopTools = studyTools($("desk"), active.uid, record);
+    addStudyGarden($("desk"), record, active.uid);
     const stopFacts = factsCard($("desk"));
     const notice = document.createElement("div");
     $("desk").querySelector(".grid").after(notice);
@@ -375,6 +420,7 @@ async function enterWorkspace(user) {
   $("main-nav").replaceChildren();
   if ($("header-user")) $("header-user").hidden = true;
   if ($("header-xp")) $("header-xp").hidden = true;
+  if ($("header-voice")) $("header-voice").hidden = true;
   if ($("header-admin-badge")) $("header-admin-badge").hidden = true;
 
   active = null;
@@ -393,7 +439,7 @@ async function enterWorkspace(user) {
     admin
       ? user.uid !== ADMIN_UID
       : !allowed(user.email || "") ||
-        !user.providerData.some((p) => p.providerId === "password")
+        !user.providerData.some((p) => ["password", "google.com"].includes(p.providerId))
   ) {
     authMessage("This account cannot access this workspace.");
     await signOut(auth);
@@ -473,6 +519,7 @@ async function enterWorkspace(user) {
     authMessage("");
     $("gate").hidden = true;
     $("desk").hidden = false;
+    if ($("header-voice")) $("header-voice").hidden = admin;
     render();
   } catch (err) {
     if (token === session)

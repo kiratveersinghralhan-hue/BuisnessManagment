@@ -160,7 +160,7 @@ export function community(root, db, user, record, route) {
       '<div class="banner profile-summary"><div class="profile-summary-left">' +
       face(info) +
       "<div><strong>" +
-      e(info.name || "Username not set yet") +
+      e(info.displayName || info.name || "Username not set yet") +
       "</strong><p class=\"muted\">" +
       e(user.email || "") +
       " · " +
@@ -174,10 +174,11 @@ export function community(root, db, user, record, route) {
       e(info.name || "") +
       '"></label><small>3–20 letters, numbers or underscores. Other signed-in students see your username and optional photo. The owner can see your email, private details and latest Boardroom activity.</small><div class="photo-preview">' +
       face(info) +
-      '</div><label>Profile picture<input name="photo" type="file" accept="image/jpeg,image/png,image/webp"></label><button id="remove" type="button">Remove picture</button><h3>Private details</h3><label>Gender (optional)<select name="gender"><option value="">Prefer not to say</option><option>Woman</option><option>Man</option><option>Nonbinary</option><option>Self-described</option></select></label><label>Study goal (optional)<input name="goal" maxlength="120" placeholder="What are you working toward?"></label><button class="primary">Save profile</button><p role="status" id="profile-msg"></p></form>';
+      '</div><label>Display name (optional)<input name="displayName" maxlength="48" placeholder="How should classmates see your name?"></label><label>Profile picture<input name="photo" type="file" accept="image/jpeg,image/png,image/webp"></label><button id="remove" type="button">Remove picture</button><h3>Private details</h3><label>Gender (optional)<select name="gender"><option value="">Prefer not to say</option><option>Woman</option><option>Man</option><option>Nonbinary</option><option>Self-described</option></select></label><label>Study goal (optional)<input name="goal" maxlength="120" placeholder="What are you working toward?"></label><button class="primary">Save profile</button><p role="status" id="profile-msg"></p></form>';
 
     const form = panel.querySelector("form"),
       fields = form.elements;
+    fields.displayName.value = info.displayName || "";
     fields.gender.value = record.details?.gender || "";
     fields.goal.value = record.details?.goal || "";
     let photo = info.photo || null,
@@ -228,6 +229,7 @@ export function community(root, db, user, record, route) {
         await update(ref(db), {
           ["profiles/" + uid]: {
             name: cleanName,
+            displayName: fields.displayName.value.trim(),
             ...(photo ? { photo } : {}),
           },
           ["students/" + uid + "/details"]: details,
@@ -236,7 +238,7 @@ export function community(root, db, user, record, route) {
         record._hasProfile = true;
         window.dispatchEvent(
           new CustomEvent("boardroom:profile", {
-            detail: { name: cleanName, photo },
+            detail: { name: cleanName, displayName: fields.displayName.value.trim(), photo },
           }),
         );
         const synced = await syncPendingXP(db, uid, record);
@@ -296,7 +298,8 @@ export function community(root, db, user, record, route) {
               "</strong>" +
               face(p) +
               '<div class="rank-info"><span>' +
-              e(p.name) +
+              e(p.displayName || p.name) +
+              (p.displayName ? " · @" + e(p.name) : "") +
               (id === uid ? " (you)" : "") +
               '</span><small>' +
               tierFor(xp) +

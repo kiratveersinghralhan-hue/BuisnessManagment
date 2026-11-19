@@ -4,11 +4,11 @@
     <meta charset="utf-8" />
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self' https://www.gstatic.com https://*.firebaseio.com https://*.firebasedatabase.app; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://i.ytimg.com; connect-src 'self' https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.gstatic.com http://127.0.0.1:* ws://127.0.0.1:*; frame-src https://www.youtube-nocookie.com https://*.firebaseapp.com; worker-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'"
+      content="default-src 'self'; script-src 'self' https://www.gstatic.com https://*.firebaseio.com https://*.firebasedatabase.app; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://i.ytimg.com; connect-src 'self' https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.gstatic.com http://127.0.0.1:* ws://127.0.0.1:*; frame-src https://www.youtube-nocookie.com https://*.firebaseapp.com https://accounts.google.com; worker-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'"
     />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-    <meta name="theme-color" content="#0D0D0F" />
+    <meta name="theme-color" content="#F8F6FF" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="Boardroom" />
     <meta
@@ -17,18 +17,15 @@
     />
     <link rel="manifest" href="./manifest.json" />
     <link rel="apple-touch-icon" href="./icon-180.png" />
-    <link
-      rel="icon"
-      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230D0D0F'/%3E%3Crect x='4' y='4' width='56' height='56' rx='11' fill='none' stroke='%23C8102E' stroke-width='3'/%3E%3Ctext x='32' y='44' text-anchor='middle' font-family='Georgia,serif' font-style='italic' font-weight='700' font-size='36' fill='%23D4AF37'%3EB%3C/text%3E%3C/svg%3E"
-    />
+    <link rel="icon" type="image/svg+xml" href="./boardroom-mark.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600;1,6..72,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Outfit:wght@400;500;600;700;800;900&display=swap"
       rel="stylesheet"
     />
     <title>Boardroom · Chitkara Study Hub</title>
-    <link rel="stylesheet" href="./styles.css?v=11" />
+    <link rel="stylesheet" href="./styles.css?v=13" />
   </head>
   <body data-area="student">
     <a class="skip" href="#main">Skip to content</a>
@@ -36,13 +33,14 @@
     <header class="site-header">
       <div class="bar">
         <a href="./index.html" class="brand">
-          <b aria-hidden="true">B</b>
+          <img src="./boardroom-mark.svg" alt="" width="42" height="42" class="brand-mark" />
           <span class="brand-copy">
-            <strong>Boardroom</strong>
-            <small>BBA DS &amp; BM Study Hub</small>
+            <strong>boardroom<span class="brand-dot">.</span></strong>
+            <small>your little study universe ✦</small>
           </span>
         </a>
         <div class="header-actions">
+          <a href="#voice" class="header-voice" id="header-voice" hidden title="Open voice study buddy" aria-label="Open voice study buddy">✦ Study buddy</a>
           <a href="#leaderboard" id="header-xp" class="xp-pill" hidden title="Live leaderboard XP">0 XP</a>
           <a href="#profile" id="header-user" class="user-pill" hidden></a>
           <button id="exit" class="btn-ghost-light" hidden>Sign out</button>
@@ -55,46 +53,35 @@
     <main id="main">
       <section id="gate">
         <div class="intro">
-          <small class="eyebrow">Chitkara Business School · Semester 1</small>
-          <h1>The study library</h1>
-          <p class="lead">
-            Structured course notes, curated reference videos, quick revision sheets, flashcards,
-            self-tests, study planner, and live 8-player quiz battles.
-          </p>
-          <div class="gate-highlights">
-            <div class="highlight-item">
-              <strong>7 Semester Subjects</strong>
-              <span>Notes, worked Python &amp; matrix examples, and revision sheets.</span>
-            </div>
-            <div class="highlight-item">
-              <strong>Videos &amp; Resources</strong>
-              <span>43 curated explainer videos, references, bookmarks &amp; planner.</span>
-            </div>
-            <div class="highlight-item">
-              <strong>Verified Campus Access</strong>
-              <span>Private progress synced to your <code>@chitkara.edu.in</code> account.</span>
-            </div>
+          <div class="hero-bubbles" aria-hidden="true">
+            <span class="bubble bubble-a">✿</span><span class="bubble bubble-b">✦</span><span class="bubble bubble-c">✳</span>
           </div>
-          <div class="prospect">
-            <strong>Semester 1 collection</strong>
-            <ul>
-              <li>Principles of Business Management</li>
-              <li>Programming Fundamentals</li>
-              <li>Applied Linear Algebra &amp; Calculus</li>
-              <li>Introduction to AI &amp; ML</li>
-              <li>Data Visualization <em class="tag-soon">Intro</em></li>
-              <li>Digital Reputation Management-I <em class="tag-soon">Intro</em></li>
-              <li>Performing Arts <em class="tag-soon">Intro</em></li>
-            </ul>
+          <span class="eyebrow hero-label">✦ FOR THE CAMPUS CREW · SEMESTER 01</span>
+          <h1>Your study space,<br><em>but make it fun.</em><span class="hero-spark" aria-hidden="true">✳</span></h1>
+          <p class="lead">One cozy corner for your entire semester: notes that make sense, videos worth watching, and quizzes that make revision feel a little less scary.</p>
+          <div class="hero-actions"><a href="#login" class="action primary hero-start">Let's get studying <span aria-hidden="true">↗</span></a><span class="mini-verified">✦ Made for Chitkara students</span></div>
+          <div class="hero-illustration" role="img" aria-label="A floating illustrated purple book and note cards">
+            <div class="illustration-orbit orbit-one"></div><div class="illustration-orbit orbit-two"></div>
+            <div class="hero-book"><div class="book-face"><span class="book-star">✳</span><strong>study<br>mode</strong><span class="book-smile">⌣</span></div><div class="book-pages"></div></div>
+            <div class="float-note note-one">✎<span>one day<br>at a time</span></div>
+            <div class="float-note note-two">★<span>you got<br>this!</span></div>
+            <div class="float-sticker sticker-heart">♥</div>
           </div>
+          <div class="hero-stats" aria-label="Boardroom features"><div><strong>07</strong><span>subjects</span></div><div><strong>43+</strong><span>reference videos</span></div><div><strong>∞</strong><span>you-can-do-this energy</span></div></div>
+          <div class="prospect"><strong>On the syllabus</strong><ul>
+            <li>Principles of Business Management</li><li>Programming Fundamentals</li><li>Applied Linear Algebra &amp; Calculus</li><li>Introduction to AI &amp; ML</li><li>Data Visualization <em class="tag-soon">Intro</em></li><li>Digital Reputation Management-I <em class="tag-soon">Intro</em></li><li>Performing Arts <em class="tag-soon">Intro</em></li>
+          </ul></div>
         </div>
 
         <form id="login" class="auth-card">
           <div class="auth-head">
-            <span class="seal-pill">Chitkara University</span>
-            <h2>Student sign in</h2>
-            <p class="muted">Use your university email with a dedicated Boardroom password.</p>
+            <span class="seal-pill">✿ HEY, STUDY BUDDY</span>
+            <h2>Welcome back!</h2>
+            <p class="muted">Your notes, study streaks and the leaderboard are waiting. ✨</p>
           </div>
+          <button type="button" class="google-auth" id="google-login"><span class="google-g" aria-hidden="true">G</span> Continue with Google</button>
+          <p class="auth-google-note">Use a verified <strong>@chitkara.edu.in</strong> Google account. Enable Google sign-in in Firebase first.</p>
+          <div class="auth-divider"><span>or use your campus email</span></div>
           <label>
             Email address
             <input
@@ -119,7 +106,7 @@
             <button class="primary" id="signin">Sign in</button>
             <button type="button" id="register">Create student account</button>
           </div>
-          <button type="button" class="link" id="reset">Reset password</button>
+          <button type="button" class="link" id="reset">Forgot your password?</button>
           <div id="verify" class="verify-box" hidden>
             <p class="muted">Open the verification link sent to your Chitkara inbox, then confirm below.</p>
             <div class="auth-buttons">
@@ -127,7 +114,8 @@
               <button type="button" id="resend">Resend verification email</button>
             </div>
           </div>
-          <p id="authmsg" role="status"></p>
+          <p id="authmsg" role="status" aria-live="polite"></p>
+          <p class="auth-security">🔒 Verified campus sign-in only · No guest accounts</p>
         </form>
       </section>
 
@@ -139,8 +127,8 @@
       <div class="footer-grid">
         <div class="footer-brand">
           <a href="./index.html" class="brand brand-footer">
-            <b aria-hidden="true">B</b>
-            <span>Boardroom</span>
+            <img src="./boardroom-mark.svg" alt="" width="42" height="42" class="brand-mark" />
+            <span>boardroom.</span>
           </a>
           <p>
             Independent student-built study workspace for Chitkara Business School · BBA Digital
@@ -176,8 +164,9 @@
     </footer>
 
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <div id="intro-screen" class="intro-screen" aria-hidden="true"><div class="intro-orbit"></div><div class="intro-content"><img src="./boardroom-mark.svg" alt="" width="86" height="86"><span>boardroom<span class="brand-dot">.</span></span><small>a tiny universe of big ideas ✦</small></div></div>
 
-    <script type="module" src="./motion.js?v=11"></script>
-    <script type="module" src="./portal.js?v=11"></script>
+    <script type="module" src="./motion.js?v=13"></script>
+    <script type="module" src="./portal.js?v=13"></script>
   </body>
 </html>
