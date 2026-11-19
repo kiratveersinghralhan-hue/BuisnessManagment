@@ -157,9 +157,9 @@ export function studentPage(root, record, news, save) {
 
     const carouselHTML =
       '<section class="carousel-section" aria-label="360-degree subject selector">' +
-      '<div class="carousel-head"><div><small class="eyebrow">360° Subject Selector</small><h2>Explore your courses</h2></div>' +
+      '<div class="carousel-head"><div><small class="eyebrow">360° Subject Selector</small><h2>Explore your courses</h2><p class="carousel-hint">Swipe cards or use the arrows · tap a dot to choose</p></div>' +
       '<div class="carousel-controls"><button type="button" id="car-prev" aria-label="Previous subject">←</button><button type="button" id="car-spin" class="chip">Auto-spin</button><button type="button" id="car-next" aria-label="Next subject">→</button></div></div>' +
-      '<div class="carousel-stage" id="carousel-stage"><div class="carousel-ring" id="carousel-ring">' +
+      '<div class="carousel-stage" id="carousel-stage" role="region" aria-label="Rotating subjects"><div class="carousel-ring" id="carousel-ring">' +
       catalog
         .map((item, idx) => {
           const sd = all[item.id];
@@ -227,23 +227,40 @@ export function studentPage(root, record, news, save) {
     const total = cards.length;
     const stepDeg = 360 / total;
     let index = 0,
+      rotationSteps = 0,
       spinTimer = null,
       spinning = false,
       dragStartX = null;
 
     function layoutCarousel() {
       const w = stage.clientWidth || 340;
-      const radius = Math.round(Math.min(350, Math.max(195, w * 0.42)));
-      cards.forEach((el, i) => {
+      // Size the cylinder to the viewport, not the entire document. This
+      // prevents the carousel from spilling over narrow phone displays.
+      const mobile = matchMedia("(max-width: 600px)").matches;
+      const cardWidth = ring.offsetWidth || 220;
+      const idealRadius = cardWidth / (2 * Math.tan(Math.PI / total));
+      const radius = Math.round(mobile ? Math.min(idealRadius, Math.max(156, w * .47)) : Math.min(345, Math.max(195, idealRadius)));
+      for (const [i, el] of cards.entries()) {
         el.style.transform = `rotateY(${i * stepDeg}deg) translateZ(${radius}px)`;
-      });
-      ring.style.transform = `translateZ(-${radius}px) rotateY(${-index * stepDeg}deg)`;
+        el.setAttribute("aria-hidden", i === index ? "false" : "true");
+        const link = el.querySelector("a");
+        if (link) link.tabIndex = i === index ? 0 : -1;
+      }
+      ring.style.transform = `translateZ(-${radius}px) rotateY(${-rotationSteps * stepDeg}deg)`;
     }
 
     function goTo(nextIdx) {
-      index = ((nextIdx % total) + total) % total;
+      const next = ((nextIdx % total) + total) % total;
+      let delta = next - index;
+      if (delta > total / 2) delta -= total;
+      if (delta < -total / 2) delta += total;
+      rotationSteps += delta;
+      index = next;
       cards.forEach((el, i) => el.classList.toggle("is-front", i === index));
-      dots.forEach((el, i) => el.classList.toggle("is-active", i === index));
+      dots.forEach((el, i) => {
+        el.classList.toggle("is-active", i === index);
+        el.setAttribute("aria-pressed", String(i === index));
+      });
       layoutCarousel();
     }
 
@@ -280,11 +297,19 @@ export function studentPage(root, record, news, save) {
       if (ev.target.closest("a,button")) return;
       dragStartX = ev.clientX;
     });
+    stage.addEventListener("pointercancel", () => { dragStartX = null; });
     stage.addEventListener("pointerup", (ev) => {
       if (dragStartX === null) return;
       const dx = ev.clientX - dragStartX;
       dragStartX = null;
-      if (Math.abs(dx) > 35) goTo(index + (dx < 0 ? 1 : -1));
+      if (Math.abs(dx) > 32) goTo(index + (dx < 0 ? 1 : -1));
+    });
+    stage.tabIndex = 0;
+    stage.addEventListener("keydown", ev => {
+      if (ev.key === "ArrowLeft" || ev.key === "ArrowRight") {
+        ev.preventDefault();
+        goTo(index + (ev.key === "ArrowRight" ? 1 : -1));
+      }
     });
 
     const onResize = () => {

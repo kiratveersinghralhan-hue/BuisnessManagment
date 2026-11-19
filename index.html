@@ -24,8 +24,10 @@
       href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Outfit:wght@400;500;600;700;800;900&display=swap"
       rel="stylesheet"
     />
+    <script src="./theme.js?v=14"></script>
     <title>Boardroom · Chitkara Study Hub</title>
-    <link rel="stylesheet" href="./styles.css?v=13" />
+    <link rel="stylesheet" href="./styles.css?v=14" />
+    <link rel="stylesheet" href="./refinement-v14.css?v=14" />
   </head>
   <body data-area="student">
     <a class="skip" href="#main">Skip to content</a>
@@ -41,6 +43,8 @@
         </a>
         <div class="header-actions">
           <a href="#voice" class="header-voice" id="header-voice" hidden title="Open voice study buddy" aria-label="Open voice study buddy">✦ Study buddy</a>
+          <button type="button" id="intro-replay" class="intro-replay" title="Replay cinematic intro" aria-label="Replay cinematic intro">✦<span class="intro-replay-label"> Intro</span></button>
+          <button type="button" class="theme-toggle" aria-label="Switch to midnight theme" aria-pressed="false" title="Switch appearance"><span class="theme-symbol" aria-hidden="true">☾</span><span class="theme-label">Dark</span></button>
           <a href="#leaderboard" id="header-xp" class="xp-pill" hidden title="Live leaderboard XP">0 XP</a>
           <a href="#profile" id="header-user" class="user-pill" hidden></a>
           <button id="exit" class="btn-ghost-light" hidden>Sign out</button>
@@ -80,7 +84,7 @@
             <p class="muted">Your notes, study streaks and the leaderboard are waiting. ✨</p>
           </div>
           <button type="button" class="google-auth" id="google-login"><span class="google-g" aria-hidden="true">G</span> Continue with Google</button>
-          <p class="auth-google-note">Use a verified <strong>@chitkara.edu.in</strong> Google account. Enable Google sign-in in Firebase first.</p>
+          <p class="auth-google-note">Use a verified <strong>@chitkara.edu.in Google account</strong>. If your campus email uses Microsoft instead, sign in with your Boardroom password.</p>
           <div class="auth-divider"><span>or use your campus email</span></div>
           <label>
             Email address
@@ -164,9 +168,20 @@
     </footer>
 
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
-    <div id="intro-screen" class="intro-screen" aria-hidden="true"><div class="intro-orbit"></div><div class="intro-content"><img src="./boardroom-mark.svg" alt="" width="86" height="86"><span>boardroom<span class="brand-dot">.</span></span><small>a tiny universe of big ideas ✦</small></div></div>
+    <div id="intro-screen" class="intro-screen" role="dialog" aria-modal="true" aria-label="Boardroom opening animation">
+      <div class="intro-panel intro-panel-left" aria-hidden="true"></div>
+      <div class="intro-panel intro-panel-right" aria-hidden="true"></div>
+      <div class="intro-cut-line" aria-hidden="true"></div>
+      <div class="intro-content">
+        <span class="intro-kicker">YOUR STUDY UNIVERSE</span>
+        <img src="./boardroom-mark.svg" alt="" width="82" height="82" />
+        <span class="intro-wordmark">BOARDROOM<span class="intro-period">.</span></span>
+        <small>Make every hour count.</small>
+      </div>
+      <button type="button" class="intro-skip" id="intro-skip" aria-label="Skip the opening animation">Skip intro <span aria-hidden="true">↗</span></button>
+    </div>
 
-    <script type="module" src="./motion.js?v=13"></script>
-    <script type="module" src="./portal.js?v=13"></script>
+    <script type="module" src="./motion.js?v=14"></script>
+    <script type="module" src="./portal.js?v=14"></script>
   </body>
 </html>

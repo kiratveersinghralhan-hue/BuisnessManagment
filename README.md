@@ -1,3 +1,29 @@
+## V14: Mobile + Midnight + cinematic release notes
+
+- Keeps ALL original semester syllabus, student records, profile, quizzes, XP,
+  realtime rooms, notes, audio reader and verified-campus email/password flow.
+- Header **Dark / Light** toggle persists locally as `boardroom:theme:v14`.
+  The Midnight palette is graphite / crimson / warm white / muted gold.
+- Cinematic diagonal split opening plays on each full page visit, takes ~2.4s,
+  is skippable (Skip / Escape), replayable via header **Intro** control and
+  entirely bypassed for prefers-reduced-motion.
+- 360 subject carousel: shortest-angle continuous rotation, touch swipe,
+  arrow-key accessibility, tap dots, bounded responsive stage. Auto-spin stays
+  opt-in. On narrow mobile, the active subject remains legible.
+- Firebase Google OAuth: improved actionable error message and diagnostics.
+  We removed signInWithRedirect fallback because cross-origin redirect on
+  GitHub Pages may fail in browsers blocking third-party storage.
+- **Firebase live configuration is not changed by uploading this package.**
+  Keep Email/Password enabled. In Firebase Auth > Settings > Authorized domains,
+  add `kiratveersinghralhan-hue.github.io`, with no scheme/path; keep Google
+  provider enabled. If error persists, verify the provider OAuth web client
+  in Firebase / Google Cloud Console and inspect browser Console red errors.
+- Do not publish Realtime Database rules or overwrite data just to address an
+  `auth/internal-error` in the Google OAuth popup.
+- Deployment: replace files at GitHub Pages repository root (not nested), keep
+  the original repo settings and CNAME, then verify on real devices. GitHub
+  commit/deployment is NOT performed by this ZIP itself.
+
 # Boardroom
 
 Boardroom is an independent study portal for the first semester of Chitkara Business School’s BBA in Digital Science & Business Management.

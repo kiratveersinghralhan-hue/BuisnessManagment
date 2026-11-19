@@ -126,12 +126,43 @@ document.querySelector("#top")?.addEventListener("click", () => {
 });
 
 
-// Friendly first-visit motion. Skip for repeat sessions and reduced-motion users.
-const hello = document.getElementById("intro-screen");
-if (hello) {
-  const hide = () => { hello.classList.add("is-done"); setTimeout(() => hello.remove(), 800); };
-  let shown = false;
-  try { shown = sessionStorage.getItem("br_studio_intro_v2") === "1"; sessionStorage.setItem("br_studio_intro_v2", "1"); } catch {}
-  if (reduce.matches || shown) hide();
-  else setTimeout(hide, 1550);
+// Replayable cinematic entrance: wordmark, diagonal blade, then two split panels.
+// Does not run for people who requested reduced motion. No sessionStorage skip,
+// so first-load animation remains visible after deployment and on repeat visits.
+const intro = document.getElementById("intro-screen");
+if (intro) {
+  const skip = document.getElementById("intro-skip");
+  const replay = document.getElementById("intro-replay");
+  let timers = [];
+  const clear = () => { timers.forEach(clearTimeout); timers = []; };
+  const finish = () => {
+    clear();
+    intro.classList.add("is-done");
+    intro.classList.remove("is-playing");
+    intro.setAttribute("aria-hidden", "true");
+    intro.removeAttribute("aria-modal");
+    intro.setAttribute("inert", "");
+    const t = setTimeout(() => { intro.hidden = true; }, 720);
+    timers.push(t);
+  };
+  const play = () => {
+    clear();
+    if (reduce.matches) { finish(); return; }
+    intro.hidden = false;
+    intro.removeAttribute("inert");
+    intro.setAttribute("aria-hidden", "false");
+    intro.setAttribute("aria-modal", "true");
+    intro.classList.remove("is-done", "is-cutting", "is-playing");
+    // Restart animations even after replay. Keep visible 2 seconds for branding.
+    void intro.offsetWidth;
+    requestAnimationFrame(() => intro.classList.add("is-playing"));
+    timers.push(setTimeout(() => { intro.classList.remove("is-playing"); intro.classList.add("is-cutting"); }, 1150));
+    timers.push(setTimeout(finish, 2360));
+  };
+  skip?.addEventListener("click", finish);
+  replay?.addEventListener("click", play);
+  window.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !intro.hidden) finish();
+  });
+  play();
 }

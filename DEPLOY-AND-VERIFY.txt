@@ -1,0 +1,71 @@
+BOARDROOM V14 · DEPLOYMENT AND QA
+===================================
+
+Safe deployment
+---------------
+1. Back up/retain the current GitHub commit (8a78372df4fe48cf53b919b4e03606b932c2da3a).
+2. In GitHub repository kiratveersinghralhan-hue/BuisnessManagment,
+   upload/replace the contents of this ZIP AT THE REPOSITORY ROOT.
+   Do not upload one new enclosing folder.
+3. Do not delete your .github workflow files or CNAME if present.
+4. Commit with the message: "Refine Boardroom mobile layout, midnight theme and cinematic intro".
+5. GitHub Pages deploys from your existing Pages source; check Actions/Pages.
+6. Hard refresh on desktop and mobile to bypass cached CSS/JS.
+
+New/changed files
+-----------------
+Changed: README.md, index.html, admin.html, portal.js, student.js, motion.js.
+New:     theme.js, refinement-v14.css, DEPLOY-AND-VERIFY.txt.
+Unchanged: database.rules.json, firebase-config.js, all four main course
+           data files, existing quiz/content, XP/community, audio reader,
+           personal notes, videos, admin backend modules, all other assets.
+
+Firebase Google sign-in (not automatically fixed by GitHub upload)
+-----------------------------------------------------------------
+- Authentication > Sign-in method: Google enabled, support email configured.
+- Authentication > Settings > Authorized domains: add exact hostname:
+      kiratveersinghralhan-hue.github.io
+  without https:// or /BuisnessManagment/.
+- Keep Email/Password enabled and Anonymous disabled.
+- Google provider requires an actual Google account with a verified
+  @chitkara.edu.in email. Email accounts hosted only by Microsoft
+  are NOT automatically Google accounts.
+- If auth/internal-error remains, do not modify Realtime Database rules.
+  On desktop Chrome F12 > Console and Network > filter by 'identitytoolkit',
+  retry login and inspect error code. Do not share tokens or passwords.
+- Firebase official help: https://firebase.google.com/docs/auth/faq-and-troubleshooting
+- For a misconfigured Google OAuth client, validate client ID / secret
+  through Firebase Console and Google Cloud, or follow Firebase's
+  documented disable/re-enable Google provider procedure carefully.
+- Account linking must be implemented/tested separately before students
+  use a second provider for an existing email, to avoid duplicate UIDs.
+
+QA (must run on your own browser or through a capable browser automation)
+-------------------------------------------------------------------------
+[ ] 320 / 360 / 390 / 430 px portrait: no sideways scroll or clipped text
+[ ] 768 / 1024 px tablet: nav remains usable and form fits
+[ ] 1366 / 1920 desktop: side-by-side landing layout remains aligned
+[ ] Intro visible on each full page reload (~2.4s)
+[ ] Intro skip button and Escape key work
+[ ] Header Intro replay button works
+[ ] Dark / Light toggle works and persists after refresh
+[ ] Screen reader/reduced-motion mode skips animation
+[ ] Existing verified Chitkara password login works
+[ ] Google login tested after authorized-domain check
+[ ] Seven subjects available, videos and syllabus unchanged
+[ ] Carousel prev/next, dots, swipe, ArrowLeft/Right, opt-in spin
+[ ] Read aloud notes, pause/resume, dictation, playback speed
+[ ] Existing XP, leaderboard and profile editing after real login
+[ ] Admin access, announcements, battles work with existing data
+[ ] No DevTools Console errors (except unsupported browser speech features)
+
+Tested in build container
+-------------------------
+- JavaScript syntax for every .js: passed.
+- Stylesheet parsing: passed.
+- HTML local asset references and duplicate IDs: passed.
+- Core course data and Firebase rules SHA-256 byte-identical to original: passed.
+- 360 carousel shortest-angle index arithmetic: passed.
+- Automated browser preview: BLOCKED in this environment by
+  Chromium ERR_BLOCKED_BY_ADMINISTRATOR even on data: and file: URLs.
+- Production OAuth and realtime authenticated test: NOT performed.

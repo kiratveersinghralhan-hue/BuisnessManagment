@@ -6,8 +6,6 @@ import {
   signInWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithPopup,
-  signInWithRedirect,
-  getRedirectResult,
   sendEmailVerification,
   sendPasswordResetEmail,
   signOut,
@@ -80,7 +78,11 @@ function friendly(err) {
       "auth/unauthorized-domain": "This domain is not authorized in Firebase Authentication. Ask the owner to add it to Authorized domains.",
       "auth/operation-not-allowed": "Google sign-in isn't enabled in Firebase yet. Use campus email and password for now.",
       "auth/account-exists-with-different-credential": "This email already uses another sign-in method. Sign in with your campus password, or ask the owner about account linking.",
-      "auth/popup-closed-by-user": "Google sign-in was closed. You can retry or use email and password.",
+      "auth/popup-closed-by-user": "Google sign-in was closed. Try again or use your campus password.",
+      "auth/popup-blocked": "Your browser blocked Google sign-in. Allow pop-ups for this site, then retry.",
+      "auth/internal-error": "Google sign-in could not finish. Confirm the GitHub Pages domain in Firebase Authorized domains and check the Google OAuth configuration. Email/password sign-in still works.",
+      "auth/invalid-oauth-client-id": "Google OAuth configuration needs repair in Firebase. Contact the site owner or use campus email/password.",
+      "auth/invalid-api-key": "Firebase rejected the API key. Ask the owner to review the project configuration.",
     }[err.code] || err.message
   );
 }
@@ -142,19 +144,11 @@ if (!admin && $("google-login")) {
         throw Error("Only verified @chitkara.edu.in Google accounts may access Boardroom.");
       }
     } catch (err) {
-      if (err.code === "auth/popup-blocked" || err.code === "auth/cancelled-popup-request") {
-        await signInWithRedirect(auth, provider);
-        return;
-      }
+      // Avoid logging OAuth tokens or personally identifiable customData.
+      console.warn("Boardroom Google sign-in failure code:", err.code || "unknown");
       throw err;
     }
   });
-  getRedirectResult(auth).then(async (result) => {
-    if (result && (!allowed(result.user.email || "") || !result.user.emailVerified)) {
-      await signOut(auth);
-      authMessage("Only verified @chitkara.edu.in Google accounts may access Boardroom.");
-    }
-  }).catch(err => authMessage(friendly(err)));
 }
 
 $("login").onsubmit = (ev) => {
