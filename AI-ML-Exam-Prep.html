@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>The Boardroom · AI &amp; ML Exam Prep</title><style>:root{color-scheme:dark;--bg:#100e20;--surface:#1c1931;--ink:#f9f5ff;--muted:#c2b9d5;--accent:#d5ff77;--on-accent:#202b0c;--line:#51466e;--violet:#c8a8ff;font-family:system-ui,sans-serif;scroll-behavior:smooth}
+:root[data-theme=light]{color-scheme:light;--bg:#f4efff;--surface:#fff;--ink:#211635;--muted:#524665;--accent:#354b13;--on-accent:#fff;--line:#c5b8dc;--violet:#693ba6}
+*{box-sizing:border-box} [hidden]{display:none!important}body{margin:0;background:var(--bg);color:var(--ink)}header,main,footer{width:min(1120px,calc(100% - 32px));margin:auto}header,footer,.section-head{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}header{padding:20px 0;border-bottom:1px solid var(--line)}footer{padding:24px 0;color:var(--muted);border-top:1px solid var(--line)}a{color:var(--violet)}.brand{color:var(--ink);text-decoration:none;font-weight:800}.brand span{color:var(--accent);margin-right:6px}.skip{position:absolute;left:1rem;top:-10rem}.skip:focus{top:1rem;background:var(--surface);z-index:2}button,.button,select,input{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 14px;min-height:44px;max-width:100%}button,.button,summary{cursor:pointer}.button{text-decoration:none}button:hover,.button:hover{border-color:var(--violet)}:focus-visible{outline:3px solid var(--violet);outline-offset:3px}.primary{background:var(--accent);color:var(--on-accent);font-weight:800;border-color:var(--accent)}.hero{position:relative;overflow:hidden;margin:24px 0 16px;padding:clamp(22px,6vw,62px);background:radial-gradient(ellipse at 85% 45%,#5c3886,transparent 58%),var(--surface);border:1px solid var(--line);border-radius:26px;display:grid;grid-template-columns:3fr 2fr;align-items:center;min-height:330px}.hero p{max-width:40ch}.eyebrow{font-size:.76rem;font-weight:800;letter-spacing:.13em;color:var(--violet)}h1,h2,h3,p{margin:0 0 .65em}h1{font-size:clamp(2.6rem,8vw,6.2rem);line-height:.92;letter-spacing:-.07em;margin-bottom:.32em}h1 em{color:var(--accent);font-style:normal}h2{font-size:clamp(1.55rem,4vw,2.2rem);letter-spacing:-.04em}.actions,form{display:flex;gap:10px;flex-wrap:wrap;align-items:end}.orbit{justify-self:center;width:200px;height:180px;display:grid;place-items:center;position:relative;perspective:450px}.orbit span{position:absolute;color:#dbff85;font-size:34px;top:10px;right:0}.orbit span:last-child{top:auto;right:auto;bottom:0;left:0}.cube{width:90px;height:90px;position:relative;transform-style:preserve-3d;animation:float 6s ease-in-out infinite;transform:rotateX(-20deg) rotateY(35deg)}.cube i{position:absolute;inset:0;border:2px solid #e7d8ff;border-radius:12px;background:linear-gradient(135deg,#e2bcff,#7351bd);transform:translateZ(45px);box-shadow:inset 0 0 12px #ffffff66}.cube i:nth-child(2){transform:rotateY(-90deg) translateZ(45px);background:#8868d9}.cube i:nth-child(3){transform:rotateX(90deg) translateZ(45px);background:#d6ff8b}@keyframes float{50%{transform:translateY(-13px) rotateX(-32deg) rotateY(55deg)}}.stats,#cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.stats div,.panel,article{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px}.stats strong{display:block;font-size:1.65rem;color:var(--accent)}small,.source,.stats span{color:var(--muted)}.panel,#topics{margin:24px 0}label{display:grid;gap:5px;font-size:.88rem}.topic-icon{font-size:1.8rem}.section-head{margin-bottom:12px}.section-head h2{margin-bottom:0}article p{line-height:1.55}details{margin:10px 0}summary{color:var(--violet);padding:5px 0}details p{margin:.5em 0}article button{margin-top:6px}.source{margin-top:16px}.question{margin-top:18px;border-top:1px solid var(--line);padding-top:18px}.options{display:grid;gap:8px;margin:12px 0}.options label{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:10px;padding:8px}.options input{min-height:auto}.options input:checked + span{font-weight:700}.feedback{padding:10px;background:var(--bg);border-radius:10px}.time{font-variant-numeric:tabular-nums;color:var(--accent)}@media(max-width:760px){.stats,#cards{grid-template-columns:repeat(2,minmax(0,1fr))}.orbit{width:125px}}@media(max-width:480px){.hero{grid-template-columns:1fr;min-height:auto}.orbit{display:none}.stats,#cards{grid-template-columns:1fr}form label{width:100%}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;scroll-behavior:auto!important}}
+</style></head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header><a class="brand" href="#"><span aria-hidden="true">✦</span> The Boardroom</a><button id="theme" type="button">Light theme</button></header>
+<main id="main">
+<section class="hero"><div><p class="eyebrow">BBA DSBM · SEMESTER 1</p><h1>AI &amp; ML<br><em>Exam prep</em></h1><p>Revise the essentials for 28 November. Then put what you know to the test.</p><div class="actions"><button class="primary" id="mock">Start timed mock</button><a class="button" href="#topics">Quick revision</a></div></div><div class="orbit" aria-hidden="true"><div class="cube"><i></i><i></i><i></i></div><span>✦</span><span>✧</span></div></section>
+<section class="stats" aria-label="Practice progress"><div><span>Readiness</span><strong id="readiness">—</strong><small>Latest correct answers / all practice questions</small></div><div><span>Questions attempted</span><strong id="coverage">—</strong><small>Unique questions on this browser</small></div><div><span>Study XP</span><strong id="xp">0</strong><small>10 XP per question first answered correctly</small></div></section>
+<section class="panel" id="practice" tabindex="-1"><h2>Practice room</h2><form id="setup"><label>Topic<select name="topic"><option value="all">All topics</option></select></label><label>Difficulty<select name="difficulty"><option value="all">Mixed difficulty</option><option>Easy</option><option>Medium</option><option>Hard</option></select></label><button class="primary">Start practice</button><button type="button" id="mistakes">Review mistakes</button></form><div id="session"></div></section>
+<section id="topics"><div class="section-head"><div><p class="eyebrow">QUICK REVISION</p><h2>Study by topic</h2></div><label>Find a topic<input id="search" type="search" placeholder="e.g. churn"></label></div><div id="cards"></div><p id="empty" hidden>No topics match that search.</p><p class="source">Based on the AI &amp; ML course handout and posted Unit 1–3 topics. No Unit 4 material was visible. Questions are original practice. <a href="https://culms.chitkara.edu.in/d2l/home/9296">Open official course ↗</a></p></section>
+</main><footer><span>Progress is saved in this browser.</span></footer>
+<script>
+window.examTopics = [
+  {
+    unit: 1, title: "How LLMs work", icon: "🧠",
+    summary: "Tokens, context limits, hallucinations and verification.",
+    notes: "An LLM repeatedly predicts a plausible next token given its current context. A token is a chunk of text. The context window is the amount of text the model can consider for a request, including instructions and other provided material. Training shapes the model’s parameters. Providing a document at inference time instead makes text available for that request. A hallucination is a plausible but unsupported or incorrect output. Ground claims in relevant source text, independently check important details, and ask for uncertainty when evidence is missing.",
+    exercise: "Give the model two invented product-return policies with different dates. Ask which applies to a specific purchase. Verify the date and cite the exact policy sentence.",
+    written: "Explain how a finite context window and next-token prediction can lead to an incorrect business answer. Propose two controls and explain the role of each.",
+    rubric: "Define both terms, distinguish missing evidence from a fabricated answer, and connect retrieval and verification to specific failure modes.",
+    questions: [
+      ["Easy","What is a token?","A chunk of text processed by the model","A verified source","A training run","A complete sentence in every case","Common words may be one token, but longer words can be split into several."],
+      ["Medium","A model loses track of a rule buried in a long conversation. What should you try first?","Supply the relevant rule and evidence concisely","Tell it to use a larger training set","Treat its answer as verified","Ask for a more confident tone","Putting the relevant information in the current request reduces dependence on distant context."],
+      ["Hard","Two assistants give the same unsourced market statistic. What is the strongest check?","Trace the number to its original report and check its definition and date","Accept the agreement as independent corroboration","Vote for the answer with the most detail","Ask both models to repeat the number","Models can repeat the same error. Inspect the source and verify that it supports the exact claim."]
+    ]
+  },
+  {
+    unit: 1, title: "Prompt engineering", icon: "⚡",
+    summary: "Zero-shot, few-shot, system and role prompts, stepwise checks, and RAG.",
+    notes: "Zero-shot prompting gives an instruction without worked examples. Few-shot prompting provides examples that demonstrate the expected input-output mapping. A system prompt supplies standing instructions in a configured assistant, while a role prompt specifies the perspective or audience. For numerical cases, request a short calculation, assumptions and checks you can inspect. RAG retrieves relevant material and supplies it as context. You can use a zero-shot prompt with retrieved evidence because examples and retrieval solve different problems.",
+    exercise: "Write a zero-shot prompt that classifies a complaint as billing, delivery or product. Add two labeled examples and an ambiguity rule. Compare the results on a new complaint.",
+    written: "Design a reusable assistant for answering returns-policy questions. Explain which decisions belong in the system prompt, the user prompt, and retrieval.",
+    rubric: "Give standing rules, a specific request, an evidence-first retrieval step and a response for missing policy evidence.",
+    questions: [
+      ["Easy","Which prompt uses few-shot prompting?","One with worked input-output examples","One with a company job title only","One with a word limit only","One that omits the task","Few-shot examples demonstrate the pattern to apply to new inputs."],
+      ["Medium","Where should a support assistant’s standing rule to cite the policy go?","In its system instructions","In the score field","In its training data only","In the end user’s nickname","A system instruction expresses behavior that should apply across requests."],
+      ["Hard","Can a zero-shot prompt use RAG?","Yes. It can supply retrieved evidence without worked examples.","No. Retrieval always adds demonstrations.","No. Retrieval changes model weights.","Yes, but only if it omits the retrieved text.","Zero-shot describes the absence of demonstrations. RAG describes the use of retrieved evidence."]
+    ]
+  },
+  {
+    unit: 1, title: "Predictive analytics", icon: "📈",
+    summary: "Forecasting, customer churn, and checking model performance.",
+    notes: "Predictive analytics uses historical patterns to estimate future outcomes. Churn prediction is classification when the outcome is leave or stay. Estimating future revenue is regression when the target is numeric. Define the prediction date and target window. Use only features available at prediction time to avoid leakage. With rare churn, examine precision and recall alongside accuracy. Choose your threshold based on how costly missed churn and unnecessary outreach are.",
+    exercise: "For 100 subscribers, 10 churned. The model flagged 8 and 6 of those churned. Calculate precision (6/8 = 75%) and recall (6/10 = 60%). Explain which matters more if outreach is cheap.",
+    written: "Sketch a churn model for a telecom business. Specify target, eligible features, split, evaluation and how a manager would use the scores.",
+    rubric: "Define a future churn window, exclude post-outcome fields, evaluate on later data and connect threshold choice to outreach cost.",
+    questions: [
+      ["Easy","Which is a classification task?","Predict whether a customer will churn","Estimate next month’s revenue","Measure the exact bill amount","Calculate average tenure","Churn has category labels. Revenue and bill amount are numeric quantities."],
+      ["Medium","Which feature causes leakage when predicting tomorrow’s churn?","The cancellation timestamp recorded after the prediction date","Tenure measured today","Last month’s spend","Number of prior support requests","The cancellation timestamp contains information the model could not have at prediction time."],
+      ["Hard","A model finds 9 of 12 churners and flags 15 customers in total. What are precision and recall?","60% precision and 75% recall","75% precision and 60% recall","60% precision and 60% recall","75% precision and 75% recall","Precision is 9/15 of flagged customers. Recall is 9/12 of actual churners."]
+    ]
+  },
+  {
+    unit: 2, title: "AI-assisted research", icon: "🔎",
+    summary: "NotebookLM, Perplexity, source quality and synthesis.",
+    notes: "Use a source-grounded notebook to ask questions about uploaded material and compare claims across documents. Use citation-enabled search to discover additional sources. Open every source you rely on. Check who published it, when, how the estimate was obtained, what geography it covers and whether the source supports the claim. Synthesis organizes findings by question and explains disagreements in definitions, methods or scope.",
+    exercise: "Compare two Indian EV adoption reports. Record year, geography, vehicle category, denominator and data source before comparing any percentages.",
+    written: "Explain how you would combine NotebookLM and citation-enabled search for an Indian EV industry question and resolve a discrepancy between two estimates.",
+    rubric: "Cover discovery, close reading, source-quality checks, definition and date alignment, and a defensible synthesis.",
+    questions: [
+      ["Easy","What should you do before reusing a statistic cited by AI?","Open the source and check its evidence","Cite only the assistant","Assume a URL proves the number","Round the number to remove uncertainty","A real URL can be irrelevant or misrepresented. Verify the source itself."],
+      ["Medium","What makes two EV adoption figures directly comparable?","Comparable dates, populations and denominators","Both reports use the term EV","Both reports are PDFs","Both figures have one decimal place","Different periods or underlying populations can explain apparently contradictory estimates."],
+      ["Hard","A company press release claims rapid adoption. Which synthesis is strongest?","Report its scope and compare with independent registrations data","Treat the press release as a neutral industry total","Discard every company source automatically","Average the company claim with any industry statistic","Use the press release for its specific claim and compare against an independent source with known scope."]
+    ]
+  },
+  {
+    unit: 2, title: "The research brief", icon: "📝",
+    summary: "A focused question, cited findings, a prompt log and documented corrections.",
+    notes: "A useful brief states a decision-relevant question, defines scope, synthesizes evidence, discusses limitations, and gives a conclusion proportional to that evidence. Document the prompts that materially affected your analysis, significant corrections you made, and where the evidence comes from. In peer review, ask whether each key claim can be traced and whether the recommendation follows from the findings.",
+    exercise: "Draft a one-page brief outline on electric two-wheeler adoption in one Indian state. Add a claim-evidence table and a place to record one AI error and its correction.",
+    written: "Outline a cited industry brief for a manager. Explain how a prompt log and a correction log help a reviewer assess the work.",
+    rubric: "Include scope, findings, source quality, limitations and conclusion. Explain what each log makes auditable.",
+    questions: [
+      ["Easy","What belongs in a correction log?","A material error and the evidence used to correct it","Only the final title","Every private conversation","A list of all browser tabs","The log helps a reviewer see what changed and why."],
+      ["Medium","Which research question is most focused?","How did electric two-wheeler registrations change in Punjab from 2023 to 2025?","What is the future of all transport?","How does technology change everything?","Is AI good?","A place, vehicle category, metric and date range make the question answerable."],
+      ["Hard","A brief’s conclusion makes a nationwide claim from one city’s data. What revision is best?","Limit the claim to that city or gather evidence that supports broader coverage","Remove all citations","Add a confident executive summary","Convert the numbers into a prettier chart","Match the breadth of your claim to the evidence available."]
+    ]
+  },
+  {
+    unit: 3, title: "Responsible corporate AI", icon: "🛡️",
+    summary: "Privacy, bias, verification and human oversight.",
+    notes: "Before using an AI tool for corporate work, identify what data it would receive, what decisions the output would affect, and who can review the result. Use approved tools and minimize sensitive inputs. Test for systematic differences across relevant groups. Keep humans accountable for high-impact decisions and verify important outputs against primary records.",
+    exercise: "A support team wants to summarize tickets with AI. List which fields can be removed, what the reviewer should check, and who should handle exceptions.",
+    written: "A manager proposes using AI to prioritize refund requests. Describe three risks and a specific control for each.",
+    rubric: "Connect privacy to data minimization, fairness to subgroup checks, and erroneous decisions to human review and escalation.",
+    questions: [
+      ["Easy","What should you do before sharing customer tickets with an AI tool?","Use an approved tool and minimize sensitive data","Paste the full records into any tool","Send customer credentials for better context","Assume consent because the tool is popular","Limit data exposure and follow your organization’s approved process."],
+      ["Medium","Overall accuracy looks high. What could reveal a fairness problem?","Compare error rates across relevant groups","Sort the dashboard alphabetically","Increase the output word count","Replace all human review with a threshold","Aggregate accuracy can hide systematic differences across groups."],
+      ["Hard","What control best addresses serious errors in an AI-assisted refund workflow?","Review high-impact and uncertain cases with a documented escalation path","Give the model final authority on all cases","Increase the confidence wording","Delete the evidence trail","Human review and an auditable escalation path catch consequential errors and clarify responsibility."]
+    ]
+  }
+];
+
+window.examTopics.push({
+  unit: 1, title: "Personal knowledge bases", icon: "📚",
+  summary: "Organize trustworthy documents and retrieve evidence when you need it.",
+  notes: "A knowledge base is a maintained collection of documents that can answer recurring questions. Keep the source, date and owner with each document. Split long documents into chunks with enough context to interpret each passage. Retrieval finds relevant chunks, which the model can use to draft and cite an answer. Check whether the retrieved passage is current and whether it actually supports the answer. Restrict access to sensitive documents and remove obsolete versions from routine retrieval.",
+  exercise: "Build a mini knowledge base with two fictional sales policy documents dated six months apart. Ask which policy applies today and check that the answer cites the current version.",
+  written: "Explain how you would build a knowledge base for a sales team and test whether it returns accurate answers as policies change.",
+  rubric: "Describe document selection, provenance, retrieval, stale versions, access and testing with known-answer questions.",
+  questions: [
+    ["Easy","Which metadata helps distinguish two versions of the same policy?","The effective date and version","The background color","The number of paragraphs","The file icon","Dates and version labels show which policy applies to the situation."],
+    ["Medium","A retrieved excerpt leaves out a crucial exception. What is the best next step?","Retrieve the surrounding section and verify the exception","Increase the confidence of the answer","Use the excerpt as the whole policy","Remove the citation","The surrounding passage may contain conditions that change the answer."],
+    ["Hard","How would you test a knowledge base after a policy revision?","Use known-answer cases around the effective date and inspect the cited passages","Measure only response speed","Run one question with no expected answer","Check whether the citations look formatted correctly","Date-bound cases verify whether retrieval and answer generation use the right version."]
+  ]
+});
+
+"use strict";
+const byId = id => document.getElementById(id);
+const topics = window.examTopics;
+const questions = topics.flatMap((topic, topicId) => topic.questions.map(([difficulty, prompt, answer, ...rest], index) => ({
+  id: topicId + "-" + index, topicId, difficulty, prompt, answer,
+  options: [answer, ...rest.slice(0, 3)], explanation: rest[3]
+})));
+const storageKey = "boardroom2-exam-v1";
+let progress = {};
+try { progress = JSON.parse(localStorage.getItem(storageKey)) || {}; } catch {}
+let session;
+let timer;
+const setup = byId("setup");
+const area = byId("session");
+const save = () => {
+  try { localStorage.setItem(storageKey, JSON.stringify(progress)); }
+  catch { document.querySelector("footer span").textContent = "Browser storage is unavailable. Progress lasts for this visit."; }
+};
+function updateStats() {
+  const attempted = questions.filter(q => progress[q.id]);
+  byId("coverage").textContent = attempted.length + " / " + questions.length;
+  byId("readiness").textContent = attempted.length ? Math.round(100 * attempted.filter(q => progress[q.id].correct).length / questions.length) + "%" : "—";
+  byId("xp").textContent = attempted.filter(q => progress[q.id].earned).length * 10;
+}
+function shuffled(items) {
+  const result = [...items];
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+}
+function begin(items, mode) {
+  clearInterval(timer);
+  byId("practice").scrollIntoView();
+  if (!items.length) {
+    area.innerHTML = '<p class="question" role="status">No questions to review yet.</p>';
+    return;
+  }
+  session = {mode, items: shuffled(items), index: 0, results: [], deadline: mode === "mock" ? Date.now() + 12 * 60000 : null};
+  setup.hidden = true;
+  byId("mock").disabled = true;
+  render();
+  if (session.deadline) {
+    tick();
+    timer = setInterval(tick, 250);
+  }
+}
+function tick() {
+  const remaining = Math.max(0, Math.ceil((session.deadline - Date.now()) / 1000));
+  if (!remaining) { finish(true); return; }
+  byId("clock").textContent = Math.floor(remaining / 60) + ":" + String(remaining % 60).padStart(2, "0");
+}
+function record(q, selection) {
+  const correct = q.answer === selection;
+  progress[q.id] = {correct, earned: correct || Boolean(progress[q.id]?.earned)};
+  session.results.push({q, selection, correct});
+  save();
+  updateStats();
+}
+function cancel() {
+  clearInterval(timer);
+  session = null;
+  area.replaceChildren();
+  setup.hidden = false;
+  byId("mock").disabled = false;
+  setup.querySelector("select").focus();
+}
+function advance() {
+  session.index++;
+  if (session.index === session.items.length) finish();
+  else render();
+}
+function render() {
+  const q = session.items[session.index];
+  area.innerHTML = '<div class="question"><p>Question ' + (session.index + 1) + ' of ' + session.items.length + ' · ' + q.difficulty + ' <strong class="time" id="clock"></strong></p><h3 tabindex="-1">' + q.prompt + '</h3><form id="answer"><div class="options" role="group" aria-label="Answer options"></div><button class="primary">Submit answer</button><button type="button" id="exit">End session</button></form><div id="feedback"></div></div>';
+  const options = shuffled(q.options);
+  options.forEach((option, index) => {
+    const label = document.createElement("label");
+    label.innerHTML = '<input type="radio" name="choice" required><span></span>';
+    label.firstChild.value = index;
+    label.lastChild.textContent = option;
+    area.querySelector(".options").append(label);
+  });
+  byId("exit").onclick = () => finish();
+  byId("answer").onsubmit = event => {
+    event.preventDefault();
+    if (session.deadline && Date.now() >= session.deadline) { finish(true); return; }
+    record(q, options[new FormData(event.target).get("choice")]);
+    if (session.mode === "mock") { advance(); return; }
+    const result = session.results.at(-1);
+    event.target.hidden = true;
+    byId("feedback").innerHTML = '<p class="feedback" role="status"><strong>' + (result.correct ? "Correct." : "Correct answer: " + q.answer + ".") + '</strong> ' + q.explanation + '</p><button class="primary" id="next">Continue</button> <button id="stop">End session</button>';
+    byId("next").onclick = advance;
+    byId("stop").onclick = () => finish();
+    byId("next").focus();
+  };
+  area.querySelector("h3").focus({preventScroll:true});
+  if (session.deadline) tick();
+}
+function finish(expired = false) {
+  clearInterval(timer);
+  const {mode, results, items} = session;
+  const correct = results.filter(result => result.correct).length;
+  const denominator = mode === "mock" ? items.length : results.length;
+  const weakest = topics.map((topic, topicId) => {
+    const attempted = questions.filter(q => q.topicId === topicId && progress[q.id]);
+    return {topic, attempted: attempted.length, incorrect: attempted.filter(q => !progress[q.id].correct).length};
+  }).filter(row => row.incorrect).sort((a, b) => b.incorrect / b.attempted - a.incorrect / a.attempted);
+  area.innerHTML = '<div class="question"><h3 tabindex="-1">' + (expired ? "Time’s up" : "Session results") + '</h3><p>' + correct + ' / ' + denominator + ' correct · ' + (items.length - results.length) + ' unanswered.</p>' + (weakest.length ? '<p>Revisit ' + weakest.map(row => row.topic.title).join(", ") + '.</p>' : "") + '<button class="primary" id="retry">Try again</button> <button id="done">Back to practice</button><div id="review"></div></div>';
+  const review = byId("review");
+  for (const {q, selection, correct: right} of results) {
+    const detail = document.createElement("details");
+    const summary = document.createElement("summary");
+    summary.textContent = (right ? "Correct · " : "Review · ") + q.prompt;
+    const explanation = document.createElement("p");
+    explanation.textContent = "Your answer: " + selection + ". Correct answer: " + q.answer + ". " + q.explanation;
+    detail.append(summary, explanation);
+    review.append(detail);
+  }
+  byId("retry").onclick = () => begin(items, mode);
+  byId("done").onclick = cancel;
+  area.querySelector("h3").focus({preventScroll:true});
+}
+setup.onsubmit = event => {
+  event.preventDefault();
+  const {topic, difficulty} = Object.fromEntries(new FormData(setup));
+  begin(questions.filter(q => (topic === "all" || q.topicId === Number(topic)) && (difficulty === "all" || difficulty === q.difficulty)), "practice");
+};
+byId("mock").onclick = () => begin(questions, "mock");
+byId("mistakes").onclick = () => begin(questions.filter(q => progress[q.id] && !progress[q.id].correct), "practice");
+const search = byId("search");
+topics.map((topic, topicId) => ({topic, topicId})).sort((a, b) => a.topic.unit - b.topic.unit).forEach(({topic, topicId}) => {
+  setup.elements.topic.add(new Option(topic.title, topicId));
+  const card = document.createElement("article");
+  card.dataset.search = Object.values(topic).slice(0, 8).join(" ").toLowerCase();
+  card.innerHTML = '<span class="topic-icon" aria-hidden="true">' + topic.icon + '</span><p class="eyebrow">UNIT ' + topic.unit + '</p><h3>' + topic.title + '</h3><p>' + topic.summary + '</p><details><summary>Notes and definitions</summary><p>' + topic.notes + '</p></details><details><summary>Flashcard · ' + topic.questions[0][1] + '</summary><p>' + topic.questions[0][2] + '. ' + topic.questions[0][6] + '</p></details><details><summary>Practical exercise</summary><p>' + topic.exercise + '</p></details><details><summary>Exam-style question</summary><p>' + topic.written + '</p><details><summary>Marking points</summary><p>' + topic.rubric + '</p></details></details><button type="button">Practice topic</button>';
+  if ("speechSynthesis" in window) {
+    const listen = document.createElement("button");
+    listen.type = "button";
+    listen.textContent = "Read notes aloud";
+    listen.onclick = () => {
+      if (speechSynthesis.speaking) { speechSynthesis.cancel(); return; }
+      speechSynthesis.speak(new SpeechSynthesisUtterance(topic.notes));
+    };
+    card.querySelector("details").append(listen);
+  }
+  card.querySelector("article > button").onclick = () => {
+    if (setup.hidden) { byId("practice").scrollIntoView(); area.querySelector("h3").focus(); return; }
+    begin(questions.filter(q => q.topicId === topicId), "practice");
+  };
+  byId("cards").append(card);
+});
+search.oninput = () => {
+  let visible = 0;
+  for (const card of byId("cards").children) {
+    card.hidden = !card.dataset.search.includes(search.value.trim().toLowerCase());
+    visible += Number(!card.hidden);
+  }
+  byId("empty").hidden = visible > 0;
+};
+function theme(value) {
+  document.documentElement.dataset.theme = value;
+  byId("theme").textContent = value === "dark" ? "Light theme" : "Dark theme";
+}
+try { theme(localStorage.getItem("boardroom2-theme") === "light" ? "light" : "dark"); } catch { theme("dark"); }
+byId("theme").onclick = () => {
+  const value = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+  theme(value);
+  try { localStorage.setItem("boardroom2-theme", value); } catch {}
+};
+updateStats();
+</script></body></html>
