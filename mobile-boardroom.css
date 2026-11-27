@@ -1,0 +1,177 @@
+.boardroom-mobile {
+  --br-bg: #f5f4ed;
+  --br-paper: #fffefa;
+  --br-ink: #202c24;
+  --br-muted: #56645a;
+  --br-border: #d9dfd4;
+  --br-green: #143d2d;
+  --br-lime: #d7f48d;
+  --br-accent: #286146;
+  --text: var(--br-ink);
+  --muted: var(--br-muted);
+  --surface: var(--br-paper);
+  --border: var(--br-border);
+  background: var(--br-bg);
+  color: var(--br-ink);
+  font-family: "DM Sans", system-ui, sans-serif;
+}
+
+[data-theme="midnight"] .boardroom-mobile {
+  --br-bg: #13201a;
+  --br-paper: #1b2c22;
+  --br-ink: #f0f6ed;
+  --br-muted: #bacabd;
+  --br-border: #405449;
+  --br-accent: #d7f48d;
+  background: var(--br-bg);
+  color: var(--br-ink);
+}
+
+.boardroom-mobile :where(a, button, input, select, textarea):focus-visible {
+  outline: 3px solid var(--br-accent);
+  outline-offset: 3px;
+}
+.boardroom-mobile .site-header {
+  position: static;
+  background: var(--br-paper);
+  border-bottom: 1px solid var(--br-border);
+  backdrop-filter: none;
+}
+.boardroom-mobile :is(.bar, #main, #main-nav, .br-footer) {
+  width: min(100% - 2 * clamp(12px, 4vw, 40px), 1120px);
+  margin-inline: auto;
+  min-width: 0;
+  padding-inline: 0;
+}
+.boardroom-mobile .bar {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 66px;
+}
+.boardroom-mobile .brand {
+  display: inline-flex;
+  gap: 9px;
+  align-items: center;
+  min-height: 44px;
+  color: var(--br-ink);
+  font-size: clamp(1.02rem, 4vw, 1.28rem);
+  font-weight: 800;
+}
+.br-mark, .br-exam-icon {
+  place-items: center;
+  display: inline-grid;
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  color: var(--br-lime);
+  background: var(--br-green);
+}
+.boardroom-mobile .header-actions { min-width: 0; flex-wrap: wrap; justify-content: end; gap: 6px; }
+.boardroom-mobile .theme-toggle { color: var(--br-ink); background: var(--br-bg); border-color: var(--br-border); min-height: 44px; min-width: 44px; }
+.boardroom-mobile .user-pill { display: flex; max-width: 120px; color: var(--br-ink); background: var(--br-bg); }
+.boardroom-mobile .user-pill span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.boardroom-mobile #main { max-width: 1120px; padding-block: clamp(18px, 4vw, 44px); }
+.boardroom-mobile #gate {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
+  align-items: stretch;
+  padding: 0;
+  margin: 0;
+}
+.br-welcome {
+  min-width: 0;
+  padding: clamp(19px, 5vw, 56px);
+  border-radius: 22px;
+  color: #fff;
+  background: radial-gradient(circle at 100% 0%, #40764c, transparent 64%), var(--br-green);
+}
+.br-welcome h1 {
+  margin: 0 0 14px;
+  color: var(--br-lime);
+  font: 800 clamp(2.9rem, 9vw, 6rem)/.92 "Outfit", system-ui, sans-serif;
+  letter-spacing: -.055em;
+}
+.br-welcome p { max-width: 34ch; margin: 0; color: #ebf5e9; font-size: clamp(.97rem, 2vw, 1.17rem); }
+.br-welcome .br-label { margin-bottom: 18px; font-size: .71rem; font-weight: 800; letter-spacing: .11em; }
+.br-start-status, .br-name {
+  padding: 16px;
+  border: 1px solid var(--br-border);
+  border-radius: 16px;
+  background: var(--br-paper);
+  color: var(--br-ink);
+}
+.br-start-status { display: grid; align-content: center; }
+.br-start-status p, #name-status { margin: 0; color: var(--br-muted); }
+.br-name { margin-bottom: 14px; }
+.br-name summary { cursor: pointer; min-height: 32px; font-weight: 700; }
+.br-name form { display: grid; gap: 8px; max-width: 410px; margin-top: 8px; }
+.boardroom-mobile #nickname { min-height: 48px; width: 100%; font-size: 16px; color: var(--br-ink); background: var(--br-bg); border: 1px solid var(--br-border); }
+.br-name button { min-height: 44px; }
+.br-exam {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--br-border);
+  border-radius: 16px;
+  background: var(--br-paper);
+  color: var(--br-ink);
+  text-decoration: none;
+}
+.br-exam:hover { border-color: var(--br-accent); text-decoration: none; }
+.br-exam small { display: block; color: var(--br-muted); }
+.boardroom-mobile #main-nav { display: flex; flex-wrap: wrap; gap: 6px; padding-bottom: 10px; }
+.boardroom-mobile #main-nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 8px 12px;
+  color: var(--br-ink);
+  border: 1px solid var(--br-border);
+  border-radius: 10px;
+}
+.boardroom-mobile #main-nav a[aria-current="page"] { background: var(--br-green); color: #fff; }
+.boardroom-mobile #desk { min-width: 0; overflow-wrap: anywhere; }
+.boardroom-mobile #desk .grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap: 14px; }
+.boardroom-mobile #desk :is(.card, .course, .unit, .banner, .reading, .quiz-card) { min-width: 0; }
+.boardroom-mobile #desk :is(.course, .unit, .banner, .reading) { border-color: var(--br-border); border-radius: 18px; }
+.boardroom-mobile #desk :is(.reading pre, .reading table, .reading img) { max-width: 100%; }
+.boardroom-mobile #desk .reading table { display: block; overflow-x: auto; }
+.boardroom-mobile #desk .reading pre { overflow-x: auto; }
+.boardroom-mobile #desk :is(.lesson-actions, .resource-actions, .tabbar) { flex-wrap: wrap; }
+.boardroom-mobile .site-footer { margin-top: 0; background: var(--br-paper); color: var(--br-muted); border-top: 1px solid var(--br-border); }
+.br-footer { display: flex; padding-block: 18px; justify-content: space-between; flex-wrap: wrap; gap: 10px; font-size: .86rem; }
+.br-footer a { color: var(--br-accent); }
+.boardroom-mobile [hidden] { display: none !important; }
+@media (min-width: 760px) {
+  .boardroom-mobile #gate { grid-template-columns: minmax(0, 1.22fr) minmax(0, 1fr); gap: 18px; }
+  .br-exam { grid-column: 1 / -1; }
+}
+@media (max-width: 450px) {
+  .boardroom-mobile .bar { min-height: 56px; padding-block: 4px; }
+  .boardroom-mobile .theme-toggle .theme-label { display: none; }
+  .boardroom-mobile .user-pill { max-width: 93px; }
+  .boardroom-mobile #desk .hero-banner { display: grid; gap: 12px; }
+  .boardroom-mobile #desk .hero-banner > a { justify-self: start; }
+}
+.boardroom-mobile .site-footer { padding: 0; }
+.boardroom-mobile #desk .page-head {
+  padding: clamp(16px, 4vw, 30px);
+  border-radius: 20px;
+  background: var(--br-green);
+  color: #fff;
+}
+.boardroom-mobile #desk .page-head :is(h1,h2,.eyebrow) { color: var(--br-lime); }
+.boardroom-mobile #desk .course { background: var(--br-paper); border-color: var(--br-border); }
+.boardroom-mobile #desk .course h3 { color: var(--br-ink); }
+.boardroom-mobile #desk .course p { color: var(--br-muted); }
+.boardroom-mobile #desk .course a { min-height: 44px; }
+.br-mock fieldset { min-width: 0; display: grid; gap: 8px; border: 0; padding: 0; margin-bottom: 14px; }
+.br-mock label { display: flex; align-items: center; gap: 10px; min-height: 46px; border: 1px solid var(--br-border); border-radius: 10px; padding: 8px; }
+.br-mock input { width: auto; flex: none; }
+.br-mock > button { margin: 0 8px 8px 0; min-height: 44px; }
+.br-storage { margin: 0 0 12px; color: var(--br-muted); font-size: .9rem; }

@@ -48,7 +48,7 @@ export const catalog = [
     [
       "Unit 1 · 11 uploads covering system and role prompting, zero-shot examples, knowledge bases, predictive analytics, LLM operation, limitations and mitigation.",
       "Practice files include sales_data_500.csv, D50-DigitalPayments_32.csv and telecom churn data.",
-      "Course handout and units 2–4 · Coming soon",
+      "The course handout and posted Units 2–3 cover AI-assisted research and responsible corporate AI. No Unit 4 materials were visible.",
     ],
   ],
   ["dviz", "26BBM1106", "Data Visualization", 9298, []],

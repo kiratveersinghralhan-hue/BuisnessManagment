@@ -1,3 +1,5 @@
+import { timedPractice } from "./timed-practice.js";
+import { loadSupplementalCourses } from "./supplemental-courses.js";
 import { resources } from "./resources.js";
 import { bankFor, splitQuestion } from "./quiz-bank.js";
 import { catalog } from "./catalog.js";
@@ -54,7 +56,7 @@ export function loadCourses() {
     catalog
       .filter((c) => c.outline.length)
       .map((c) => load("./subject-" + c.id + ".js")),
-  ).then(() => load("./ai-update.js"));
+  ).then(() => load("./ai-update.js")).then(loadSupplementalCourses);
 }
 
 export function announcements(data) {
@@ -149,55 +151,6 @@ export function studentPage(root, record, news, save) {
       d = all[nextCourse.id],
       next = d.notes.find((n) => !record.completed?.[nextCourse.id]?.[n.id]);
 
-    const profileNotice = record._hasProfile
-      ? ""
-      : '<div class="banner banner-gold"><div><strong>Unlock XP &amp; Quiz Battles</strong><p>Save a username in My profile to earn 10 XP per new correct answer and join up to 8-player battles.</p></div>' +
-        href("Set username", "profile", true) +
-        "</div>";
-
-    const carouselHTML =
-      '<section class="carousel-section" aria-label="360-degree subject selector">' +
-      '<div class="carousel-head"><div><small class="eyebrow">360° Subject Selector</small><h2>Explore your courses</h2><p class="carousel-hint">Swipe cards or use the arrows · tap a dot to choose</p></div>' +
-      '<div class="carousel-controls"><button type="button" id="car-prev" aria-label="Previous subject">←</button><button type="button" id="car-spin" class="chip">Auto-spin</button><button type="button" id="car-next" aria-label="Next subject">→</button></div></div>' +
-      '<div class="carousel-stage" id="carousel-stage" role="region" aria-label="Rotating subjects"><div class="carousel-ring" id="carousel-ring">' +
-      catalog
-        .map((item, idx) => {
-          const sd = all[item.id];
-          const dc = sd ? sd.notes.filter((n) => record.completed?.[item.id]?.[n.id]).length : 0;
-          const tc = sd ? sd.notes.length : 0;
-          return (
-            '<div class="carousel-card' +
-            (idx === 0 ? " is-front" : "") +
-            '" data-idx="' +
-            idx +
-            '"><small>' +
-            e(item.code) +
-            "</small><h3>" +
-            e(item.name) +
-            "</h3><p>" +
-            (sd ? dc + "/" + tc + " lessons · " + bankFor(item.id).length + " MCQs" : "Coming soon · Starter MCQs") +
-            '</p><a class="action primary" href="#' +
-            item.id +
-            '">Open subject</a></div>'
-          );
-        })
-        .join("") +
-      "</div></div>" +
-      '<div class="carousel-dots" id="carousel-dots">' +
-      catalog
-        .map(
-          (item, idx) =>
-            '<button type="button" class="car-dot' +
-            (idx === 0 ? " is-active" : "") +
-            '" data-dot="' +
-            idx +
-            '" aria-label="Select ' +
-            e(item.name) +
-            '"></button>',
-        )
-        .join("") +
-      "</div></section>";
-
     root.innerHTML =
       '<div class="page-head"><small class="eyebrow">BBA · Digital Science &amp; Business Management · Semester 1</small><h1>Study library</h1></div>' +
       '<div class="banner hero-banner"><div><small>' +
@@ -213,114 +166,10 @@ export function studentPage(root, record, news, save) {
         true,
       ) +
       "</div>" +
-      carouselHTML +
-      profileNotice +
       '<h2 class="subjects-heading">Your subjects</h2><div class="grid">' +
       catalog.map(card).join("") +
-      "</div>" +
-      '<section id="home-announcements"></section>';
+      "</div>";
 
-    const stage = root.querySelector("#carousel-stage");
-    const ring = root.querySelector("#carousel-ring");
-    const cards = [...root.querySelectorAll(".carousel-card")];
-    const dots = [...root.querySelectorAll(".car-dot")];
-    const total = cards.length;
-    const stepDeg = 360 / total;
-    let index = 0,
-      rotationSteps = 0,
-      spinTimer = null,
-      spinning = false,
-      dragStartX = null;
-
-    function layoutCarousel() {
-      const w = stage.clientWidth || 340;
-      // Size the cylinder to the viewport, not the entire document. This
-      // prevents the carousel from spilling over narrow phone displays.
-      const mobile = matchMedia("(max-width: 600px)").matches;
-      const cardWidth = ring.offsetWidth || 220;
-      const idealRadius = cardWidth / (2 * Math.tan(Math.PI / total));
-      const radius = Math.round(mobile ? Math.min(idealRadius, Math.max(156, w * .47)) : Math.min(345, Math.max(195, idealRadius)));
-      for (const [i, el] of cards.entries()) {
-        el.style.transform = `rotateY(${i * stepDeg}deg) translateZ(${radius}px)`;
-        el.setAttribute("aria-hidden", i === index ? "false" : "true");
-        const link = el.querySelector("a");
-        if (link) link.tabIndex = i === index ? 0 : -1;
-      }
-      ring.style.transform = `translateZ(-${radius}px) rotateY(${-rotationSteps * stepDeg}deg)`;
-    }
-
-    function goTo(nextIdx) {
-      const next = ((nextIdx % total) + total) % total;
-      let delta = next - index;
-      if (delta > total / 2) delta -= total;
-      if (delta < -total / 2) delta += total;
-      rotationSteps += delta;
-      index = next;
-      cards.forEach((el, i) => el.classList.toggle("is-front", i === index));
-      dots.forEach((el, i) => {
-        el.classList.toggle("is-active", i === index);
-        el.setAttribute("aria-pressed", String(i === index));
-      });
-      layoutCarousel();
-    }
-
-    root.querySelector("#car-prev").onclick = () => goTo(index - 1);
-    root.querySelector("#car-next").onclick = () => goTo(index + 1);
-    dots.forEach((d) => (d.onclick = () => goTo(Number(d.dataset.dot))));
-    cards.forEach((el) => {
-      el.onclick = (ev) => {
-        const idx = Number(el.dataset.idx);
-        if (idx !== index) {
-          ev.preventDefault();
-          goTo(idx);
-        }
-      };
-    });
-
-    const spinBtn = root.querySelector("#car-spin");
-    spinBtn.onclick = () => {
-      spinning = !spinning;
-      spinBtn.classList.toggle("active", spinning);
-      clearInterval(spinTimer);
-      if (spinning) {
-        spinTimer = setInterval(() => {
-          if (!document.contains(stage)) {
-            clearInterval(spinTimer);
-            return;
-          }
-          goTo(index + 1);
-        }, 2800);
-      }
-    };
-
-    stage.addEventListener("pointerdown", (ev) => {
-      if (ev.target.closest("a,button")) return;
-      dragStartX = ev.clientX;
-    });
-    stage.addEventListener("pointercancel", () => { dragStartX = null; });
-    stage.addEventListener("pointerup", (ev) => {
-      if (dragStartX === null) return;
-      const dx = ev.clientX - dragStartX;
-      dragStartX = null;
-      if (Math.abs(dx) > 32) goTo(index + (dx < 0 ? 1 : -1));
-    });
-    stage.tabIndex = 0;
-    stage.addEventListener("keydown", ev => {
-      if (ev.key === "ArrowLeft" || ev.key === "ArrowRight") {
-        ev.preventDefault();
-        goTo(index + (ev.key === "ArrowRight" ? 1 : -1));
-      }
-    });
-
-    const onResize = () => {
-      if (!document.contains(stage)) {
-        window.removeEventListener("resize", onResize);
-        return;
-      }
-      layoutCarousel();
-    };
-    window.addEventListener("resize", onResize, { passive: true });
-    layoutCarousel();
     return;
   }
 
@@ -350,7 +199,7 @@ export function studentPage(root, record, news, save) {
       ? "<ul>" +
         c.outline.map((v) => "<li>" + e(v) + "</li>").join("") +
         "</ul>"
-      : "<p>Coming soon. The course handout and unit sections were empty at the last check.</p>") +
+      : "<p>The official unit outline has not been verified. The notes and practice below cover original subject fundamentals.</p>") +
     '<a class="action" href="' +
     c.url +
     '" target="_blank" rel="noopener">Open course in CULMS ↗</a></section>';
@@ -389,6 +238,11 @@ export function studentPage(root, record, news, save) {
   }
 
   const done = record.completed?.[c.id] || {};
+  if (view === "timed") {
+    const selected = shuffle(bankFor(c.id).map((row, index) => [index, row, shuffle([row[2], ...row[3]])])).slice(0, 10);
+    timedPractice(panel, c.id, selected, save, e);
+    return;
+  }
   if (view === "resources") {
     panel.innerHTML = "<h2>Study resources</h2>" + resources(d);
     return;
@@ -638,11 +492,7 @@ export function studentPage(root, record, news, save) {
           score +
           " of " +
           order.length +
-          " correct</h2><p>" +
-          (record._hasProfile
-            ? "First-time correct answers award +10 XP on the live leaderboard."
-            : 'Save a username in <a href="#profile">My profile</a> to earn XP for your correct answers.') +
-          '</p></div><div class="lesson-actions"><button type="button" id="again-set" class="primary">Practise another ' +
+          ' correct</h2></div><div class="lesson-actions"><button type="button" id="again-set" class="primary">Practise another ' +
           limit +
           "</button>" +
           href("Review mistakes", c.id + "/mistakes") +
@@ -676,9 +526,6 @@ export function studentPage(root, record, news, save) {
           : "";
 
       panel.innerHTML =
-        (record._hasProfile
-          ? ""
-          : '<p class="banner banner-gold"><span>Set a username in <a href="#profile">My profile</a> so correct answers also award leaderboard XP.</span></p>') +
         levelMenu + lengthBar +
         '<article class="reading quiz-card"><span class="difficulty-label">✦ ' + e(challengeLevel[idx][0].toUpperCase()+challengeLevel[idx].slice(1)) + ' · Practice question ' + (step+1) + '</span><div class="lesson-meta"><small>Practice · ' +
         (step + 1) +
@@ -768,6 +615,7 @@ export function studentPage(root, record, news, save) {
     pct +
     '%"></div></div><p>Test what you remember, then revisit the explanation.</p></div><div class="lesson-actions">' +
     href("Random self-test", c.id + "/practice", true) +
+    href("Timed practice", c.id + "/timed") +
     href(
       "Review mistakes" + (wrongCount ? " (" + wrongCount + ")" : ""),
       c.id + "/mistakes",

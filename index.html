@@ -8,12 +8,12 @@
     />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-    <meta name="theme-color" content="#F8F6FF" />
+    <meta name="theme-color" content="#f6f5ef" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="Boardroom" />
     <meta
       name="description"
-      content="Boardroom — Chitkara Business School Semester 1 study library, reference videos, revision sheets, self-tests, planner, and live quiz battles for BBA DS & BM."
+      content="Boardroom — Chitkara Business School Semester 1 study library, reference videos, self-tests and planner for BBA DS & BM."
     />
     <link rel="manifest" href="./manifest.json" />
     <link rel="apple-touch-icon" href="./icon-180.png" />
@@ -28,158 +28,50 @@
     <title>Boardroom · Chitkara Study Hub</title>
     <link rel="stylesheet" href="./styles.css?v=14" />
     <link rel="stylesheet" href="./refinement-v14.css?v=14" />
+    <link rel="stylesheet" href="./mobile-boardroom.css?v=2" />
   </head>
-  <body data-area="student">
+  <body data-area="student" class="boardroom-mobile">
     <a class="skip" href="#main">Skip to content</a>
-
     <header class="site-header">
       <div class="bar">
-        <a href="./index.html" class="brand">
-          <img src="./boardroom-mark.svg" alt="" width="42" height="42" class="brand-mark" />
-          <span class="brand-copy">
-            <strong>boardroom<span class="brand-dot">.</span></strong>
-            <small>your little study universe ✦</small>
-          </span>
-        </a>
+        <a href="./" class="brand"><span class="br-mark" aria-hidden="true">✳</span><span>Boardroom</span></a>
         <div class="header-actions">
-          <a href="#voice" class="header-voice" id="header-voice" hidden title="Open voice study buddy" aria-label="Open voice study buddy">✦ Study buddy</a>
-          <button type="button" id="intro-replay" class="intro-replay" title="Replay cinematic intro" aria-label="Replay cinematic intro">✦<span class="intro-replay-label"> Intro</span></button>
-          <button type="button" class="theme-toggle" aria-label="Switch to midnight theme" aria-pressed="false" title="Switch appearance"><span class="theme-symbol" aria-hidden="true">☾</span><span class="theme-label">Dark</span></button>
-          <a href="#leaderboard" id="header-xp" class="xp-pill" hidden title="Live leaderboard XP">0 XP</a>
-          <a href="#profile" id="header-user" class="user-pill" hidden></a>
-          <button id="exit" class="btn-ghost-light" hidden>Sign out</button>
+          <span id="header-user" class="user-pill" hidden></span>
+          <button type="button" class="theme-toggle" aria-label="Switch to dark theme" aria-pressed="false"><span class="theme-symbol" aria-hidden="true">☾</span><span class="theme-label">Dark</span></button>
         </div>
       </div>
-      <nav id="main-nav" aria-label="Main navigation" hidden></nav>
-      <div id="scroll-progress" class="scroll-progress" aria-hidden="true"></div>
+      <nav id="main-nav" aria-label="Study tools" hidden></nav>
     </header>
-
     <main id="main">
-      <section id="gate">
-        <div class="intro">
-          <div class="hero-bubbles" aria-hidden="true">
-            <span class="bubble bubble-a">✿</span><span class="bubble bubble-b">✦</span><span class="bubble bubble-c">✳</span>
-          </div>
-          <span class="eyebrow hero-label">✦ FOR THE CAMPUS CREW · SEMESTER 01</span>
-          <h1>Your study space,<br><em>but make it fun.</em><span class="hero-spark" aria-hidden="true">✳</span></h1>
-          <p class="lead">One cozy corner for your entire semester: notes that make sense, videos worth watching, and quizzes that make revision feel a little less scary.</p>
-          <div class="hero-actions"><a href="#login" class="action primary hero-start">Let's get studying <span aria-hidden="true">↗</span></a><span class="mini-verified">✦ Made for Chitkara students</span></div>
-          <div class="hero-illustration" role="img" aria-label="A floating illustrated purple book and note cards">
-            <div class="illustration-orbit orbit-one"></div><div class="illustration-orbit orbit-two"></div>
-            <div class="hero-book"><div class="book-face"><span class="book-star">✳</span><strong>study<br>mode</strong><span class="book-smile">⌣</span></div><div class="book-pages"></div></div>
-            <div class="float-note note-one">✎<span>one day<br>at a time</span></div>
-            <div class="float-note note-two">★<span>you got<br>this!</span></div>
-            <div class="float-sticker sticker-heart">♥</div>
-          </div>
-          <div class="hero-stats" aria-label="Boardroom features"><div><strong>07</strong><span>subjects</span></div><div><strong>43+</strong><span>reference videos</span></div><div><strong>∞</strong><span>you-can-do-this energy</span></div></div>
-          <div class="prospect"><strong>On the syllabus</strong><ul>
-            <li>Principles of Business Management</li><li>Programming Fundamentals</li><li>Applied Linear Algebra &amp; Calculus</li><li>Introduction to AI &amp; ML</li><li>Data Visualization <em class="tag-soon">Intro</em></li><li>Digital Reputation Management-I <em class="tag-soon">Intro</em></li><li>Performing Arts <em class="tag-soon">Intro</em></li>
-          </ul></div>
+      <section id="gate" aria-labelledby="welcome">
+        <div class="br-welcome">
+          <p class="br-label">CHITKARA · SEMESTER 1</p>
+          <h1 id="welcome">Your study<br>space.</h1>
+          <p>Find your course notes, practise with quizzes, and pick up where you left off.</p>
         </div>
-
-        <form id="login" class="auth-card">
-          <div class="auth-head">
-            <span class="seal-pill">✿ HEY, STUDY BUDDY</span>
-            <h2>Welcome back!</h2>
-            <p class="muted">Your notes, study streaks and the leaderboard are waiting. ✨</p>
-          </div>
-          <p class="auth-google-note">Sign in or create a student account with your verified <strong>@chitkara.edu.in</strong> email and Boardroom password.</p>
-          <label>
-            Email address
-            <input
-              id="email"
-              type="email"
-              autocomplete="username"
-              required
-              placeholder="you@chitkara.edu.in"
-            />
-          </label>
-          <label>
-            Boardroom password
-            <input
-              id="pass"
-              type="password"
-              autocomplete="current-password"
-              required
-              placeholder="At least 8 characters for new accounts"
-            />
-          </label>
-          <div class="auth-buttons">
-            <button class="primary" id="signin">Sign in</button>
-            <button type="button" id="register">Create student account</button>
-          </div>
-          <button type="button" class="link" id="reset">Forgot your password?</button>
-          <div id="verify" class="verify-box" hidden>
-            <p class="muted">Open the verification link sent to your Chitkara inbox, then confirm below.</p>
-            <div class="auth-buttons">
-              <button type="button" class="primary" id="recheck">I verified my email</button>
-              <button type="button" id="resend">Resend verification email</button>
-            </div>
-          </div>
-          <p id="authmsg" role="status" aria-live="polite"></p>
-          <p class="auth-security">🔒 Verified campus sign-in only · No guest accounts</p>
-        </form>
+        <div class="br-start-status">
+          <p id="authmsg" role="status" aria-live="polite">Opening your study library…</p>
+          <noscript>Enable JavaScript to open the study library.</noscript>
+        </div>
+        <a class="br-exam" href="./AI-ML-Exam-Prep.html"><span class="br-exam-icon" aria-hidden="true">✦</span><span><strong>AI &amp; ML exam prep</strong><small>Quick revision and a timed mock</small></span><span aria-hidden="true">↗</span></a>
       </section>
-
+      <p id="storage-status" class="br-storage" hidden>Progress is saved on this browser while cloud storage is unavailable.</p>
+      <details id="student-name" class="br-name" hidden>
+        <summary>Your display name</summary>
+        <form id="name-form">
+          <label for="nickname">Name or nickname</label>
+          <input id="nickname" name="nickname" autocomplete="nickname" minlength="2" maxlength="32" required />
+          <button class="primary" type="submit">Save name</button>
+          <p id="name-status" role="status"></p>
+        </form>
+      </details>
       <section id="desk" hidden></section>
       <p role="status" id="status"></p>
     </main>
-
     <footer class="site-footer">
-      <div class="footer-grid">
-        <div class="footer-brand">
-          <a href="./index.html" class="brand brand-footer">
-            <img src="./boardroom-mark.svg" alt="" width="42" height="42" class="brand-mark" />
-            <span>boardroom.</span>
-          </a>
-          <p>
-            Independent student-built study workspace for Chitkara Business School · BBA Digital
-            Science &amp; Business Management (Semester 1).
-          </p>
-        </div>
-        <div class="footer-col">
-          <h4>Study workspace</h4>
-          <ul>
-            <li><a href="#">Study library</a></li>
-            <li><a href="#videos">Reference videos</a></li>
-            <li><a href="#resources">Resources &amp; references</a></li>
-            <li><a href="#planner">Planner &amp; bookmarks</a></li>
-            <li><a href="#battle">Quiz battles</a></li>
-            <li><a href="#leaderboard">Live leaderboard</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4>Account &amp; portal</h4>
-          <ul>
-            <li><a href="#profile">My profile</a></li>
-            <li><a href="#inbox">Private inbox</a></li>
-            <li><a href="https://culms.chitkara.edu.in/d2l/login" target="_blank" rel="noopener">Chitkara CULMS / D2L ↗</a></li>
-            <li><a href="./admin.html">Administrator sign in</a></li>
-          </ul>
-          <button id="top" type="button" class="btn-top">Back to top ↑</button>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <span>Self-study scores &amp; XP are practice metrics, not official university grades.</span>
-        <span>BBA DS &amp; BM · Batch 2026–29</span>
-      </div>
+      <div class="br-footer"><span>Boardroom · BBA Digital Science &amp; Business Management</span><a href="https://culms.chitkara.edu.in/d2l/login">Chitkara LMS ↗</a></div>
     </footer>
-
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
-    <div id="intro-screen" class="intro-screen" role="dialog" aria-modal="true" aria-label="Boardroom opening animation">
-      <div class="intro-panel intro-panel-left" aria-hidden="true"></div>
-      <div class="intro-panel intro-panel-right" aria-hidden="true"></div>
-      <div class="intro-cut-line" aria-hidden="true"></div>
-      <div class="intro-content">
-        <span class="intro-kicker">YOUR STUDY UNIVERSE</span>
-        <img src="./boardroom-mark.svg" alt="" width="82" height="82" />
-        <span class="intro-wordmark">BOARDROOM<span class="intro-period">.</span></span>
-        <small>Make every hour count.</small>
-      </div>
-      <button type="button" class="intro-skip" id="intro-skip" aria-label="Skip the opening animation">Skip intro <span aria-hidden="true">↗</span></button>
-    </div>
-
-    <script type="module" src="./motion.js?v=14"></script>
-    <script type="module" src="./portal.js?v=15"></script>
+    <script type="module" src="./portal.js?v=19"></script>
   </body>
 </html>

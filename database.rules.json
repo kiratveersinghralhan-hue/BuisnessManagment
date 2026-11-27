@@ -5,9 +5,9 @@
     "students": {
       ".read": "auth != null && auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2' && auth.token.firebase.sign_in_provider === 'password'",
       "$uid": {
-        ".read": "(auth != null && (auth.token.firebase.sign_in_provider === 'password' || auth.token.firebase.sign_in_provider === 'google.com') && auth.token.email_verified === true && auth.token.email.matches(/^[^@ ]+@chitkara[.]edu[.]in$/)) && auth.uid === $uid",
-        ".write": "(auth != null && (auth.token.firebase.sign_in_provider === 'password' || auth.token.firebase.sign_in_provider === 'google.com') && auth.token.email_verified === true && auth.token.email.matches(/^[^@ ]+@chitkara[.]edu[.]in$/)) && auth.uid === $uid && newData.exists()",
-        ".validate": "newData.hasChildren(['email','lastSeen'])",
+        ".read": "(auth != null && (auth.token.firebase.sign_in_provider === 'password' || auth.token.firebase.sign_in_provider === 'google.com') && auth.token.email_verified === true && auth.token.email.matches(/^[^@ ]+@chitkara[.]edu[.]in$/)) && auth.uid === $uid || ((auth != null && auth.token.firebase.sign_in_provider === 'anonymous' && auth.uid === $uid) && !data.child('email').exists())",
+        ".write": "(auth != null && (auth.token.firebase.sign_in_provider === 'password' || auth.token.firebase.sign_in_provider === 'google.com') && auth.token.email_verified === true && auth.token.email.matches(/^[^@ ]+@chitkara[.]edu[.]in$/)) && auth.uid === $uid && newData.exists() || (((auth != null && auth.token.firebase.sign_in_provider === 'anonymous' && auth.uid === $uid) && !data.child('email').exists()) && newData.exists() && !newData.child('email').exists())",
+        ".validate": "((auth != null && auth.token.firebase.sign_in_provider === 'anonymous' && auth.uid === $uid) && newData.hasChildren(['nickname','lastSeen']) && !newData.child('email').exists()) || (!(auth != null && auth.token.firebase.sign_in_provider === 'anonymous' && auth.uid === $uid) && newData.hasChildren(['email','lastSeen']) && !newData.child('nickname').exists())",
         "email": {
           ".validate": "newData.val() === auth.token.email"
         },
@@ -42,6 +42,24 @@
           },
           "$other": {
             ".validate": false
+          },
+          "dviz": {
+            ".validate": "newData.hasChildren()",
+            "$lesson": {
+              ".validate": "$lesson.matches(/^viz-(choice|integrity|dashboard)$/) && newData.isNumber() && newData.val() === now"
+            }
+          },
+          "drm": {
+            ".validate": "newData.hasChildren()",
+            "$lesson": {
+              ".validate": "$lesson.matches(/^rep-(monitor|response|metrics)$/) && newData.isNumber() && newData.val() === now"
+            }
+          },
+          "arts": {
+            ".validate": "newData.hasChildren()",
+            "$lesson": {
+              ".validate": "$lesson.matches(/^arts-(voice|stage|rehearse)$/) && newData.isNumber() && newData.val() === now"
+            }
           }
         },
         "practice": {
@@ -76,19 +94,19 @@
           "arts": {
             ".validate": "newData.hasChildren()",
             "$question": {
-              ".validate": "$question.matches(/^[0-5]$/) && newData.isBoolean()"
+              ".validate": "$question.matches(/^[0-8]$/) && newData.isBoolean()"
             }
           },
           "dviz": {
             ".validate": "newData.hasChildren()",
             "$question": {
-              ".validate": "$question.matches(/^[0-5]$/) && newData.isBoolean()"
+              ".validate": "$question.matches(/^[0-8]$/) && newData.isBoolean()"
             }
           },
           "drm": {
             ".validate": "newData.hasChildren()",
             "$question": {
-              ".validate": "$question.matches(/^[0-5]$/) && newData.isBoolean()"
+              ".validate": "$question.matches(/^[0-8]$/) && newData.isBoolean()"
             }
           }
         },
@@ -118,6 +136,9 @@
           "$other": {
             ".validate": false
           }
+        },
+        "nickname": {
+          ".validate": "(auth != null && auth.token.firebase.sign_in_provider === 'anonymous' && auth.uid === $uid) && newData.isString() && newData.val().length >= 2 && newData.val().length <= 32 && newData.val().matches(/^\\S(?:[^\\r\\n]*\\S)?$/)"
         }
       }
     },
@@ -153,7 +174,7 @@
     "inbox": {
       ".read": "auth != null && auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2' && auth.token.firebase.sign_in_provider === 'password'",
       "$uid": {
-        ".read": "(auth != null && (auth.token.firebase.sign_in_provider === 'password' || auth.token.firebase.sign_in_provider === 'google.com') && auth.token.email_verified === true && auth.token.email.matches(/^[^@ ]+@chitkara[.]edu[.]in$/)) && auth.uid === $uid",
+        ".read": "(auth != null && (auth.token.firebase.sign_in_provider === 'password' || auth.token.firebase.sign_in_provider === 'google.com') && auth.token.email_verified === true && auth.token.email.matches(/^[^@ ]+@chitkara[.]edu[.]in$/)) && auth.uid === $uid || ((auth != null && auth.token.firebase.sign_in_provider === 'anonymous' && auth.uid === $uid) && root.child('students').child($uid).child('nickname').exists())",
         "$id": {
           ".write": "auth != null && auth.uid === 'cqYV6YMFt3TOdUfP37su7rSZQuL2' && auth.token.firebase.sign_in_provider === 'password'",
           ".validate": "newData.hasChildren(['text','ts']) && root.child('students').child($uid).exists()",

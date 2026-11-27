@@ -2,9 +2,9 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import {
   getAuth,
   onAuthStateChanged,
-  createUserWithEmailAndPassword,
+  signInAnonymously,
+  browserLocalPersistence,
   signInWithEmailAndPassword,
-  sendEmailVerification,
   sendPasswordResetEmail,
   signOut,
   setPersistence,
@@ -23,10 +23,9 @@ import { firebaseConfig, ADMIN_UID } from "./firebase-config.js";
 import {
   loadCourses,
   studentPage,
-  announcements,
   escapeHTML as e,
-} from "./student.js";
-import { community, earnXP, face } from "./community.js";
+} from "./student.js?v=19";
+import { face } from "./community.js";
 import { courseEditor } from "./course-editor.js";
 import { owner, messages } from "./owner.js";
 import { factsCard } from "./study-facts.js";
@@ -36,21 +35,20 @@ import { catalog } from "./catalog.js";
 import { studyCompanion } from "./companion.js";
 import { addStudyGarden } from "./garden.js";
 
-const app = initializeApp(firebaseConfig),
-  auth = getAuth(app),
-  db = getDatabase(app);
-
-const admin = document.body.dataset.area === "admin",
-  $ = (id) => document.getElementById(id);
+const admin = document.body.dataset.area === "admin";
+const $ = id => document.getElementById(id);
+const app = initializeApp(firebaseConfig, admin ? "boardroom-admin" : "boardroom-student");
+const auth = getAuth(app);
+const db = getDatabase(app);
 
 let session = 0,
   active = null,
   record = {},
   news = {},
   courseLoad,
-  headerStops = [];
-
-const allowed = (email) => /^[^@\s]+@chitkara\.edu\.in$/i.test(email);
+  startingAnonymous = false;
+const localKey = "boardroom:local-study:v1";
+let browserFallbackTimer;
 
 function authMessage(text) {
   $("authmsg").textContent = text;
@@ -59,8 +57,6 @@ function authMessage(text) {
 function email() {
   const value = $("email").value.trim().toLowerCase();
   if (!$("email").reportValidity()) throw Error("Enter your email address.");
-  if (!admin && !allowed(value))
-    throw Error("Use your @chitkara.edu.in email address.");
   return value;
 }
 
@@ -68,13 +64,10 @@ function friendly(err) {
   return (
     {
       "auth/invalid-credential": "Check your Boardroom email and password.",
-      "auth/email-already-in-use":
-        "This address already has a Boardroom account. Sign in or reset your password.",
-      "auth/too-many-requests": "Too many attempts. Try again later.",
-      "auth/weak-password": "Choose a longer Boardroom password.",
+          "auth/too-many-requests": "Too many attempts. Try again later.",
       "auth/network-request-failed": "Connection failed. Please try again.",
       "auth/unauthorized-domain": "This domain is not authorized in Firebase Authentication. Ask the owner to add it to Authorized domains.",
-      "auth/operation-not-allowed": "Email/password sign-in is disabled in Firebase Authentication. Contact the site owner.",
+      "auth/operation-not-allowed": admin ? "Administrator sign-in is disabled." : "Anonymous sign-in is disabled. Contact the site owner.",
       "auth/invalid-api-key": "Firebase rejected the API key. Ask the owner to review the project configuration.",
     }[err.code] || err.message
   );
@@ -108,7 +101,7 @@ try {
   /* Storage is optional in private browsing. */
 }
 
-const persistence = setPersistence(auth, browserSessionPersistence);
+const persistence = setPersistence(auth, admin ? browserSessionPersistence : browserLocalPersistence);
 
 async function run(action) {
   const buttons = $("login").querySelectorAll("button");
@@ -124,37 +117,43 @@ async function run(action) {
   }
 }
 
-$("login").onsubmit = (ev) => {
-  ev.preventDefault();
-  run(() => signInWithEmailAndPassword(auth, email(), $("pass").value));
-};
-
-if (!admin)
-  $("register").onclick = () =>
-    run(async () => {
-      const address = email();
-      if ($("pass").value.length < 8)
-        throw Error("Choose a Boardroom password of at least 8 characters.");
-      const { user } = await createUserWithEmailAndPassword(
-        auth,
-        address,
-        $("pass").value,
-      );
-      await sendEmailVerification(user);
-      authMessage(
-        "Verification email sent. Open the link, then select “I verified my email”.",
-      );
-    });
-
-$("reset").onclick = () =>
-  run(async () => {
+if (admin) {
+  $("login").onsubmit = event => {
+    event.preventDefault();
+    run(() => signInWithEmailAndPassword(auth, email(), $("pass").value));
+  };
+  $("reset").onclick = () => run(async () => {
     await sendPasswordResetEmail(auth, email());
-    authMessage(
-      "If an account exists, check your inbox for a password reset link.",
-    );
+    authMessage("If an account exists, check your inbox for a password reset link.");
   });
-
-$("exit").onclick = () => signOut(auth);
+  $("exit").onclick = () => signOut(auth);
+} else {
+  $("name-form").onsubmit = async event => {
+    event.preventDefault();
+    const user = active;
+    const name = $("nickname").value.trim();
+    const message = $("name-status");
+    if (!user || name.length < 2 || name.length > 32) {
+      message.textContent = "Enter a name between 2 and 32 characters.";
+      return;
+    }
+    const button = event.currentTarget.querySelector("button");
+    button.disabled = true;
+    try {
+      if (user.local) localStorage.setItem(localKey, JSON.stringify({...record, nickname:name}));
+      else await set(ref(db, "students/" + user.uid + "/nickname"), name);
+      if (active?.uid === user.uid) {
+        record.nickname = name;
+        updateHeaderUser({name}, user);
+        message.textContent = "Name saved.";
+      }
+    } catch (err) {
+      message.textContent = "Name could not be saved. Please try again.";
+    } finally {
+      button.disabled = false;
+    }
+  };
+}
 
 function updateHeaderUser(profileData, user) {
   const pill = $("header-user");
@@ -166,13 +165,6 @@ function updateHeaderUser(profileData, user) {
     "<span>" +
     e(label) +
     "</span>";
-}
-
-function updateHeaderXP(value) {
-  const xpEl = $("header-xp");
-  if (!xpEl) return;
-  xpEl.hidden = false;
-  xpEl.textContent = Number(value || 0) + " XP";
 }
 
 let cleanup = () => {};
@@ -211,14 +203,12 @@ function render() {
         ["✦ Study buddy", "voice"],
         ["Resources", "resources"],
         ["Planner", "planner"],
-        ["Battles", "battle"],
-        ["Leaderboard", "leaderboard"],
-        ["Inbox", "inbox"],
-        ["Profile", "profile"],
+        ...(!active.local ? [["Inbox", "inbox"]] : []),
       ];
 
   $("main-nav").hidden = false;
-  $("main-nav").innerHTML = nav.map(([t, r]) => navLink(t, r)).join("");
+  $("main-nav").innerHTML = nav.map(([t, r]) => navLink(t, r)).join("") +
+    (admin ? "" : '<a href="./AI-ML-Exam-Prep.html">AI &amp; ML exam prep ↗</a>');
 
   if (admin) {
     cleanup =
@@ -238,15 +228,10 @@ function render() {
       (lesson?.title || route.split("/")[1] || "Subject overview")
     : nav.find(([, r]) => r === area)?.[0] || "Library";
 
-  set(ref(db, "students/" + active.uid + "/activity"), {
+  if (!active.local) set(ref(db, "students/" + active.uid + "/activity"), {
     label: label.slice(0, 160),
     ts: serverTimestamp(),
   }).catch(() => {});
-
-  if (["profile", "battle", "leaderboard"].includes(area)) {
-    cleanup = community($("desk"), db, active, record, route);
-    return;
-  }
 
   if (area === "voice") {
     cleanup = studyCompanion($("desk"), active.uid);
@@ -266,7 +251,7 @@ function render() {
     return;
   }
 
-  if (area === "inbox") {
+  if (area === "inbox" && !active.local) {
     $("desk").innerHTML =
       '<div class="page-head"><small class="eyebrow">Direct messages from owner</small><h1>Private inbox</h1></div><section id="mail"></section>';
     cleanup = onValue(
@@ -283,21 +268,15 @@ function render() {
 
   studentPage($("desk"), record, news, async (path, value) => {
     try {
-      await set(
+      if (!active.local) await set(
         ref(db, "students/" + active.uid + "/" + path),
         value === "timestamp" ? serverTimestamp() : value,
       );
       const [type, course, key] = path.split("/");
-      if (type === "practice" && value === true)
-        try {
-          await earnXP(db, active.uid, course, key);
-        } catch {
-          $("status").textContent =
-            "Answer saved. XP could not sync; retry this question later.";
-        }
       record[type] ??= {};
       record[type][course] ??= {};
       record[type][course][key] = value === "timestamp" ? Date.now() : value;
+      if (active.local) localStorage.setItem(localKey, JSON.stringify(record));
     } catch (err) {
       $("status").textContent =
         "Progress could not be saved. Check your connection and retry.";
@@ -311,7 +290,7 @@ function render() {
     const stopFacts = factsCard($("desk"));
     const notice = document.createElement("div");
     $("desk").querySelector(".grid").after(notice);
-    const stopMail = onValue(
+    const stopMail = active.local ? () => {} : onValue(
       ref(db, "inbox/" + active.uid),
       (snap) => {
         const count = Object.keys(snap.val() || {}).length;
@@ -327,48 +306,11 @@ function render() {
         $("status").textContent = err.message;
       },
     );
-    const stopNews = onValue(
-      ref(db, "announce"),
-      (snap) => {
-        const values = snap.val() || {};
-        const box = $("home-announcements");
-        if (box)
-          box.innerHTML = Object.keys(values).length
-            ? "<h2>Announcements</h2>" + announcements(values)
-            : "";
-      },
-      (err) => {
-        $("status").textContent = err.message;
-      },
-    );
     cleanup = () => {
       stopTools();
       stopFacts();
       stopMail();
-      stopNews();
     };
-  } else if (c && !route.includes("/")) {
-    const slot = document.createElement("aside");
-    slot.hidden = true;
-    slot.className = "banner";
-    $("subject").prepend(slot);
-    cleanup = onValue(
-      ref(db, "courseUpdates/" + c.id),
-      (snap) => {
-        slot.hidden = !snap.exists();
-        slot.replaceChildren();
-        if (snap.exists()) {
-          const heading = document.createElement("strong"),
-            text = document.createElement("p");
-          heading.textContent = "Course update";
-          text.textContent = snap.val().text;
-          slot.append(heading, text);
-        }
-      },
-      (err) => {
-        $("status").textContent = err.message;
-      },
-    );
   }
 }
 
@@ -377,16 +319,19 @@ window.addEventListener("hashchange", () => {
   window.scrollTo(0, 0);
 });
 
+async function openBrowserWorkspace() {
+  if (admin || active) return;
+  clearTimeout(browserFallbackTimer);
+  await enterWorkspace({uid:"browser-only", isAnonymous:true, local:true});
+}
+
 async function enterWorkspace(user) {
   const token = ++session;
   cleanup();
   cleanup = () => {};
-  headerStops.forEach((s) => s());
-  headerStops = [];
   $("main-nav").hidden = true;
   $("main-nav").replaceChildren();
   if ($("header-user")) $("header-user").hidden = true;
-  if ($("header-xp")) $("header-xp").hidden = true;
   if ($("header-voice")) $("header-voice").hidden = true;
   if ($("header-admin-badge")) $("header-admin-badge").hidden = true;
 
@@ -394,48 +339,43 @@ async function enterWorkspace(user) {
   news = {};
   record = {};
 
+  if (!admin) $("student-name").hidden = true;
   $("desk").replaceChildren();
   $("desk").hidden = true;
   $("gate").hidden = false;
-  $("exit").hidden = !user;
+  if (admin) $("exit").hidden = !user;
   $("status").textContent = "";
-  if ($("verify")) $("verify").hidden = true;
   if (!user) return;
 
-  if (
-    admin
-      ? user.uid !== ADMIN_UID
-      : !allowed(user.email || "") ||
-        !user.providerData.some((p) => p.providerId === "password")
-  ) {
+  const authorized = admin
+    ? user.uid === ADMIN_UID && user.providerData.some(provider => provider.providerId === "password")
+    : user.isAnonymous;
+  if (!authorized) {
     authMessage("This account cannot access this workspace.");
     await signOut(auth);
     return;
   }
 
-  if (!admin && !user.emailVerified) {
-    $("verify").hidden = false;
-    authMessage("Check your university inbox for the verification link.");
-    $("resend").onclick = () =>
-      run(async () => {
-        await sendEmailVerification(user);
-        authMessage("Verification email sent.");
-      });
-    $("recheck").onclick = () =>
-      run(async () => {
-        await user.reload();
-        if (!user.emailVerified)
-          throw Error(
-            "Verification is still pending. Open the link in your university inbox.",
-          );
-        await enterWorkspace(user);
-      });
-    return;
-  }
-
   try {
     authMessage("Loading your workspace…");
-    await user.getIdToken(true);
+    if (user.local) {
+      try { record = JSON.parse(localStorage.getItem(localKey)) || {}; } catch {}
+      record.nickname ||= "Guest";
+    } else if (!admin) {
+      const student = ref(db, "students/" + user.uid);
+      const existing = (await get(student)).val();
+      if (token !== session) return;
+      await update(student, {
+        ...(!existing?.nickname && {nickname: "Guest"}),
+        lastSeen: serverTimestamp(),
+      });
+      record = (await get(student)).val() || {};
+      if (token !== session) return;
+    }
+    if (!admin) {
+      $("nickname").value = record.nickname === "Guest" ? "" : record.nickname;
+      updateHeaderUser({name: record.nickname}, user);
+    }
     courseLoad ??= loadCourses().catch((err) => {
       courseLoad = null;
       throw err;
@@ -443,58 +383,49 @@ async function enterWorkspace(user) {
     await courseLoad;
     if (token !== session) return;
 
-    if (!admin) {
-      await update(ref(db, "students/" + user.uid), {
-        email: user.email,
-        lastSeen: serverTimestamp(),
-      });
-      const [stuSnap, profSnap, xpSnap] = await Promise.all([
-        get(ref(db, "students/" + user.uid)),
-        get(ref(db, "profiles/" + user.uid)),
-        get(ref(db, "xp/" + user.uid)),
-      ]);
-      record = stuSnap.val() || {};
-      const prof = profSnap.val() || {};
-      record._hasProfile = Boolean(prof.name);
-      updateHeaderUser(prof, user);
-      updateHeaderXP(xpSnap.val());
-
-      headerStops.push(
-        onValue(
-          ref(db, "profiles/" + user.uid),
-          (snap) => {
-            const p = snap.val() || {};
-            record._hasProfile = Boolean(p.name);
-            updateHeaderUser(p, user);
-          },
-          () => {},
-        ),
-        onValue(
-          ref(db, "xp/" + user.uid),
-          (snap) => updateHeaderXP(snap.val()),
-          () => {},
-        ),
-      );
-    } else if ($("header-admin-badge")) {
+    if (admin && $("header-admin-badge")) {
       $("header-admin-badge").hidden = false;
     }
 
     if (token !== session) return;
     active = user;
+    clearTimeout(browserFallbackTimer);
     window.__brUid = user.uid;
-    $("pass").value = "";
+    if (admin) $("pass").value = "";
     authMessage("");
     $("gate").hidden = true;
     $("desk").hidden = false;
+    if (!admin) {
+      $("student-name").hidden = false;
+      $("storage-status").hidden = !user.local;
+    }
     if ($("header-voice")) $("header-voice").hidden = admin;
     render();
   } catch (err) {
-    if (token === session)
-      authMessage("Workspace could not load. " + friendly(err));
+    if (token !== session) return;
+    if (!admin && !user.local) await openBrowserWorkspace();
+    else authMessage("Workspace could not load. " + friendly(err));
   }
 }
 
-onAuthStateChanged(auth, enterWorkspace);
+if (!admin) browserFallbackTimer = setTimeout(openBrowserWorkspace, 5000);
+onAuthStateChanged(auth, async user => {
+  if (active?.local) return;
+  if (admin || user?.isAnonymous) {
+    await enterWorkspace(user);
+    return;
+  }
+  if (startingAnonymous) return;
+  startingAnonymous = true;
+  try {
+    await persistence;
+    if (!auth.currentUser?.isAnonymous) await signInAnonymously(auth);
+  } catch (err) {
+    await openBrowserWorkspace();
+  } finally {
+    startingAnonymous = false;
+  }
+});
 
 if ("serviceWorker" in navigator)
   navigator.serviceWorker

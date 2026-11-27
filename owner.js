@@ -150,7 +150,7 @@ export function owner(root, db, route) {
     watch("students/" + id, (u) => {
       root.querySelector("#info").innerHTML =
         "<h2>" +
-        e(u.email || "No student profile") +
+        e(u.email || u.nickname || "No student profile") +
         "</h2><p><strong>Last workspace visit:</strong> " +
         e(date(u.lastSeen)) +
         "</p><p><strong>Latest activity:</strong> " +
@@ -415,10 +415,10 @@ export function owner(root, db, route) {
 
       const filtered = rows
         .filter(([id, u]) => {
-          if (filter === "named" && !profiles[id]?.name) return false;
-          if (filter === "unnamed" && profiles[id]?.name) return false;
+          if (filter === "named" && !(profiles[id]?.name || u.nickname)) return false;
+          if (filter === "unnamed" && (profiles[id]?.name || u.nickname)) return false;
           return (
-            (u.email || "") +
+            (u.email || u.nickname || "") +
             " " +
             (profiles[id]?.name || "")
           )
@@ -434,13 +434,13 @@ export function owner(root, db, route) {
             const p = profiles[id] || {};
             return (
               '<div class="unit student-row"><div class="student-row-main">' +
-              face({ name: p.name || u.email, photo: p.photo }) +
+              face({ name: p.name || u.nickname || u.email, photo: p.photo }) +
               '<div><a href="#students/' +
               encodeURIComponent(id) +
               '">' +
-              e(u.email) +
+              e(u.email || u.nickname || "Student") +
               "</a><p>" +
-              e(p.name || "Username unset") +
+              e(p.name || (u.nickname ? "Anonymous student" : "Username unset")) +
               " · " +
               Number(xp[id] || 0) +
               " XP · " +
